@@ -278,7 +278,7 @@ def ai_image(prompt: str, path: str, style: str = AI_STYLE) -> dict | None:
     url = f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/@cf/black-forest-labs/flux-1-schnell"
     try:
         resp = requests.post(url, headers={"Authorization": f"Bearer {token}"},
-                             json={"prompt": prompt + style, "steps": 8, "seed": random.randint(1, 10**6)},
+                             json={"prompt": prompt + style, "steps": 8},
                              timeout=120)
         data = resp.json()
         b64 = (data.get("result") or {}).get("image")
