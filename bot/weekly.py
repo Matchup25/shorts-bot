@@ -36,7 +36,7 @@ def _sunday_slot(cfg: dict, now: dt.datetime) -> str:
     h, m = (int(x) for x in str(cfg.get("weekly_publish_time", "19:00")).split(":"))
     days = (6 - now.weekday()) % 7
     slot = (now + dt.timedelta(days=days)).replace(hour=h, minute=m, second=0, microsecond=0)
-    if slot < now + dt.timedelta(minutes=30):
+    if days and slot < now + dt.timedelta(minutes=30):  # never happens on Sunday: late = publish right away
         slot += dt.timedelta(days=7)
     return slot.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -68,6 +68,18 @@ def prepare(count: int, test: bool) -> None:
     tz = ZoneInfo(cfg.get("timezone", "Europe/Zurich"))
     now = dt.datetime.now(tz)
     date_short, date_spoken = _labels(now)
+
+    out = os.environ.get("GITHUB_OUTPUT")
+    if not test:
+        slot = _sunday_slot(cfg, now)
+        hist_path = DATA / "weekly_history.json"
+        hist = json.loads(hist_path.read_text()) if hist_path.exists() else []
+        if any(slot in (e.get("slot"), e.get("publish_at")) for e in hist):
+            log(f"This week's show ({slot} UTC) is already published: nothing to do.")
+            if out:
+                with open(out, "a") as fh:
+                    fh.write("skip=true\nframes=0\n")
+            return
 
     log("1/5 Collecting the week's news…")
     pool = _story_pool(cfg)
@@ -200,10 +212,9 @@ def prepare(count: int, test: bool) -> None:
     }
     (RUN / "weekly-meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
     log(f"  ready: {n} stories, {duration / 60:.1f} minutes, {meta['frames']} frames")
-    out = os.environ.get("GITHUB_OUTPUT")
     if out:
         with open(out, "a") as fh:
-            fh.write(f"frames={meta['frames']}\n")
+            fh.write(f"skip=false\nframes={meta['frames']}\n")
 
 
 def publish(video: str, test: bool) -> None:
@@ -212,7 +223,7 @@ def publish(video: str, test: bool) -> None:
         log("Test mode: the weekly show is NOT uploaded.")
         return
     cfg = load_config()
-    publish_at = meta.get("publish_at")
+    publish_at = slot = meta.get("publish_at")
     if publish_at:
         when = dt.datetime.fromisoformat(publish_at.replace("Z", "+00:00"))
         if when < dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=10):
@@ -232,7 +243,7 @@ def publish(video: str, test: bool) -> None:
     hist_path = DATA / "weekly_history.json"
     hist = json.loads(hist_path.read_text()) if hist_path.exists() else []
     hist.append({"date": dt.date.today().isoformat(), "title": meta["title"], "video_id": vid,
-                 "publish_at": publish_at})
+                 "publish_at": publish_at, "slot": slot})
     hist_path.write_text(json.dumps(hist[-100:], indent=1, ensure_ascii=False))
     path = os.environ.get("GITHUB_STEP_SUMMARY")
     if path:

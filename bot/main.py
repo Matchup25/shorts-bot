@@ -3,28 +3,9 @@ import datetime as dt
 import os
 import sys
 
-from . import assemble, media, news, render, voice, youtube
+from . import assemble, media, news, render, slots, voice, youtube
 from .brain import Brain
 from .util import OUTPUT, load_config, load_history, log, save_history
-
-
-def next_slot(cfg: dict) -> str | None:
-    """Next publishing time (07:00 / 19:00 Zurich…) as UTC RFC3339, at least 15 minutes from now."""
-    from zoneinfo import ZoneInfo
-    times = cfg.get("publish_times") or []
-    if not times or os.environ.get("PRIVACY_OVERRIDE", "").strip():
-        return None  # manual run with a chosen privacy: publish right away
-    tz = ZoneInfo(cfg.get("timezone", "Europe/Zurich"))
-    now = dt.datetime.now(tz)
-    candidates = []
-    for day in (0, 1):
-        for hhmm in times:
-            h, m = (int(x) for x in str(hhmm).split(":"))
-            when = (now + dt.timedelta(days=day)).replace(hour=h, minute=m, second=0, microsecond=0)
-            if when > now + dt.timedelta(minutes=15):
-                candidates.append(when)
-    slot = min(candidates)
-    return slot.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def summary(md: str) -> None:
@@ -42,11 +23,14 @@ def main() -> None:
     used_links = {link for h in history for link in h.get("links", [])}
     OUTPUT.mkdir(exist_ok=True)
 
-    slot = next_slot(cfg) if cfg["privacy"] == "public" and not dry_run else None
-    if slot and any(h.get("publish_at") == slot for h in history):
-        log(f"A Short is already scheduled for {slot} (UTC): nothing to do.")
-        summary(f"### ⏭️ A Short is already scheduled for {slot} UTC")
-        return
+    slot, publish_slot = None, None
+    if slots.uses_slots(cfg):
+        slot, publish_slot = slots.choose(cfg, history, slots.is_manual())
+        if not slot:
+            log("No Short is due right now (the next slot is far away or already filled).")
+            summary("### ⏭️ No Short due right now")
+            return
+        log(f"Making the Short for slot {slot} UTC" + ("" if publish_slot else " (late: publishing right away)"))
 
     log("1/6 Reading the news…")
     stories = news.fetch_stories(cfg)
@@ -114,7 +98,7 @@ def main() -> None:
         if dry_run:
             log("6/6 Test mode: not uploading (download the video from the GitHub run page)")
         else:
-            publish_at = next_slot(cfg) if cfg["privacy"] == "public" else None
+            publish_at = publish_slot if cfg["privacy"] == "public" else None
             when = f"scheduled for {publish_at} (UTC)" if publish_at else cfg["privacy"]
             log(f"6/6 Uploading to YouTube, {when}…")
             video_id = youtube.upload(yt, out, script["title"], description, tags, script["category"],
@@ -126,6 +110,7 @@ def main() -> None:
                 "links": [s["link"] for s in sources],
                 "video_id": video_id,
                 "publish_at": publish_at,
+                "slot": slot,
             })
             save_history(history)
 

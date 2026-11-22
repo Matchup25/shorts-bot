@@ -2,10 +2,11 @@ name: Daily Short
 
 on:
   schedule:
-    # 03:47 and 15:47 UTC = 04:47 / 16:47 in Zurich (winter), 05:47 / 17:47 (summer).
-    # Each run prepares one Short and YouTube publishes it at 07:00 / 19:00 Zurich time.
-    - cron: "47 3 * * *"
-    - cron: "47 15 * * *"
+    # Every 3 hours (00:47, 03:47, … UTC). GitHub sometimes starts scheduled runs late or skips one,
+    # so each publishing slot (07:00 / 19:00 Zurich) gets several chances: a quick check decides
+    # whether a Short is due (bot/slots.py) and only then the Short is made. YouTube publishes it
+    # at the exact time; a slot missed by less than 3 hours is published right away.
+    - cron: "47 */3 * * *"
   workflow_dispatch:
     inputs:
       test_mode:
@@ -26,7 +27,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      due: ${{ steps.due.outputs.due }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Is a Short due?
+        id: due
+        env:
+          DRY_RUN: ${{ inputs.test_mode }}
+          PRIVACY_OVERRIDE: ${{ inputs.privacy }}
+        run: pip install -q pyyaml && python -m bot.slots
+
   make-short:
+    needs: check
+    if: needs.check.outputs.due == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:

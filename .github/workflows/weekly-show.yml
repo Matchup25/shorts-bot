@@ -4,6 +4,9 @@ name: Weekly show
 # The video is rendered in 6 parallel parts so it is ready in about an hour.
 on:
   schedule:
+    # Two chances every Sunday (GitHub sometimes starts scheduled runs late or skips one);
+    # the second run stops right away if the first one already published the show.
+    - cron: "7 7 * * 0"    # Sunday 08:07 Zurich (winter) / 09:07 (summer)
     - cron: "7 11 * * 0"   # Sunday 12:07 Zurich (winter) / 13:07 (summer)
   workflow_dispatch:
     inputs:
@@ -28,6 +31,7 @@ jobs:
     timeout-minutes: 90
     outputs:
       frames: ${{ steps.prep.outputs.frames }}
+      skip: ${{ steps.prep.outputs.skip }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -66,9 +70,11 @@ jobs:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: python -m bot.weekly prepare --count "${{ inputs.stories || '15' }}" ${{ inputs.test_mode == true && '--test' || '' }}
       - name: Thumbnail
+        if: steps.prep.outputs.skip != 'true'
         working-directory: video
         run: npx remotion still src/index.ts WeeklyThumb public/run/thumb.jpg --props=public/run/thumb-props.json --browser-executable=/usr/bin/google-chrome --log=warn || true
       - uses: actions/upload-artifact@v4
+        if: steps.prep.outputs.skip != 'true'
         with:
           name: weekly-run
           path: video/public/run
@@ -76,6 +82,7 @@ jobs:
 
   render:
     needs: prepare
+    if: needs.prepare.outputs.skip != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
