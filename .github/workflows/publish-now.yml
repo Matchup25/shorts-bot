@@ -1,0 +1,36 @@
+name: Publish a video now
+
+# Makes an already uploaded (private or scheduled) video public right away.
+on:
+  workflow_dispatch:
+    inputs:
+      video_id:
+        description: "YouTube video id (the part after youtube.com/shorts/)"
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install -q google-api-python-client google-auth pyyaml
+      - name: Make it public
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          VIDEO_ID: ${{ inputs.video_id }}
+        run: |
+          python - <<'PY'
+          import os
+          from bot import youtube
+          yt = youtube.service()
+          vid = os.environ["VIDEO_ID"].strip()
+          res = yt.videos().update(part="status", body={"id": vid, "status": {
+              "privacyStatus": "public", "selfDeclaredMadeForKids": False, "containsSyntheticMedia": True}}).execute()
+          print("PUBLISHED:", vid, res["status"]["privacyStatus"])
+          PY

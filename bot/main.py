@@ -42,6 +42,12 @@ def main() -> None:
     used_links = {link for h in history for link in h.get("links", [])}
     OUTPUT.mkdir(exist_ok=True)
 
+    slot = next_slot(cfg) if cfg["privacy"] == "public" and not dry_run else None
+    if slot and any(h.get("publish_at") == slot for h in history):
+        log(f"A Short is already scheduled for {slot} (UTC): nothing to do.")
+        summary(f"### ⏭️ A Short is already scheduled for {slot} UTC")
+        return
+
     log("1/6 Reading the news…")
     stories = news.fetch_stories(cfg)
     stories = [s for s in stories if s["link"] not in used_links]
@@ -121,6 +127,7 @@ def main() -> None:
                 "title": script["title"],
                 "links": [s["link"] for s in sources],
                 "video_id": video_id,
+                "publish_at": publish_at,
             })
             save_history(history)
 
