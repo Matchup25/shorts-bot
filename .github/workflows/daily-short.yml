@@ -108,7 +108,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: shorts
-          path: output/*.mp4
+          path: |
+            output/*.mp4
+            output/ig.json
           retention-days: 7
           if-no-files-found: ignore
 
@@ -130,4 +132,56 @@ jobs:
           git config user.email "shorts-bot@users.noreply.github.com"
           git add data/history.json
           git commit -q -m "Published a new Short" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done
+
+  # The same Short as an Instagram Reel, published at the same time as on YouTube.
+  # Skipped automatically until the IG_ACCESS_TOKEN secret exists.
+  instagram:
+    needs: make-short
+    if: inputs.test_mode != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 380
+    env:
+      IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+      IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
+    steps:
+      - name: Is Instagram set up?
+        id: ig
+        run: |
+          if [ -n "$IG_ACCESS_TOKEN" ]; then echo "on=true" >> "$GITHUB_OUTPUT"; else echo "Instagram is not set up yet: skipping."; fi
+      - uses: actions/checkout@v5
+        if: steps.ig.outputs.on == 'true'
+      - uses: actions/setup-python@v6
+        if: steps.ig.outputs.on == 'true'
+        with:
+          python-version: "3.12"
+      - name: Install
+        if: steps.ig.outputs.on == 'true'
+        run: pip install -q requests cryptography pyyaml
+      - uses: actions/download-artifact@v4
+        if: steps.ig.outputs.on == 'true'
+        with:
+          name: shorts
+          path: output
+      - name: Put the video online for Instagram (ig-media branch)
+        if: steps.ig.outputs.on == 'true'
+        id: host
+        run: |
+          VIDEO=$(python -c "import json;print(json.load(open('output/ig.json'))['video'])")
+          NAME="reel_$(date -u +%Y%m%d_%H%M%S).mp4"
+          mkdir -p /tmp/ig && cp "output/$VIDEO" "/tmp/ig/$NAME"
+          cd /tmp/ig && git init -q -b ig-media && git config user.name "shorts-bot" && git config user.email "shorts-bot@users.noreply.github.com"
+          git add . && git commit -q -m "Reel $NAME"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" ig-media
+          echo "url=https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/ig-media/$NAME" >> "$GITHUB_OUTPUT"
+      - name: Publish the Reel (waits for the publishing time)
+        if: steps.ig.outputs.on == 'true'
+        run: python -m bot.instagram post --meta output/ig.json --url "${{ steps.host.outputs.url }}"
+      - name: Remember the Reel
+        if: always() && steps.ig.outputs.on == 'true'
+        run: |
+          git config user.name "shorts-bot"
+          git config user.email "shorts-bot@users.noreply.github.com"
+          git add data/ig_history.json data/ig_token.enc 2>/dev/null || true
+          git commit -q -m "Published a Reel" || exit 0
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done

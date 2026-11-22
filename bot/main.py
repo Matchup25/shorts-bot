@@ -1,9 +1,10 @@
 """The whole pipeline: news → story pick → script → fact-check → hashtags → voice → video → YouTube."""
 import datetime as dt
+import json
 import os
 import sys
 
-from . import assemble, media, news, render, slots, voice, youtube
+from . import assemble, instagram, media, news, render, slots, voice, youtube
 from .brain import Brain
 from .util import OUTPUT, load_config, load_history, log, save_history
 
@@ -113,6 +114,12 @@ def main() -> None:
                 "slot": slot,
             })
             save_history(history)
+            # The same video goes to Instagram as a Reel (a separate step, only if Instagram is set up).
+            (OUTPUT / "ig.json").write_text(json.dumps({
+                "title": script["title"], "slot": slot, "publish_at": publish_at, "video_id": video_id,
+                "video": os.path.basename(out),
+                "caption": instagram.caption_for(script["title"], script["description"], source_names, tags),
+            }, ensure_ascii=False, indent=1), encoding="utf-8")
 
         link = f"https://youtube.com/shorts/{video_id}" if video_id else "(test mode – see Artifacts below)"
         summary(f"### ✅ {script['title']}\n- Video: {link}\n- Privacy: {cfg['privacy']}"

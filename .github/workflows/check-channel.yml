@@ -1,6 +1,6 @@
 name: Check channel
 
-# Shows which YouTube channel the bot publishes to and whether the AI pictures work (no changes are made).
+# Shows which YouTube channel (and Instagram account) the bot publishes to and whether the AI pictures work (no changes are made).
 on:
   workflow_dispatch:
 
@@ -24,6 +24,11 @@ jobs:
           ok = media.ai_image("a glowing globe floating in space", "/tmp/test.jpg")
           print("AI PICTURES:", "OK" if ok else "NOT WORKING")
           PY
+      - name: Instagram?
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
+        run: pip install -q cryptography && python -m bot.instagram check || true
       - name: Which channel?
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
