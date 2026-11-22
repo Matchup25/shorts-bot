@@ -130,6 +130,9 @@ Facts you may use (nothing else):
 
 1. Write 5 NEW title candidates (max 50 characters, 0-1 emoji, include the search keyword when natural).
 2. Write 3 NEW hook candidates (max 14 words, the most surprising fact or number first).
+TRUTH COMES FIRST: keep exactly who did what and how certain it is. Never turn "helped" into "solved", "may" into
+"will", "claims" into "proved", an attempt or a partial result into a success, or a related problem into a famous one
+(e.g. progress on a question linked to the Riemann hypothesis is NOT "solved the Riemann hypothesis").
 3. Score every candidate, including the current title and current hook, from 0 to 10 on:
    curiosity (makes you need to know more), clarity (understood instantly, no jargon),
    keyword (uses words people search), truth (fully supported by the facts above; anything unsupported or
@@ -152,7 +155,7 @@ Return JSON:
                     total = float(it.get("curiosity", 0)) * 1.5 + float(it.get("clarity", 0)) + float(it.get("keyword", 0)) * 0.5
                 except (TypeError, ValueError):
                     continue
-                if not text or truth < 8 or len(text) > max_len or len(text.split()) > max_words:
+                if not text or truth < 9 or len(text) > max_len or len(text.split()) > max_words:
                     continue
                 scored.append((total, text))
             scored.sort(reverse=True)
@@ -215,19 +218,33 @@ Return JSON:
     def verify(self, script: dict, sources: list) -> dict:
         source_block = "\n\n".join(f"SOURCE {i+1} ({s['source']}):\n{s['text']}" for i, s in enumerate(sources))
         narration = "\n".join(f"- {sc['narration']}" for sc in script["scenes"])
-        prompt = f"""You are a strict fact-checker. Check the TITLE, HEADLINES and NARRATION of a news Short against the
-sources. Reject if any claim is not supported by the sources, if a number/name/date is wrong, if the title is misleading,
-or if anything could be defamatory or unfair to a real person. Small simplifications are fine.
+        prompt = f"""You are a strict fact-checker for a news channel. Check the TITLE, the FIRST SENTENCE, the HEADLINES and
+the NARRATION of a news Short against the sources.
+
+Reject if:
+- any claim is not supported by the sources, or a number, name or date is wrong;
+- the title or the first sentence OVERSTATES the news: an attempt, a claim, a partial or related result presented as
+  done or as the famous big problem ("helped" -> "solved", "may" -> "will", "claims" -> "proved", "related to X" -> "X",
+  "progress on" -> "cracked"), or the action is credited to the wrong person or thing;
+- the title is misleading, or anything could be defamatory or unfair to a real person.
+Small simplifications of wording are fine; changes in certainty or in who did what are not.
 
 TITLE: {script['title']}
+FIRST SENTENCE: {script['scenes'][0]['narration']}
 HEADLINES: {[sc['headline'] for sc in script['scenes']]}
 NARRATION:
 {narration}
 
 {source_block}
 
-Return JSON: {{"approved": true/false, "problems": ["..."]}}"""
-        return self.ask(prompt, temperature=0.0)
+First copy the exact source sentence that supports the TITLE and the one that supports the FIRST SENTENCE
+(empty if there is none), then decide.
+Return JSON: {{"title_evidence": "...", "hook_evidence": "...", "approved": true/false, "problems": ["..."]}}"""
+        result = self.ask(prompt, temperature=0.0)
+        if not str(result.get("title_evidence", "")).strip() or not str(result.get("hook_evidence", "")).strip():
+            result["approved"] = False
+            result.setdefault("problems", []).append("Title or first sentence has no supporting sentence in the sources.")
+        return result
 
     # ------------------------------------------------------------ weekly show
     def pick_weekly(self, stories: list, count: int, date_range: str) -> list:

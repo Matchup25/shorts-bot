@@ -79,7 +79,6 @@ def main() -> None:
         script, feedback = None, ""
         for attempt in range(2):
             draft = brain.write_script(story, sources, feedback)
-            draft = brain.sharpen(draft, story.get("yt_query", ""))
             check = brain.verify(draft, sources)
             if str(check.get("approved")).lower() in {"true", "yes", "1"}:
                 script = draft
@@ -89,6 +88,17 @@ def main() -> None:
         if not script:
             log("  skipping this story (could not pass the fact-check)")
             continue
+        # Title and hook contest; the winner must pass the fact-check again, otherwise the checked original stays.
+        sharp = brain.sharpen(script, story.get("yt_query", ""))
+        if (sharp["title"], sharp["scenes"][0]["narration"]) != (script["title"], script["scenes"][0]["narration"]):
+            check = brain.verify(sharp, sources)
+            if str(check.get("approved")).lower() in {"true", "yes", "1"}:
+                script = sharp
+                log("  the contest winner passed the fact-check")
+            else:
+                log("  contest winner rejected by the fact-check, keeping the original title and hook: "
+                    + "; ".join(check.get("problems", [])))
+                script["contest"] = sharp.get("contest")
 
         log("4/6 Finding trending hashtags…")
         candidates = youtube.popular_hashtags(yt, script["search_keywords"]) if yt else []
