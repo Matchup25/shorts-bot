@@ -64,6 +64,7 @@ def _ts(seconds: float) -> str:
 def prepare(count: int, test: bool) -> None:
     cfg = load_config()
     media.ORIENTATION["value"] = "landscape"
+    media.STRICT["value"] = True
     tz = ZoneInfo(cfg.get("timezone", "Europe/Zurich"))
     now = dt.datetime.now(tz)
     date_short, date_spoken = _labels(now)

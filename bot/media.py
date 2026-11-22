@@ -59,12 +59,16 @@ def _prepare_video(raw: str, path: str) -> dict | None:
 
 
 PLACE_WORDS = {"city", "cityscape", "skyline", "downtown", "skyscraper", "skyscrapers", "street", "streets",
-               "building", "buildings", "tower", "landmark", "town", "metropolis", "urban", "aerial"}
+               "building", "buildings", "tower", "landmark", "town", "metropolis", "urban", "aerial",
+               "flag", "flags", "national", "nation", "country", "parliament", "capital"}
+STRICT = {"value": False}  # weekly show: a clip must match at least two search words
 
 
 def _acceptable(tags: set, words: set, place_words: set | None) -> bool:
     """Reject clips unrelated to the search, and city shots of a different place than the story."""
     if words and not (words & tags):
+        return False
+    if STRICT["value"] and len(words) >= 2 and len(words & tags) < 2:
         return False
     if place_words is not None and (tags & PLACE_WORDS) and not (tags & place_words):
         return False
@@ -324,10 +328,12 @@ def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None =
         steps = []
         if space and nasa_q:
             steps.append(("NASA", lambda: nasa_image(nasa_q, base + ".jpg", used)))
+        if editorial:  # weekly show: a symbolic illustration beats a loosely related stock clip
+            steps.append(("AI image", lambda: ai_image(prompt, base + ".jpg", style)))
         steps += [
             ("Pixabay video", lambda: pixabay_video(footage, base + ".mp4", used, place_words)),
             ("Pexels video", lambda: pexels_video(footage, base + ".mp4", used)),
-            ("AI image", lambda: ai_image(prompt, base + ".jpg", style)),
+            ("AI image", lambda: None if editorial else ai_image(prompt, base + ".jpg", style)),
             ("Pixabay photo", lambda: pixabay_photo(footage, base + ".jpg", used, place_words)),
             ("Pexels photo", lambda: pexels_photo(footage, base + ".jpg", used)),
         ]
