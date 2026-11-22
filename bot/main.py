@@ -3,7 +3,7 @@ import datetime as dt
 import os
 import sys
 
-from . import news, render, voice, youtube
+from . import assemble, media, news, render, voice, youtube
 from .brain import Brain
 from .util import OUTPUT, load_config, load_history, log, save_history
 
@@ -63,19 +63,26 @@ def main() -> None:
             tags.append("#Shorts")
         log(f"  {' '.join(tags)}")
 
-        log("5/6 Narrating and animating…")
+        log("5/6 Pictures, voice and animation…")
+        run_dir = render.reset_run_dir()
+        media_list = media.gather(script, run_dir)
         audio, timings, words = voice.narrate(script["scenes"], cfg["voice"], cfg["voice_speed"])
+        duration = assemble.build_mix(audio, timings, f"{run_dir}/mix.wav")
         source_names = list(dict.fromkeys(s["source"] for s in sources))
+        props = assemble.build_props(script, timings, words, media_list, cfg["channel_name"], "run/mix.wav", duration)
         stamp = dt.datetime.utcnow().strftime("%Y%m%d_%H%M")
         out = str(OUTPUT / f"short_{stamp}_{made + 1}.mp4")
-        render.build_video(script, audio, timings, words, out, cfg["channel_name"], source_names)
+        render.render(props, out)
 
-        uses_photos = any(sc["visual"]["kind"] == "photo" for sc in script["scenes"]) and os.environ.get("PEXELS_API_KEY")
+        credits = sorted({"Pexels" if "Pexels" in m.get("credit", "") else
+                          "NASA" if "NASA" in m.get("credit", "") else
+                          "AI-generated images (FLUX)" if "AI" in m.get("credit", "") else ""
+                          for m in media_list} - {""})
         description = (
             f"{script['description']}\n\n"
             "Sources:\n" + "\n".join(f"• {s['source']}: {s['link']}" for s in sources) + "\n\n"
-            "Narration voice is AI-generated. Illustrations: Microsoft Fluent Emoji (MIT)."
-            + (" Photos: Pexels." if uses_photos else "") + "\n\n" + " ".join(tags)
+            "Narration voice is AI-generated."
+            + (" Visuals: " + "; ".join(credits) + "." if credits else "") + "\n\n" + " ".join(tags)
         )
 
         video_id = None

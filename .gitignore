@@ -1,6 +1,9 @@
-models/
+models
 output/
 .cache/
 __pycache__/
 *.pyc
 .env
+video/public/run/
+video/node_modules/
+video/out/

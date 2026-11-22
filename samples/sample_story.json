@@ -1,39 +1,82 @@
 {
   "title": "This 'Dead' Star Fooled Astronomers for 15 Years 🤯",
   "category": "space",
-  "sources": ["NASA Chandra", "Universe Today"],
+  "sources": [
+    "NASA Chandra",
+    "Universe Today"
+  ],
   "scenes": [
     {
       "narration": "For fifteen years, this star fooled astronomers into thinking it had exploded.",
       "headline": "The star that faked its death",
-      "visual": {"kind": "illustration", "emoji": "💥"}
+      "visual": {
+        "kind": "media",
+        "footage": "night sky stars timelapse",
+        "ai_prompt": "a massive star exploding in deep space, bright shock wave, glowing debris",
+        "nasa": "supernova remnant"
+      }
     },
     {
       "narration": "In 2012, telescopes spotted what looked like a supernova, a star blowing itself apart, in a galaxy about 25 million light-years away.",
       "headline": "A 'supernova' in 2012",
-      "visual": {"kind": "stat", "value": "25", "unit": "million light-years away", "emoji": "🌌"}
+      "visual": {
+        "kind": "stat",
+        "value": "25",
+        "unit": "million light-years away",
+        "footage": "galaxy space",
+        "ai_prompt": "a vast spiral galaxy seen from far away, billions of stars",
+        "nasa": "spiral galaxy Hubble"
+      }
     },
     {
       "narration": "But it kept doing something exploded stars don't do. It brightened, faded, and brightened again.",
       "headline": "It kept coming back",
-      "visual": {"kind": "illustration", "emoji": "🌟"}
+      "visual": {
+        "kind": "media",
+        "footage": "bright star space",
+        "ai_prompt": "a giant blue star flaring and dimming, surrounded by glowing gas",
+        "nasa": "Eta Carinae"
+      }
     },
     {
       "narration": "Now NASA's Chandra X-ray Observatory has caught it mid-outburst, and found a hidden partner: a black hole or a neutron star.",
       "headline": "A hidden partner",
-      "visual": {"kind": "illustration", "emoji": "🔭"}
+      "visual": {
+        "kind": "media",
+        "footage": "space telescope",
+        "ai_prompt": "an X-ray space telescope orbiting Earth, sunlight on its panels",
+        "nasa": "Chandra X-ray Observatory"
+      }
     },
     {
       "narration": "It circles the star about every 113 days, feeding on it, and heating gas the star threw off years ago.",
       "headline": "A cosmic feast",
-      "visual": {"kind": "stat", "value": "113", "unit": "days per orbit", "emoji": "🕳️"}
+      "visual": {
+        "kind": "stat",
+        "value": "113",
+        "unit": "days per orbit",
+        "footage": "black hole space",
+        "ai_prompt": "a black hole pulling gas from a nearby blue star into a glowing disk",
+        "nasa": "black hole accretion disk"
+      }
     },
     {
       "narration": "That glowing gas creates the illusion of an explosion. The star never died. Something is feeding on it. Follow for more stories like this.",
       "headline": "Not dead, just dinner",
-      "visual": {"kind": "illustration", "emoji": "✨"}
+      "visual": {
+        "kind": "media",
+        "footage": "nebula space",
+        "ai_prompt": "a glowing cloud of gas lit from inside, pink and teal colours",
+        "nasa": "nebula gas cloud"
+      }
     }
   ],
   "description": "A star in galaxy NGC 4559 looked like a supernova in 2012, but kept brightening and fading. NASA's Chandra X-ray Observatory shows a hidden black hole or neutron star is feeding on it.",
-  "hashtags": ["#space", "#astronomy", "#nasa", "#blackhole", "#science"]
+  "hashtags": [
+    "#space",
+    "#astronomy",
+    "#nasa",
+    "#blackhole",
+    "#science"
+  ]
 }

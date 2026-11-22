@@ -100,7 +100,7 @@ Return JSON: {{"picks": [{{"id": <number>, "why": "<one short sentence>"}}]}} wi
     def write_script(self, story: dict, sources: list, feedback: str = "") -> dict:
         source_block = "\n\n".join(f"SOURCE {i+1} ({s['source']}): {s['title']}\n{s['text']}" for i, s in enumerate(sources))
         fix = f"\nA fact-checker rejected your previous draft. Fix these problems:\n{feedback}\n" if feedback else ""
-        prompt = f"""Write a YouTube Short (animated explainer, NotebookLM style) about this news story.
+        prompt = f"""Write a YouTube Short (cinematic animated news explainer) about this news story.
 Use ONLY facts stated in the sources below. Never invent numbers, quotes, names or dates. If sources disagree, use the
 cautious version. Neutral tone, no opinions on politics. Write in English, simple words, short punchy sentences.
 {fix}
@@ -109,11 +109,15 @@ RULES
 - Scene 1 is the hook: one surprising sentence that creates curiosity (true to the story).
 - Last scene ends with: "Follow for more stories like this."
 - "headline": 2 to 5 words shown big on screen (uppercase-friendly), different from the narration.
-- "visual" for each scene, one of:
-    {{"kind": "illustration", "emoji": "<one emoji that illustrates the scene>"}}
-    {{"kind": "stat", "value": "<number only, e.g. 113>", "unit": "<short unit, e.g. days>", "emoji": "<emoji>"}}
-    {{"kind": "photo", "query": "<2-3 word stock photo search, generic, no people's names>", "emoji": "<emoji>"}}
-  Use "stat" for 1-2 scenes with a striking number from the sources. Use a variety of emojis.
+- "visual" for each scene (what the viewer SEES behind the text):
+    {"kind": "media",
+     "footage": "<2-4 word stock VIDEO search in English, concrete and filmable, e.g. 'telescope night sky', 'container ship ocean', 'city traffic timelapse'>",
+     "ai_prompt": "<one vivid sentence describing a beautiful cinematic image of this moment; no real people's faces, no logos, no text>",
+     "nasa": "<only for space/astronomy stories: 2-4 word NASA image search, e.g. 'Chandra galaxy', else empty>"}
+    or for 1-2 scenes with a striking number from the sources:
+    {"kind": "stat", "value": "<number only, e.g. 113>", "unit": "<short unit, e.g. days per orbit>",
+     "footage": "...", "ai_prompt": "...", "nasa": "..."}
+  Make every scene look different (different places, scales, colours).
 - "title": a curiosity "bait" title, max 65 characters, 0-1 emoji. It must be TRUE to the story (no fake claims,
   no "you won't believe"), for example: "This 'Dead' Star Fooled Astronomers for 15 Years".
 - "category": one of {CATEGORIES}.
@@ -186,10 +190,11 @@ def _normalise_script(script: dict) -> dict:
         narration = str(sc.get("narration", "")).strip()
         if not narration:
             continue
-        visual = sc.get("visual") or {}
-        if visual.get("kind") not in {"illustration", "stat", "photo"}:
-            visual = {"kind": "illustration", "emoji": visual.get("emoji", "📰")}
-        visual.setdefault("emoji", "📰")
+        visual = dict(sc.get("visual") or {})
+        if visual.get("kind") != "stat" or not str(visual.get("value", "")).strip():
+            visual["kind"] = "media"
+        for key in ("footage", "ai_prompt", "nasa"):
+            visual[key] = str(visual.get(key) or "").strip()
         scenes.append({"narration": narration, "headline": str(sc.get("headline", "")).strip()[:40], "visual": visual})
     if len(scenes) < 3:
         raise ValueError("script has too few scenes")
