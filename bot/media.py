@@ -57,7 +57,20 @@ def _prepare_video(raw: str, path: str) -> dict | None:
         return None
 
 
-def pixabay_video(query: str, path: str, used: set) -> dict | None:
+PLACE_WORDS = {"city", "cityscape", "skyline", "downtown", "skyscraper", "skyscrapers", "street", "streets",
+               "building", "buildings", "tower", "landmark", "town", "metropolis", "urban", "aerial"}
+
+
+def _acceptable(tags: set, words: set, place_words: set | None) -> bool:
+    """Reject clips unrelated to the search, and city shots of a different place than the story."""
+    if words and not (words & tags):
+        return False
+    if place_words is not None and (tags & PLACE_WORDS) and not (tags & place_words):
+        return False
+    return True
+
+
+def pixabay_video(query: str, path: str, used: set, place_words: set | None = None) -> dict | None:
     key = os.environ.get("PIXABAY_API_KEY", "").strip()
     if not key or not query:
         return None
@@ -76,6 +89,9 @@ def pixabay_video(query: str, path: str, used: set) -> dict | None:
     hits = sorted(res.get("hits", []), key=relevance, reverse=True)
     for hit in hits:
         if ("pb", hit["id"]) in used or hit.get("duration", 0) < 4:
+            continue
+        tags = set(str(hit.get("tags", "")).lower().replace(",", " ").split())
+        if not _acceptable(tags, words, place_words):
             continue
         files = [f for f in (hit.get("videos") or {}).values() if f.get("url") and f.get("height", 0) >= 1080]
         if not files:
@@ -96,7 +112,7 @@ def pixabay_video(query: str, path: str, used: set) -> dict | None:
     return None
 
 
-def pixabay_photo(query: str, path: str, used: set) -> dict | None:
+def pixabay_photo(query: str, path: str, used: set, place_words: set | None = None) -> dict | None:
     key = os.environ.get("PIXABAY_API_KEY", "").strip()
     if not key or not query:
         return None
@@ -105,8 +121,12 @@ def pixabay_photo(query: str, path: str, used: set) -> dict | None:
         res = _get("https://pixabay.com/api/", params={"key": key, "q": query[:100], "image_type": "photo",
                                                        "orientation": orient, "safesearch": "true",
                                                        "per_page": 10}).json()
+        words = {w for w in query.lower().split() if len(w) > 2}
         for hit in res.get("hits", []):
             if ("pbi", hit["id"]) in used:
+                continue
+            tags = set(str(hit.get("tags", "")).lower().replace(",", " ").split())
+            if not _acceptable(tags, words, place_words):
                 continue
             dims = _save_image(_get(hit["largeImageURL"]).content, path)
             used.add(("pbi", hit["id"]))
@@ -272,10 +292,14 @@ def plain_background(path: str, seed: int) -> dict:
 
 # ------------------------------------------------------------------ main entry
 def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None = None,
-           editorial: bool = False) -> list:
+           editorial: bool = False, place: dict | None = None) -> list:
     """Return one media description per scene; files are saved in run_dir."""
     used = used if used is not None else set()
     style = AI_STYLE_EDITORIAL if editorial else AI_STYLE
+    place_words = None
+    if place is not None:
+        label = f"{place.get('label', '')} {place.get('country', '')}".lower().replace(",", " ")
+        place_words = {w for w in label.split() if len(w) > 2}
     out = []
     space = script["category"] in {"space", "science"}
     for i, sc in enumerate(script["scenes"]):
@@ -291,10 +315,10 @@ def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None =
         if space and nasa_q:
             steps.append(("NASA", lambda: nasa_image(nasa_q, base + ".jpg", used)))
         steps += [
-            ("Pixabay video", lambda: pixabay_video(footage, base + ".mp4", used)),
+            ("Pixabay video", lambda: pixabay_video(footage, base + ".mp4", used, place_words)),
             ("Pexels video", lambda: pexels_video(footage, base + ".mp4", used)),
             ("AI image", lambda: ai_image(prompt, base + ".jpg", style)),
-            ("Pixabay photo", lambda: pixabay_photo(footage, base + ".jpg", used)),
+            ("Pixabay photo", lambda: pixabay_photo(footage, base + ".jpg", used, place_words)),
             ("Pexels photo", lambda: pexels_photo(footage, base + ".jpg", used)),
             ("NASA", lambda: nasa_image(nasa_q or footage, base + ".jpg", used, min_score=0.6)),
         ]

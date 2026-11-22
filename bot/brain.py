@@ -205,8 +205,9 @@ RULES
 - "headline": 3 to 6 words, neutral (shown on screen).
 - "category": one of {CATEGORIES}.
 - visuals for scenes 2-5:
-    {{"kind": "media", "footage": "<2-4 literal words for a stock VIDEO search; never show a wrong country or a
-      recognisable real person; neutral close-ups are fine (documents, hands, city skyline of the right country)>",
+    {{"kind": "media", "footage": "<2-4 literal words for a stock VIDEO search. Prefer neutral close-ups that fit any
+      country: hands typing, documents, newspaper, microphone, flag, computer screen, satellite, ambulance, ship at sea.
+      Never ask for a skyline, street or city view unless you write the exact city name in the search>",
       "ai_prompt": "<one symbolic illustration idea, no real people, no fake scene of the real event>"}}
     or one striking number from the sources: {{"kind": "stat", "value": "<number only>", "unit": "<short unit>",
       "footage": "...", "ai_prompt": "..."}}
