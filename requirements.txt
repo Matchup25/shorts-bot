@@ -1,0 +1,13 @@
+kokoro-onnx>=0.4
+soundfile
+numpy
+pillow>=10.4
+feedparser
+requests
+trafilatura
+google-genai
+google-api-python-client
+google-auth
+pyyaml
+emoji
+cairosvg

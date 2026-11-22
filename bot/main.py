@@ -1,0 +1,109 @@
+"""The whole pipeline: news → story pick → script → fact-check → hashtags → voice → video → YouTube."""
+import datetime as dt
+import os
+import sys
+
+from . import news, render, voice, youtube
+from .brain import Brain
+from .util import OUTPUT, load_config, load_history, log, save_history
+
+
+def summary(md: str) -> None:
+    """Write a short report that appears on the GitHub run page."""
+    path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if path:
+        with open(path, "a", encoding="utf-8") as fh:
+            fh.write(md + "\n")
+
+
+def main() -> None:
+    cfg = load_config()
+    dry_run = os.environ.get("DRY_RUN", "").lower() == "true"
+    history = load_history()
+    used_links = {link for h in history for link in h.get("links", [])}
+    OUTPUT.mkdir(exist_ok=True)
+
+    log("1/6 Reading the news…")
+    stories = news.fetch_stories(cfg)
+    stories = [s for s in stories if s["link"] not in used_links]
+    if not stories:
+        sys.exit("No fresh stories found in the feeds.")
+    news.count_outlets(stories)
+    log(f"  {len(stories)} fresh stories")
+
+    brain = Brain(cfg)
+    log("2/6 Choosing the best stories…")
+    picks = brain.pick_stories(stories, history)
+    yt = None if dry_run and not os.environ.get("YT_REFRESH_TOKEN") else youtube.service()
+
+    made = 0
+    for story in picks:
+        log(f"3/6 Writing: {story['title']}")
+        sources = [story] + news.related(story, stories)
+        for s in sources:
+            s["text"] = news.article_text(s["link"], fallback=f"{s['title']}. {s['summary']}")
+        script, feedback = None, ""
+        for attempt in range(2):
+            draft = brain.write_script(story, sources, feedback)
+            check = brain.verify(draft, sources)
+            if str(check.get("approved")).lower() in {"true", "yes", "1"}:
+                script = draft
+                break
+            feedback = "\n".join(f"- {p}" for p in check.get("problems", []))
+            log(f"  fact-check rejected draft {attempt + 1}:\n{feedback}")
+        if not script:
+            log("  skipping this story (could not pass the fact-check)")
+            continue
+
+        log("4/6 Finding trending hashtags…")
+        candidates = youtube.popular_hashtags(yt, script["search_keywords"]) if yt else []
+        trends = youtube.google_trends()
+        tags = brain.choose_hashtags(script, candidates, trends)
+        if "#shorts" not in [t.lower() for t in tags]:
+            tags.append("#Shorts")
+        log(f"  {' '.join(tags)}")
+
+        log("5/6 Narrating and animating…")
+        audio, timings, words = voice.narrate(script["scenes"], cfg["voice"], cfg["voice_speed"])
+        source_names = list(dict.fromkeys(s["source"] for s in sources))
+        stamp = dt.datetime.utcnow().strftime("%Y%m%d_%H%M")
+        out = str(OUTPUT / f"short_{stamp}_{made + 1}.mp4")
+        render.build_video(script, audio, timings, words, out, cfg["channel_name"], source_names)
+
+        uses_photos = any(sc["visual"]["kind"] == "photo" for sc in script["scenes"]) and os.environ.get("PEXELS_API_KEY")
+        description = (
+            f"{script['description']}\n\n"
+            "Sources:\n" + "\n".join(f"• {s['source']}: {s['link']}" for s in sources) + "\n\n"
+            "Narration voice is AI-generated. Illustrations: Microsoft Fluent Emoji (MIT)."
+            + (" Photos: Pexels." if uses_photos else "") + "\n\n" + " ".join(tags)
+        )
+
+        video_id = None
+        if dry_run:
+            log("6/6 Test mode: not uploading (download the video from the GitHub run page)")
+        else:
+            log(f"6/6 Uploading to YouTube as {cfg['privacy']}…")
+            video_id = youtube.upload(yt, out, script["title"], description, tags, script["category"],
+                                      cfg["privacy"], cfg.get("ai_disclosure", True))
+            log(f"  done: https://youtube.com/shorts/{video_id}")
+            history.append({
+                "date": dt.datetime.utcnow().isoformat(timespec="minutes"),
+                "title": script["title"],
+                "links": [s["link"] for s in sources],
+                "video_id": video_id,
+            })
+            save_history(history)
+
+        link = f"https://youtube.com/shorts/{video_id}" if video_id else "(test mode – see Artifacts below)"
+        summary(f"### ✅ {script['title']}\n- Video: {link}\n- Privacy: {cfg['privacy']}\n"
+                f"- Hashtags: {' '.join(tags)}\n- Sources: {', '.join(source_names)}\n")
+        made += 1
+        if made >= int(cfg.get("videos_per_run", 1)):
+            break
+
+    if made == 0:
+        sys.exit("No video was made today (no story passed the fact-check).")
+
+
+if __name__ == "__main__":
+    main()

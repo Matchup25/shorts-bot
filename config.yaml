@@ -1,0 +1,68 @@
+# ------------------------------------------------------------
+#  SHORTS BOT – settings
+#  You can change the values after the colon. Keep the spacing.
+# ------------------------------------------------------------
+
+# Name shown at the top of every video
+channel_name: "WORLD IN 60"
+
+# Who can see the uploaded video:
+#   private  = only you (use this while testing)
+#   unlisted = anyone with the link
+#   public   = everyone (use this when you are happy with the results)
+privacy: private
+
+# How many Shorts to make each time the bot runs (1 is recommended)
+videos_per_run: 1
+
+# Narrator voice (free Kokoro voices). Good English options:
+#   af_heart (female, US)  am_michael (male, US)  bf_emma (female, UK)  bm_george (male, UK)
+voice: af_heart
+voice_speed: 1.08
+
+# Tell YouTube that the video contains AI-generated sound/visuals (recommended: true)
+ai_disclosure: true
+
+# Only use news published in the last X hours
+max_story_age_hours: 36
+
+# Gemini models to try, in order (the bot falls back automatically)
+gemini_models:
+  - gemini-flash-latest
+  - gemini-flash-lite-latest
+
+# Topics the bot must avoid (keeps videos advertiser-friendly)
+avoid_topics:
+  - deaths, killings, shootings, terrorism, war casualties
+  - crime and court cases about private individuals
+  - sexual content
+  - elections and partisan politics
+  - medical advice
+  - suicide or self-harm
+
+# News sources (RSS feeds). Broken or outdated feeds are skipped automatically.
+feeds:
+  BBC News:
+    - https://feeds.bbci.co.uk/news/world/rss.xml
+    - https://feeds.bbci.co.uk/news/science_and_environment/rss.xml
+    - https://feeds.bbci.co.uk/news/technology/rss.xml
+  Sky News:
+    - https://feeds.skynews.com/feeds/rss/world.xml
+    - https://feeds.skynews.com/feeds/rss/technology.xml
+    - https://feeds.skynews.com/feeds/rss/strange.xml
+  CNN:
+    - http://rss.cnn.com/rss/edition_world.rss
+    - http://rss.cnn.com/rss/edition_technology.rss
+    - http://rss.cnn.com/rss/edition_space.rss
+  The Guardian:
+    - https://www.theguardian.com/science/rss
+    - https://www.theguardian.com/technology/rss
+    - https://www.theguardian.com/world/rss
+  NPR:
+    - https://feeds.npr.org/1001/rss.xml
+    - https://feeds.npr.org/1019/rss.xml
+  Al Jazeera:
+    - https://www.aljazeera.com/xml/rss/all.xml
+  CBS News:
+    - https://www.cbsnews.com/latest/rss/science
+    - https://www.cbsnews.com/latest/rss/technology
