@@ -1,0 +1,81 @@
+name: Weekly show - finish an earlier run
+
+# Joins the rendered parts of an earlier "Weekly show" run and publishes (or previews) it.
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run id of the Weekly show run (from its address)"
+        required: true
+      test_mode:
+        description: "Test mode: do NOT upload"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+          pip install -q -r requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: weekly-run
+          path: video/public/run
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: part-*
+          path: parts
+          merge-multiple: true
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: Join the parts and add the sound
+        run: |
+          for i in 0 1 2 3 4 5; do echo "file '$PWD/parts/part$i.mp4'"; done > parts.txt
+          ffmpeg -v error -y -f concat -safe 0 -i parts.txt -i video/public/run/mix.wav \
+            -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -shortest -movflags +faststart weekly.mp4
+          ls -la weekly.mp4
+      - name: Publish
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python -m bot.weekly publish --video weekly.mp4 ${{ inputs.test_mode == true && '--test' || '' }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: weekly-show
+          path: weekly.mp4
+          retention-days: 7
+      - name: Test preview on the weekly-output branch
+        if: inputs.test_mode == true
+        run: |
+          mkdir /tmp/out
+          ffmpeg -v error -y -i weekly.mp4 -vf scale=854:480 -c:v libx264 -preset veryfast -crf 31 -c:a aac -b:a 64k /tmp/out/weekly_preview.mp4
+          for t in 2 60 200 400 600; do ffmpeg -v error -y -ss $t -i weekly.mp4 -frames:v 1 /tmp/out/frame_$t.jpg || true; done
+          cp video/public/run/weekly-props.json video/public/run/weekly-meta.json /tmp/out/
+          cp video/public/run/thumb.jpg /tmp/out/ 2>/dev/null || true
+          ls -la /tmp/out
+          cd /tmp/out && git init -q -b weekly-output && git config user.name "shorts-bot" && git config user.email "shorts-bot@users.noreply.github.com"
+          git add . && git commit -q -m "Weekly test ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" weekly-output
+      - name: Remember the episode
+        if: inputs.test_mode != true
+        run: |
+          git config user.name "shorts-bot"
+          git config user.email "shorts-bot@users.noreply.github.com"
+          git add data/weekly_history.json
+          git commit -q -m "Published the weekly show" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done
