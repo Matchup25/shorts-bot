@@ -262,7 +262,8 @@ def nasa_image(query: str, path: str, used: set, min_score: float = 0.75) -> dic
 
 def _clean_secret(value: str) -> str:
     """Secrets pasted with extra lines or words (e.g. 'Bearer xyz'): keep the part that looks like a key."""
-    parts = [p for p in value.split() if p.lower() != "bearer"]
+    parts = [p.strip('"\'\\,;') for p in value.split()]
+    parts = [p for p in parts if p and p.lower() not in {"bearer", "authorization:", "curl", "-h"}]
     keyish = [p for p in parts if re.fullmatch(r"[A-Za-z0-9_\-]{20,}", p)]
     if len(parts) > 1:
         log(f"    note: a Cloudflare secret contains {len(parts)} pieces of text; using the one that looks like a key")
