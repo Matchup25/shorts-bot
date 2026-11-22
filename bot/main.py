@@ -74,7 +74,8 @@ def main() -> None:
         out = str(OUTPUT / f"short_{stamp}_{made + 1}.mp4")
         render.render(props, out)
 
-        credits = sorted({"Pexels" if "Pexels" in m.get("credit", "") else
+        credits = sorted({"Pixabay" if "Pixabay" in m.get("credit", "") else
+                          "Pexels" if "Pexels" in m.get("credit", "") else
                           "NASA" if "NASA" in m.get("credit", "") else
                           "AI-generated images (FLUX)" if "AI" in m.get("credit", "") else ""
                           for m in media_list} - {""})

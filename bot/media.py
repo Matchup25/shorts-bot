@@ -1,16 +1,17 @@
 """Agent 5b – the picture editor: finds a real clip or a beautiful image for every scene.
 
 Order of preference (all free):
-  1. Pexels stock VIDEO clips (needs PEXELS_API_KEY)
+  1. Stock VIDEO clips from Pixabay (PIXABAY_API_KEY) or Pexels (PEXELS_API_KEY)
   2. NASA image library for space stories (no key needed, public domain)
   3. AI image from Cloudflare Workers AI / FLUX (needs CF_ACCOUNT_ID + CF_API_TOKEN)
-  4. Pexels stock photo, then NASA for any topic
+  4. Stock photo from Pixabay / Pexels, then NASA for any topic
   5. A plain designed background (never fails)
 """
 import base64
 import io
 import os
 import random
+import subprocess
 
 import requests
 from PIL import Image, ImageDraw, ImageFilter
@@ -37,6 +38,71 @@ def _save_image(data: bytes, path: str) -> dict:
 
 
 # ------------------------------------------------------------------ sources
+def _prepare_video(raw: str, path: str) -> dict | None:
+    """Crop any clip to a sharp vertical 1080x1920, 14 s max, no sound (fast to animate)."""
+    vf = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30"
+    try:
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", raw, "-t", "14", "-vf", vf, "-an",
+                        "-c:v", "libx264", "-preset", "veryfast", "-crf", "19", "-pix_fmt", "yuv420p", path],
+                       check=True, timeout=300)
+        os.remove(raw)
+        return {"width": 1080, "height": 1920}
+    except Exception as exc:
+        log(f"    could not prepare clip: {exc}")
+        return None
+
+
+def pixabay_video(query: str, path: str, used: set) -> dict | None:
+    key = os.environ.get("PIXABAY_API_KEY", "").strip()
+    if not key or not query:
+        return None
+    try:
+        res = _get("https://pixabay.com/api/videos/",
+                   params={"key": key, "q": query[:100], "safesearch": "true", "per_page": 20}).json()
+    except Exception as exc:
+        log(f"    Pixabay video search failed: {exc}")
+        return None
+    for hit in res.get("hits", []):
+        if ("pb", hit["id"]) in used or hit.get("duration", 0) < 4:
+            continue
+        files = [f for f in (hit.get("videos") or {}).values() if f.get("url") and f.get("height", 0) >= 1080]
+        if not files:
+            continue
+        best = min(files, key=lambda f: f.get("size") or 10**12)  # smallest file that is still full HD
+        raw = path + ".raw.mp4"
+        try:
+            with open(raw, "wb") as fh:
+                fh.write(_get(best["url"], timeout=180).content)
+        except Exception:
+            continue
+        dims = _prepare_video(raw, path)
+        if not dims:
+            continue
+        used.add(("pb", hit["id"]))
+        who = hit.get("user", "")
+        return {"type": "video", **dims, "credit": f"Video: {who} / Pixabay" if who else "Video: Pixabay"}
+    return None
+
+
+def pixabay_photo(query: str, path: str, used: set) -> dict | None:
+    key = os.environ.get("PIXABAY_API_KEY", "").strip()
+    if not key or not query:
+        return None
+    try:
+        res = _get("https://pixabay.com/api/", params={"key": key, "q": query[:100], "image_type": "photo",
+                                                       "orientation": "vertical", "safesearch": "true",
+                                                       "per_page": 10}).json()
+        for hit in res.get("hits", []):
+            if ("pbi", hit["id"]) in used:
+                continue
+            dims = _save_image(_get(hit["largeImageURL"]).content, path)
+            used.add(("pbi", hit["id"]))
+            return {"type": "image", **dims, "credit": f"Photo: {hit.get('user', '')} / Pixabay"}
+    except Exception as exc:
+        log(f"    Pixabay photo failed: {exc}")
+    return None
+
+
 def pexels_video(query: str, path: str, used: set) -> dict | None:
     key = os.environ.get("PEXELS_API_KEY", "").strip()
     if not key or not query:
@@ -58,16 +124,18 @@ def pexels_video(query: str, path: str, used: set) -> dict | None:
             if not files:
                 continue
             best = min(files, key=lambda f: abs(max(f["width"], f["height"]) - 1920))
+            raw = path + ".raw.mp4"
             try:
-                data = _get(best["link"], timeout=120).content
+                with open(raw, "wb") as fh:
+                    fh.write(_get(best["link"], timeout=180).content)
             except Exception:
                 continue
-            with open(path, "wb") as fh:
-                fh.write(data)
+            dims = _prepare_video(raw, path)
+            if not dims:
+                continue
             used.add(video["id"])
             who = (video.get("user") or {}).get("name", "")
-            return {"type": "video", "width": best["width"], "height": best["height"],
-                    "credit": f"Video: {who} / Pexels" if who else "Video: Pexels"}
+            return {"type": "video", **dims, "credit": f"Video: {who} / Pexels" if who else "Video: Pexels"}
     return None
 
 
@@ -204,8 +272,10 @@ def gather(script: dict, run_dir: str) -> list:
         if space and nasa_q:
             steps.append(("NASA", lambda: nasa_image(nasa_q, base + ".jpg", used)))
         steps += [
+            ("Pixabay video", lambda: pixabay_video(footage, base + ".mp4", used)),
             ("Pexels video", lambda: pexels_video(footage, base + ".mp4", used)),
             ("AI image", lambda: ai_image(prompt, base + ".jpg")),
+            ("Pixabay photo", lambda: pixabay_photo(footage, base + ".jpg", used)),
             ("Pexels photo", lambda: pexels_photo(footage, base + ".jpg", used)),
             ("NASA", lambda: nasa_image(nasa_q or footage, base + ".jpg", used, min_score=0.6)),
         ]
