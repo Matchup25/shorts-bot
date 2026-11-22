@@ -17,7 +17,7 @@ const format = (value: string, p: number) => {
 };
 
 /** Giant counting number with a glowing ring. */
-export const Stat: React.FC<{ value: string; unit: string }> = ({ value, unit }) => {
+export const Stat: React.FC<{ value: string; unit: string; top?: number }> = ({ value, unit, top = 470 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const p = interpolate(frame, [4, 1.1 * fps], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
@@ -33,7 +33,7 @@ export const Stat: React.FC<{ value: string; unit: string }> = ({ value, unit })
         position: "absolute",
         left: 0,
         right: 0,
-        top: 470,
+        top,
         height: 660,
         display: "flex",
         flexDirection: "column",

@@ -19,6 +19,10 @@ publish_times:
   - "07:00"
   - "19:00"
 
+# Weekly show (every Sunday): number of stories and time it goes live
+weekly_stories: 15
+weekly_publish_time: "19:00"
+
 # How many Shorts to make each time the bot runs (1 is recommended)
 videos_per_run: 1
 

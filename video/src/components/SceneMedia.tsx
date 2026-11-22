@@ -10,7 +10,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { clamp } from "../theme";
-import type { Scene } from "../types";
+import type { Media, Scene } from "../types";
 
 const ENTER = 9; // frames of the entrance transition
 
@@ -18,15 +18,19 @@ const ENTER = 9; // frames of the entrance transition
  * Full-screen footage or photo with a slow cinematic push-in,
  * colour grade and an entrance transition (zoom punch / whip pan / flash cut).
  */
-export const SceneMedia: React.FC<{ scene: Scene; index: number; darken: number }> = ({
+export const SceneMedia: React.FC<{
+  scene: { media: Media; transition: Scene["transition"] };
+  index: number;
+  darken: number;
+}> = ({
   scene,
   index,
   darken,
 }) => {
   const frame = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
+  const { durationInFrames, width, height } = useVideoConfig();
   const media = scene.media;
-  const isLandscape = (media.width ?? 1080) / (media.height ?? 1920) > 0.75;
+  const isLandscape = (media.width ?? width) / (media.height ?? height) > (width / height) * 1.3;
   const drift = index % 2 === 0 ? 1 : -1;
   const isFirst = index === 0;
 
@@ -43,7 +47,7 @@ export const SceneMedia: React.FC<{ scene: Scene; index: number; darken: number 
     enterBlur = interpolate(enter, [0, 1], [22, 0]);
   } else if (scene.transition === "whip-left" || scene.transition === "whip-right") {
     const dir = scene.transition === "whip-left" ? 1 : -1;
-    enterX = interpolate(enter, [0, 1], [dir * 1080, 0]);
+    enterX = interpolate(enter, [0, 1], [dir * width, 0]);
     enterBlur = interpolate(enter, [0, 0.7, 1], [26, 8, 0]);
     enterSkew = interpolate(enter, [0, 1], [dir * -8, 0]);
   }

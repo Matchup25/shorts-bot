@@ -53,6 +53,7 @@ class Brain:
                             ),
                         )
                         self._working_model = model
+                        time.sleep(float(self.cfg.get("gemini_pause_seconds", 2)))  # stay under per-minute limits
                         return _parse_json(resp.text)
                     except Exception as exc:
                         last_error = exc
@@ -156,6 +157,86 @@ NARRATION:
 
 Return JSON: {{"approved": true/false, "problems": ["..."]}}"""
         return self.ask(prompt, temperature=0.0)
+
+    # ------------------------------------------------------------ weekly show
+    def pick_weekly(self, stories: list, count: int, date_range: str) -> list:
+        listing = "\n".join(
+            f"[{s['id']}] ({s['source']}, {s.get('outlets', 1)} outlets) {s['title']} — {s['summary'][:160]}"
+            for s in stories[:320]
+        )
+        prompt = f"""You are the editor-in-chief of "World in a Shot Weekly", a neutral international news roundup on
+YouTube for the week {date_range}. Pick the {count} MOST IMPORTANT stories of the week for a global audience:
+politics, conflicts, economy, science, technology, climate, health, culture. Balance regions and topics, never pick two
+stories about the same event, prefer stories reported by several outlets. Neutral and factual: no opinions.
+
+Stories of the week:
+{listing}
+
+For each pick give where it happened. Return JSON:
+{{"picks": [{{"id": <number>, "country": "<English country name, or Global>",
+  "place": "<short place label, e.g. Seoul, South Korea>", "lat": <latitude>, "lon": <longitude>}}]}}
+Most important story first."""
+        result = self.ask(prompt, temperature=0.3)
+        by_id = {s["id"]: s for s in stories}
+        picks = []
+        for p in result.get("picks", []):
+            try:
+                sid = int(str(p.get("id")).strip("[] "))
+                place = {"label": str(p.get("place") or p.get("country") or "World"),
+                         "country": str(p.get("country") or "Global"),
+                         "lat": float(p.get("lat") or 0), "lon": float(p.get("lon") or 0)}
+            except (TypeError, ValueError):
+                continue
+            if sid in by_id:
+                picks.append({**by_id[sid], "place": place})
+        return picks
+
+    def write_segment(self, story: dict, sources: list, feedback: str = "") -> dict:
+        source_block = "\n\n".join(f"SOURCE {i+1} ({s['source']}): {s['title']}\n{s['text']}" for i, s in enumerate(sources))
+        fix = f"\nA fact-checker rejected your previous draft. Fix these problems:\n{feedback}\n" if feedback else ""
+        prompt = f"""Write one segment of a neutral weekly world-news show (spoken by a news anchor, English).
+Use ONLY facts stated in the sources. Never invent numbers, quotes, names or dates. Neutral, calm, factual tone:
+no opinions, no loaded words, attribute claims ("officials said", "according to"). Never describe violence graphically.
+{fix}
+RULES
+- 4 scenes, 95-125 words in total (about 50 seconds). No greeting, no call to action.
+- Scene 1 opens the story with where and what happened, in one or two sentences. Its visual is {{"kind": "map"}}.
+- Scenes 2-4 explain what happened, why it matters and what comes next.
+- "headline": 3 to 6 words, neutral (shown on screen).
+- "category": one of {CATEGORIES}.
+- visuals for scenes 2-4:
+    {{"kind": "media", "footage": "<2-4 literal words for a stock VIDEO search; never show a wrong country or a
+      recognisable real person; neutral close-ups are fine (documents, hands, city skyline of the right country)>",
+      "ai_prompt": "<one symbolic illustration idea, no real people, no fake scene of the real event>"}}
+    or one striking number from the sources: {{"kind": "stat", "value": "<number only>", "unit": "<short unit>",
+      "footage": "...", "ai_prompt": "..."}}
+- "claims": every factual claim used.
+
+SOURCES
+{source_block}
+
+Return JSON: {{"headline": "...", "category": "...", "scenes": [{{"narration": "...", "visual": {{...}}}}],
+ "claims": ["..."]}}"""
+        seg = self.ask(prompt, temperature=0.6)
+        scenes = []
+        for i, sc in enumerate((seg.get("scenes") or [])[:5]):
+            narration = str(sc.get("narration", "")).strip()
+            if not narration:
+                continue
+            vis = dict(sc.get("visual") or {})
+            if i == 0:
+                vis = {"kind": "map"}
+            elif vis.get("kind") != "stat" or not str(vis.get("value", "")).strip():
+                vis["kind"] = "media"
+            for key in ("footage", "ai_prompt"):
+                vis[key] = str(vis.get(key) or "").strip()
+            scenes.append({"narration": narration, "headline": "", "visual": vis})
+        if len(scenes) < 3:
+            raise ValueError("segment has too few scenes")
+        category = str(seg.get("category", "world")).lower()
+        return {"title": str(seg.get("headline", "")).strip()[:60], "headline": str(seg.get("headline", "")).strip()[:60],
+                "category": category if category in CATEGORIES else "world", "scenes": scenes,
+                "claims": seg.get("claims", [])}
 
     def choose_hashtags(self, script: dict, candidates: list, trends: list) -> list:
         prompt = f"""Pick hashtags for this YouTube Short. Title: "{script['title']}". Topic: {script['description']}

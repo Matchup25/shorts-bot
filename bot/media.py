@@ -21,6 +21,10 @@ from .util import log
 UA = {"User-Agent": "ShortsNewsBot/1.0"}
 AI_STYLE = (", cinematic photograph, dramatic natural lighting, rich colours, shallow depth of field, "
             "vertical 9:16 composition, highly detailed, no text, no letters, no watermark, no logos")
+# for real news events: clearly an illustration, never a fake "photo" of what happened
+AI_STYLE_EDITORIAL = (", symbolic editorial illustration, painterly digital art, not photorealistic, "
+                      "no recognisable people, no text, no letters, no watermark, no logos")
+ORIENTATION = {"value": "portrait"}  # set to "landscape" by the weekly show
 
 
 def _get(url, **kw):
@@ -40,13 +44,14 @@ def _save_image(data: bytes, path: str) -> dict:
 # ------------------------------------------------------------------ sources
 def _prepare_video(raw: str, path: str) -> dict | None:
     """Crop any clip to a sharp vertical 1080x1920, 14 s max, no sound (fast to animate)."""
-    vf = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30"
+    w, h = (1920, 1080) if ORIENTATION["value"] == "landscape" else (1080, 1920)
+    vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},fps=30"
     try:
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", raw, "-t", "14", "-vf", vf, "-an",
                         "-c:v", "libx264", "-preset", "veryfast", "-crf", "19", "-pix_fmt", "yuv420p", path],
                        check=True, timeout=300)
         os.remove(raw)
-        return {"width": 1080, "height": 1920}
+        return {"width": w, "height": h}
     except Exception as exc:
         log(f"    could not prepare clip: {exc}")
         return None
@@ -96,8 +101,9 @@ def pixabay_photo(query: str, path: str, used: set) -> dict | None:
     if not key or not query:
         return None
     try:
+        orient = "horizontal" if ORIENTATION["value"] == "landscape" else "vertical"
         res = _get("https://pixabay.com/api/", params={"key": key, "q": query[:100], "image_type": "photo",
-                                                       "orientation": "vertical", "safesearch": "true",
+                                                       "orientation": orient, "safesearch": "true",
                                                        "per_page": 10}).json()
         for hit in res.get("hits", []):
             if ("pbi", hit["id"]) in used:
@@ -114,7 +120,7 @@ def pexels_video(query: str, path: str, used: set) -> dict | None:
     key = os.environ.get("PEXELS_API_KEY", "").strip()
     if not key or not query:
         return None
-    for orientation in ("portrait", None):
+    for orientation in ("landscape" if ORIENTATION["value"] == "landscape" else "portrait", None):
         params = {"query": query, "per_page": 15, "size": "medium"}
         if orientation:
             params["orientation"] = orientation
@@ -152,7 +158,8 @@ def pexels_photo(query: str, path: str, used: set) -> dict | None:
         return None
     try:
         items = _get("https://api.pexels.com/v1/search", headers={"Authorization": key},
-                     params={"query": query, "orientation": "portrait", "per_page": 10}).json()
+                     params={"query": query, "per_page": 10,
+                             "orientation": "landscape" if ORIENTATION["value"] == "landscape" else "portrait"}).json()
         for photo in items.get("photos", []):
             if photo["id"] in used:
                 continue
@@ -228,7 +235,7 @@ def nasa_image(query: str, path: str, used: set, min_score: float = 0.75) -> dic
     return None
 
 
-def ai_image(prompt: str, path: str) -> dict | None:
+def ai_image(prompt: str, path: str, style: str = AI_STYLE) -> dict | None:
     account = os.environ.get("CF_ACCOUNT_ID", "").strip()
     token = os.environ.get("CF_API_TOKEN", "").strip()
     if not (account and token and prompt):
@@ -236,7 +243,7 @@ def ai_image(prompt: str, path: str) -> dict | None:
     url = f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/@cf/black-forest-labs/flux-1-schnell"
     try:
         resp = requests.post(url, headers={"Authorization": f"Bearer {token}"},
-                             json={"prompt": prompt + AI_STYLE, "steps": 8, "seed": random.randint(1, 10**6)},
+                             json={"prompt": prompt + style, "steps": 8, "seed": random.randint(1, 10**6)},
                              timeout=120)
         data = resp.json()
         b64 = (data.get("result") or {}).get("image")
@@ -264,9 +271,11 @@ def plain_background(path: str, seed: int) -> dict:
 
 
 # ------------------------------------------------------------------ main entry
-def gather(script: dict, run_dir: str) -> list:
+def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None = None,
+           editorial: bool = False) -> list:
     """Return one media description per scene; files are saved in run_dir."""
-    used: set = set()
+    used = used if used is not None else set()
+    style = AI_STYLE_EDITORIAL if editorial else AI_STYLE
     out = []
     space = script["category"] in {"space", "science"}
     for i, sc in enumerate(script["scenes"]):
@@ -274,14 +283,17 @@ def gather(script: dict, run_dir: str) -> list:
         footage = vis.get("footage") or vis.get("query") or ""
         prompt = vis.get("ai_prompt") or ""
         nasa_q = vis.get("nasa") or (footage if space else "")
-        base = os.path.join(run_dir, f"scene{i + 1}")
+        if vis.get("kind") == "map":
+            out.append(None)
+            continue
+        base = os.path.join(run_dir, f"{prefix}{i + 1}")
         steps = []
         if space and nasa_q:
             steps.append(("NASA", lambda: nasa_image(nasa_q, base + ".jpg", used)))
         steps += [
             ("Pixabay video", lambda: pixabay_video(footage, base + ".mp4", used)),
             ("Pexels video", lambda: pexels_video(footage, base + ".mp4", used)),
-            ("AI image", lambda: ai_image(prompt, base + ".jpg")),
+            ("AI image", lambda: ai_image(prompt, base + ".jpg", style)),
             ("Pixabay photo", lambda: pixabay_photo(footage, base + ".jpg", used)),
             ("Pexels photo", lambda: pexels_photo(footage, base + ".jpg", used)),
             ("NASA", lambda: nasa_image(nasa_q or footage, base + ".jpg", used, min_score=0.6)),
@@ -296,6 +308,6 @@ def gather(script: dict, run_dir: str) -> list:
             log(f"  scene {i + 1}: plain background")
             media = plain_background(base + ".jpg", i)
         ext = ".mp4" if media["type"] == "video" else ".jpg"
-        media["src"] = f"run/scene{i + 1}{ext}"
+        media["src"] = f"run/{prefix}{i + 1}{ext}"
         out.append(media)
     return out

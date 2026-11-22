@@ -67,15 +67,16 @@ def _music(length: int) -> np.ndarray | None:
         return None
 
 
-def build_mix(voice: np.ndarray, timings: list, out_wav: str) -> float:
+def build_mix(voice: np.ndarray, timings: list, out_wav: str, whoosh_at: list | None = None) -> float:
     v = _resample(voice, VOICE_SR, SR)
     mix = v * 0.95
     sfx = np.zeros_like(mix)
     boom = _boom()
     sfx[: len(boom)] += boom[: len(sfx)] * 0.35
-    for i, tm in enumerate(timings[1:], start=1):
+    points = whoosh_at if whoosh_at is not None else [tm["start"] for tm in timings[1:]]
+    for i, at in enumerate(points, start=1):
         w = _whoosh(i)
-        start = max(0, int((tm["start"] - 0.28) * SR))
+        start = max(0, int((at - 0.28) * SR))
         end = min(len(sfx), start + len(w))
         sfx[start:end] += w[: end - start] * 0.16
     mix = mix + sfx

@@ -6,7 +6,7 @@ import type { Word } from "../types";
 
 type Chunk = { words: Word[]; start: number; end: number };
 
-const buildChunks = (words: Word[]): Chunk[] => {
+const buildChunks = (words: Word[], maxWords: number, maxChars: number): Chunk[] => {
   const chunks: Chunk[] = [];
   let cur: Word[] = [];
   words.forEach((w, i) => {
@@ -15,7 +15,7 @@ const buildChunks = (words: Word[]): Chunk[] => {
     const gap = i + 1 < words.length ? words[i + 1].start - w.end : 1;
     const chars = cur.reduce((n, x) => n + x.text.length + 1, 0);
     const nextLen = i + 1 < words.length ? words[i + 1].text.length : 0;
-    if (cur.length === 3 || punct || gap > 0.25 || chars + nextLen > 17) {
+    if (cur.length === maxWords || punct || gap > 0.25 || chars + nextLen > maxChars) {
       chunks.push({ words: cur, start: cur[0].start, end: w.end });
       cur = [];
     }
@@ -28,18 +28,24 @@ const buildChunks = (words: Word[]): Chunk[] => {
 };
 
 /** Big social-style captions: 1-3 words, the spoken word turns yellow and pops. */
-export const Captions: React.FC<{ words: Word[] }> = ({ words }) => {
+export const Captions: React.FC<{
+  words: Word[];
+  top?: number;
+  scale?: number;
+  maxWords?: number;
+  maxChars?: number;
+}> = ({ words, top = 1130, scale = 1, maxWords = 3, maxChars = 17 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
-  const chunks = useMemo(() => buildChunks(words), [words]);
+  const chunks = useMemo(() => buildChunks(words, maxWords, maxChars), [words, maxWords, maxChars]);
   const chunk = chunks.find((c) => t >= c.start && t < c.end);
   if (!chunk) return null;
 
   const local = (t - chunk.start) * fps;
   const pop = spring({ frame: local, fps, config: { damping: 11, stiffness: 260, mass: 0.6 } });
   const total = chunk.words.reduce((n, w) => n + w.text.length, 0) + chunk.words.length;
-  const size = total > 15 ? 76 : total > 11 ? 86 : 96;
+  const size = (total > 15 ? 76 : total > 11 ? 86 : 96) * scale;
 
   return (
     <div
@@ -47,8 +53,8 @@ export const Captions: React.FC<{ words: Word[] }> = ({ words }) => {
         position: "absolute",
         left: 60,
         right: 60,
-        top: 1130,
-        height: 260,
+        top,
+        height: 260 * scale,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
