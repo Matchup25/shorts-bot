@@ -62,7 +62,14 @@ def pixabay_video(query: str, path: str, used: set) -> dict | None:
     except Exception as exc:
         log(f"    Pixabay video search failed: {exc}")
         return None
-    for hit in res.get("hits", []):
+    words = {w for w in query.lower().split() if len(w) > 2}
+
+    def relevance(hit):  # how many search words appear in the clip's tags
+        tags = set(str(hit.get("tags", "")).lower().replace(",", " ").split())
+        return len(words & tags)
+
+    hits = sorted(res.get("hits", []), key=relevance, reverse=True)
+    for hit in hits:
         if ("pb", hit["id"]) in used or hit.get("duration", 0) < 4:
             continue
         files = [f for f in (hit.get("videos") or {}).values() if f.get("url") and f.get("height", 0) >= 1080]

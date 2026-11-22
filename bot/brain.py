@@ -121,6 +121,9 @@ RULES
     {{"kind": "stat", "value": "<number only, e.g. 113>", "unit": "<short unit, e.g. days per orbit>",
      "footage": "...", "ai_prompt": "...", "nasa": "..."}}
   Make every scene look different (different places, scales, colours).
+  Footage must never show the WRONG place: if the story is about a specific country or city, either name it in the
+  search ("seoul city night") or choose neutral close-ups (hands on phone, exam paper, microphone, documents).
+  Use simple, literal, filmable words that a stock video site would tag, not abstract ideas.
 - "title": a curiosity "bait" title, max 65 characters, 0-1 emoji. It must be TRUE to the story (no fake claims,
   no "you won't believe"), for example: "This 'Dead' Star Fooled Astronomers for 15 Years".
 - "category": one of {CATEGORIES}.

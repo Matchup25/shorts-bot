@@ -7,8 +7,13 @@ const format = (value: string, p: number) => {
   const raw = value.replace(/,/g, "").trim();
   const num = Number(raw);
   if (!Number.isFinite(num)) return value;
+  const cur = num * p;
+  // big numbers are shown compact so they fit the ring: 500,000 -> 500K, 1,200,000 -> 1.2M
+  if (Math.abs(num) >= 1e9) return `${(cur / 1e9).toFixed(cur / 1e9 >= 10 || p < 1 ? 0 : 1)}B`;
+  if (Math.abs(num) >= 1e6) return `${(cur / 1e6).toFixed(cur / 1e6 >= 10 || p < 1 ? 0 : 1)}M`;
+  if (Math.abs(num) >= 1e4) return `${Math.round(cur / 1e3)}K`;
   const decimals = raw.includes(".") ? raw.split(".")[1].length : 0;
-  return (num * p).toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return cur.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 };
 
 /** Giant counting number with a glowing ring. */
@@ -18,7 +23,7 @@ export const Stat: React.FC<{ value: string; unit: string }> = ({ value, unit })
   const p = interpolate(frame, [4, 1.1 * fps], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
   const appear = spring({ frame: frame - 2, fps, config: { damping: 14, stiffness: 140 } });
   const text = format(value, p);
-  const size = text.length > 6 ? 190 : text.length > 4 ? 230 : 280;
+  const size = text.length >= 6 ? 170 : text.length === 5 ? 200 : text.length === 4 ? 240 : 280;
   const R = 285;
   const C = 2 * Math.PI * R;
 
