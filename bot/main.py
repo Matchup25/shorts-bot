@@ -1,6 +1,7 @@
 """The whole pipeline: news → story pick → script → fact-check → hashtags → voice → video → YouTube."""
 import datetime as dt
 import json
+import math
 import os
 import sys
 
@@ -15,6 +16,26 @@ def summary(md: str) -> None:
     if path:
         with open(path, "a", encoding="utf-8") as fh:
             fh.write(md + "\n")
+
+
+def rank_by_demand(yt, picks: list) -> list:
+    """Editor's order, corrected by how much people watch Shorts on each topic right now.
+    One order of magnitude more views is worth moving up about 6 places."""
+    log("  Measuring how much each topic is watched on YouTube right now…")
+    for rank, story in enumerate(picks):
+        story["editor_rank"] = rank + 1
+        story["demand"] = youtube.shorts_demand(yt, story.get("yt_query") or story["title"])
+
+    def score(story):
+        d = story.get("demand")
+        views = d["views"] if d else 0
+        return math.log10(1 + views) - 0.15 * (story["editor_rank"] - 1)
+
+    ranked = sorted(picks, key=score, reverse=True)
+    for s in ranked:
+        d = s.get("demand") or {}
+        log(f"    #{s['editor_rank']} {score(s):5.2f}  views={d.get('views', '?'):>10}  q='{s.get('yt_query')}'  {s['title'][:60]}")
+    return ranked
 
 
 def main() -> None:
@@ -46,6 +67,8 @@ def main() -> None:
     trends = youtube.google_trends()
     picks = brain.pick_stories(stories, history, trends)
     yt = None if dry_run and not os.environ.get("YT_REFRESH_TOKEN") else youtube.service()
+    if yt and picks:
+        picks = rank_by_demand(yt, picks)
 
     made = 0
     for story in picks:
@@ -56,6 +79,7 @@ def main() -> None:
         script, feedback = None, ""
         for attempt in range(2):
             draft = brain.write_script(story, sources, feedback)
+            draft = brain.sharpen(draft, story.get("yt_query", ""))
             check = brain.verify(draft, sources)
             if str(check.get("approved")).lower() in {"true", "yes", "1"}:
                 script = draft
@@ -112,6 +136,14 @@ def main() -> None:
                 "video_id": video_id,
                 "publish_at": publish_at,
                 "slot": slot,
+                # what the bot decided, so it can learn later which choices bring views
+                "category": script["category"],
+                "hook": script["scenes"][0]["narration"],
+                "words": sum(len(sc["narration"].split()) for sc in script["scenes"]),
+                "seconds": round(duration, 1),
+                "demand": story.get("demand"),
+                "editor_rank": story.get("editor_rank"),
+                "contest": script.get("contest"),
             })
             save_history(history)
             # The same video goes to Instagram as a Reel (a separate step, only if Instagram is set up).

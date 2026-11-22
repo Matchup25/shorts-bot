@@ -93,16 +93,80 @@ What people are searching for on Google right now (prefer stories that match the
 Today's stories:
 {listing}
 
-Return JSON: {{"picks": [{{"id": <number>, "why": "<one short sentence>"}}]}} with the 5 best stories, best first."""
+Return JSON: {{"picks": [{{"id": <number>, "why": "<one short sentence>",
+  "query": "<2-4 words someone would type on YouTube to find videos about this story, e.g. 'mercury probe bepicolombo'>"}}]}}
+with the 6 best stories, best first."""
         result = self.ask(prompt, temperature=0.4)
-        ids = []
+        by_id = {s["id"]: s for s in stories}
+        picks = []
         for p in result.get("picks", []):
             try:
-                ids.append(int(str(p.get("id")).strip("[] ")))
+                story = by_id.get(int(str(p.get("id")).strip("[] ")))
             except (TypeError, ValueError):
                 continue
-        by_id = {s["id"]: s for s in stories}
-        return [by_id[i] for i in ids if i in by_id]
+            if story and story not in picks:
+                story["yt_query"] = str(p.get("query") or "").strip() or story["title"]
+                story["why"] = str(p.get("why") or "")
+                picks.append(story)
+        return picks
+
+    def sharpen(self, script: dict, query: str = "") -> dict:
+        """Title and hook contest: several candidates, scored on fixed criteria; the best one wins."""
+        first = script["scenes"][0]["narration"]
+        last = script["scenes"][-1]["narration"]
+        claims = "\n".join(f"- {c}" for c in script.get("claims", [])) or "- (see narration)"
+        narration = "\n".join(f"- {sc['narration']}" for sc in script["scenes"])
+        prompt = f"""You optimise YouTube Shorts for news. Viewers decide in under 2 seconds whether to keep watching,
+from the TITLE in the feed and the FIRST SENTENCE they hear.
+
+Current title: {script['title']}
+Current first sentence (hook): {first}
+Last sentence (the Short loops back to the hook, so the hook must still follow naturally from it): {last}
+What people search on YouTube for this topic: {query or "(unknown)"}
+Full narration:
+{narration}
+Facts you may use (nothing else):
+{claims}
+
+1. Write 5 NEW title candidates (max 50 characters, 0-1 emoji, include the search keyword when natural).
+2. Write 3 NEW hook candidates (max 14 words, the most surprising fact or number first).
+3. Score every candidate, including the current title and current hook, from 0 to 10 on:
+   curiosity (makes you need to know more), clarity (understood instantly, no jargon),
+   keyword (uses words people search), truth (fully supported by the facts above; anything unsupported or
+   exaggerated = 0 and the candidate is out).
+Return JSON:
+{{"titles": [{{"text": "...", "curiosity": 0, "clarity": 0, "keyword": 0, "truth": 0}}],
+ "hooks": [{{"text": "...", "curiosity": 0, "clarity": 0, "keyword": 0, "truth": 0}}]}}"""
+        try:
+            result = self.ask(prompt, temperature=0.9)
+        except Exception as exc:
+            log(f"  title contest skipped: {exc}")
+            return script
+
+        def best(items, current, max_len, max_words):
+            scored = []
+            for it in items or []:
+                text = str(it.get("text", "")).strip().strip('"')
+                try:
+                    truth = float(it.get("truth", 0))
+                    total = float(it.get("curiosity", 0)) * 1.5 + float(it.get("clarity", 0)) + float(it.get("keyword", 0)) * 0.5
+                except (TypeError, ValueError):
+                    continue
+                if not text or truth < 8 or len(text) > max_len or len(text.split()) > max_words:
+                    continue
+                scored.append((total, text))
+            scored.sort(reverse=True)
+            return (scored[0][1] if scored else current), scored[:6]
+
+        title, t_scores = best(result.get("titles"), script["title"], 60, 12)
+        hook, h_scores = best(result.get("hooks"), first, 120, 16)
+        script = dict(script)
+        script["scenes"] = [dict(sc) for sc in script["scenes"]]
+        script["title"] = title
+        script["scenes"][0]["narration"] = hook
+        script["contest"] = {"titles": t_scores, "hooks": h_scores}
+        log(f"  title: {title}\n  hook: {hook}")
+        return script
 
     def write_script(self, story: dict, sources: list, feedback: str = "") -> dict:
         source_block = "\n\n".join(f"SOURCE {i+1} ({s['source']}): {s['title']}\n{s['text']}" for i, s in enumerate(sources))

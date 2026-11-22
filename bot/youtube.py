@@ -52,6 +52,26 @@ def popular_hashtags(yt, keywords: list) -> list:
     return counter.most_common(40)
 
 
+def shorts_demand(yt, query: str, hours: int = 48) -> dict | None:
+    """How much people are watching Shorts about this topic right now:
+    the views of the 5 most watched Shorts on it published in the last `hours`."""
+    since = (dt.datetime.utcnow() - dt.timedelta(hours=hours)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    try:
+        found = yt.search().list(
+            part="id", q=query, type="video", videoDuration="short", order="viewCount",
+            publishedAfter=since, maxResults=10, relevanceLanguage="en",
+        ).execute()
+        ids = [item["id"]["videoId"] for item in found.get("items", []) if item.get("id", {}).get("videoId")]
+        views = []
+        if ids:
+            stats = yt.videos().list(part="statistics", id=",".join(ids)).execute()
+            views = sorted((int(i.get("statistics", {}).get("viewCount", 0)) for i in stats.get("items", [])), reverse=True)
+        return {"query": query, "videos": len(views), "views": sum(views[:5]), "top": views[0] if views else 0}
+    except Exception as exc:
+        log(f"  YouTube demand check failed for '{query}': {exc}")
+        return None
+
+
 def google_trends() -> list:
     """Today's trending Google searches in the US and UK (free RSS)."""
     terms = []
