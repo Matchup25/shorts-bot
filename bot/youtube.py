@@ -65,7 +65,7 @@ def google_trends() -> list:
 
 
 def upload(yt, video_path: str, title: str, description: str, tags: list, category: str,
-           privacy: str, ai_disclosure: bool) -> str:
+           privacy: str, ai_disclosure: bool, publish_at: str | None = None) -> str:
     from googleapiclient.http import MediaFileUpload
     body = {
         "snippet": {
@@ -77,11 +77,14 @@ def upload(yt, video_path: str, title: str, description: str, tags: list, catego
             "defaultAudioLanguage": "en",
         },
         "status": {
-            "privacyStatus": privacy,
+            # a scheduled video stays private until YouTube publishes it at publish_at
+            "privacyStatus": "private" if publish_at else privacy,
             "selfDeclaredMadeForKids": False,
             "containsSyntheticMedia": bool(ai_disclosure),
         },
     }
+    if publish_at:
+        body["status"]["publishAt"] = publish_at
     media = MediaFileUpload(video_path, mimetype="video/mp4", chunksize=8 * 1024 * 1024, resumable=True)
     request = yt.videos().insert(part="snippet,status", body=body, media_body=media)
     response = None

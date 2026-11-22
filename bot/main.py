@@ -8,6 +8,25 @@ from .brain import Brain
 from .util import OUTPUT, load_config, load_history, log, save_history
 
 
+def next_slot(cfg: dict) -> str | None:
+    """Next publishing time (07:00 / 19:00 Zurich…) as UTC RFC3339, at least 15 minutes from now."""
+    from zoneinfo import ZoneInfo
+    times = cfg.get("publish_times") or []
+    if not times or os.environ.get("PRIVACY_OVERRIDE", "").strip():
+        return None  # manual run with a chosen privacy: publish right away
+    tz = ZoneInfo(cfg.get("timezone", "Europe/Zurich"))
+    now = dt.datetime.now(tz)
+    candidates = []
+    for day in (0, 1):
+        for hhmm in times:
+            h, m = (int(x) for x in str(hhmm).split(":"))
+            when = (now + dt.timedelta(days=day)).replace(hour=h, minute=m, second=0, microsecond=0)
+            if when > now + dt.timedelta(minutes=15):
+                candidates.append(when)
+    slot = min(candidates)
+    return slot.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def summary(md: str) -> None:
     """Write a short report that appears on the GitHub run page."""
     path = os.environ.get("GITHUB_STEP_SUMMARY")
@@ -87,12 +106,15 @@ def main() -> None:
         )
 
         video_id = None
+        publish_at = None
         if dry_run:
             log("6/6 Test mode: not uploading (download the video from the GitHub run page)")
         else:
-            log(f"6/6 Uploading to YouTube as {cfg['privacy']}…")
+            publish_at = next_slot(cfg) if cfg["privacy"] == "public" else None
+            when = f"scheduled for {publish_at} (UTC)" if publish_at else cfg["privacy"]
+            log(f"6/6 Uploading to YouTube, {when}…")
             video_id = youtube.upload(yt, out, script["title"], description, tags, script["category"],
-                                      cfg["privacy"], cfg.get("ai_disclosure", True))
+                                      cfg["privacy"], cfg.get("ai_disclosure", True), publish_at)
             log(f"  done: https://youtube.com/shorts/{video_id}")
             history.append({
                 "date": dt.datetime.utcnow().isoformat(timespec="minutes"),
@@ -103,7 +125,8 @@ def main() -> None:
             save_history(history)
 
         link = f"https://youtube.com/shorts/{video_id}" if video_id else "(test mode – see Artifacts below)"
-        summary(f"### ✅ {script['title']}\n- Video: {link}\n- Privacy: {cfg['privacy']}\n"
+        summary(f"### ✅ {script['title']}\n- Video: {link}\n- Privacy: {cfg['privacy']}"
+                f"{' (goes live ' + publish_at + ' UTC)' if not dry_run and publish_at else ''}\n"
                 f"- Hashtags: {' '.join(tags)}\n- Sources: {', '.join(source_names)}\n")
         made += 1
         if made >= int(cfg.get("videos_per_run", 1)):

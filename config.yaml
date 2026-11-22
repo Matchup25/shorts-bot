@@ -10,7 +10,14 @@ channel_name: "WORLD IN A SHOT"
 #   private  = only you (use this while testing)
 #   unlisted = anyone with the link
 #   public   = everyone (use this when you are happy with the results)
-privacy: private
+privacy: public
+
+# When public videos go live (local time). The bot prepares each video
+# about two hours earlier and YouTube publishes it at the exact time.
+timezone: Europe/Zurich
+publish_times:
+  - "07:00"
+  - "19:00"
 
 # How many Shorts to make each time the bot runs (1 is recommended)
 videos_per_run: 1

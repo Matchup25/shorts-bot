@@ -2,8 +2,10 @@ name: Daily Short
 
 on:
   schedule:
-    # Every day at 15:23 UTC (16:23 in Zurich in winter, 10:23 in New York)
-    - cron: "23 15 * * *"
+    # 03:47 and 15:47 UTC = 04:47 / 16:47 in Zurich (winter), 05:47 / 17:47 (summer).
+    # Each run prepares one Short and YouTube publishes it at 07:00 / 19:00 Zurich time.
+    - cron: "47 3 * * *"
+    - cron: "47 15 * * *"
   workflow_dispatch:
     inputs:
       test_mode:
