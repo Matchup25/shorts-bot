@@ -13,6 +13,10 @@ on:
         description: "Test mode: make the video but do NOT upload it"
         type: boolean
         default: false
+      auto:
+        description: "Behave like a scheduled run (for an outside timer)"
+        type: boolean
+        default: false
       privacy:
         description: "Upload as (empty = use config.yaml)"
         type: choice
@@ -42,6 +46,7 @@ jobs:
         env:
           DRY_RUN: ${{ inputs.test_mode }}
           PRIVACY_OVERRIDE: ${{ inputs.privacy }}
+          BOT_TRIGGER: ${{ inputs.auto }}
         run: pip install -q pyyaml && python -m bot.slots
 
   make-short:
@@ -101,6 +106,7 @@ jobs:
           CHROME_PATH: /usr/bin/google-chrome
           DRY_RUN: ${{ inputs.test_mode }}
           PRIVACY_OVERRIDE: ${{ inputs.privacy }}
+          BOT_TRIGGER: ${{ inputs.auto }}
         run: python -m bot.main
 
       - name: Keep the video for download

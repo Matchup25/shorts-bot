@@ -49,6 +49,10 @@ def choose(cfg: dict, history: list, manual: bool, now: dt.datetime | None = Non
 
 
 def is_manual() -> bool:
+    """Scheduled runs (GitHub's timer, or an outside timer that starts the workflow with auto=true)
+    only fill the next few hours; a run started by hand may fill a slot up to two days ahead."""
+    if os.environ.get("BOT_TRIGGER", "").lower() == "true":
+        return False
     return os.environ.get("GITHUB_EVENT_NAME", "workflow_dispatch") != "schedule"
 
 
