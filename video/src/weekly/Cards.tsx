@@ -16,6 +16,10 @@ import type { Place } from "./types";
 
 const ease = Easing.bezier(0.16, 1, 0.3, 1);
 
+const GLOBAL = ["global", "world", "worldwide", "international", "space", "online", "internet"];
+export const isGlobalPlace = (place: Place) =>
+  !place.country || GLOBAL.includes(place.country.trim().toLowerCase()) || (place.lat === 0 && place.lon === 0);
+
 const Backdrop: React.FC = () => (
   <AbsoluteFill
     style={{
@@ -46,7 +50,7 @@ export const StoryCard: React.FC<{
   const num = spring({ frame: frame - 2, fps, config: { damping: 14, stiffness: 120 } });
   const words = headline.toUpperCase().split(/\s+/);
   const catColor = CATEGORY_COLORS[category] ?? YELLOW;
-  const isGlobal = !place.country || place.country.toLowerCase() === "global";
+  const isGlobal = isGlobalPlace(place);
 
   return (
     <AbsoluteFill>
@@ -135,7 +139,7 @@ export const StoryCard: React.FC<{
 export const StoryTag: React.FC<{ rank: number; headline: string; place: Place }> = ({ rank, headline, place }) => {
   const frame = useCurrentFrame();
   const inP = interpolate(frame, [0, 12], [0, 1], { ...clamp, easing: ease });
-  const isGlobal = !place.country || place.country.toLowerCase() === "global";
+  const isGlobal = isGlobalPlace(place);
   return (
     <div
       style={{
