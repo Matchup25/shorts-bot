@@ -28,7 +28,10 @@ class Brain:
                     found.append(name)
         except Exception as exc:
             log(f"  could not list models: {exc}")
-        return found
+        def rank(name):
+            nums = [float(x) for x in re.findall(r"(\d+(?:\.\d+)?)", name)[:1]] or [0.0]
+            return (-nums[0], "lite" in name, "preview" in name)
+        return sorted(found, key=rank)
 
     def ask(self, prompt: str, temperature: float = 0.7) -> dict:
         """Send a prompt, get JSON back. Retries and falls back to other models."""
@@ -110,13 +113,13 @@ RULES
 - Last scene ends with: "Follow for more stories like this."
 - "headline": 2 to 5 words shown big on screen (uppercase-friendly), different from the narration.
 - "visual" for each scene (what the viewer SEES behind the text):
-    {"kind": "media",
+    {{"kind": "media",
      "footage": "<2-4 word stock VIDEO search in English, concrete and filmable, e.g. 'telescope night sky', 'container ship ocean', 'city traffic timelapse'>",
      "ai_prompt": "<one vivid sentence describing a beautiful cinematic image of this moment; no real people's faces, no logos, no text>",
-     "nasa": "<only for space/astronomy stories: 2-4 word NASA image search, e.g. 'Chandra galaxy', else empty>"}
+     "nasa": "<only for space/astronomy stories: 2-4 word NASA image search, e.g. 'Chandra galaxy', else empty>"}}
     or for 1-2 scenes with a striking number from the sources:
-    {"kind": "stat", "value": "<number only, e.g. 113>", "unit": "<short unit, e.g. days per orbit>",
-     "footage": "...", "ai_prompt": "...", "nasa": "..."}
+    {{"kind": "stat", "value": "<number only, e.g. 113>", "unit": "<short unit, e.g. days per orbit>",
+     "footage": "...", "ai_prompt": "...", "nasa": "..."}}
   Make every scene look different (different places, scales, colours).
 - "title": a curiosity "bait" title, max 65 characters, 0-1 emoji. It must be TRUE to the story (no fake claims,
   no "you won't believe"), for example: "This 'Dead' Star Fooled Astronomers for 15 Years".
