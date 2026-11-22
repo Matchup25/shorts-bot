@@ -1,0 +1,34 @@
+name: Check channel
+
+# Shows which YouTube channel the bot publishes to (no changes are made).
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install -q google-api-python-client google-auth pyyaml
+      - name: Which channel?
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          from bot import youtube
+          yt = youtube.service()
+          for ch in yt.channels().list(part="snippet", mine=True).execute().get("items", []):
+              print("CHANNEL:", ch["snippet"]["title"], ch["snippet"].get("customUrl", ""), ch["id"])
+          history = json.load(open("data/history.json"))
+          ids = ",".join(h["video_id"] for h in history[-5:] if h.get("video_id"))
+          if ids:
+              for v in yt.videos().list(part="snippet,status", id=ids).execute().get("items", []):
+                  print("VIDEO:", v["id"], "|", v["snippet"]["channelTitle"], "|", v["status"]["privacyStatus"], "|", v["snippet"]["title"])
+          PY
