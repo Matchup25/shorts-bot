@@ -1,7 +1,7 @@
 import { Audio } from "@remotion/media";
 import React from "react";
 import { AbsoluteFill, Sequence, staticFile, useVideoConfig } from "remotion";
-import { Brand, Flash, Grain, Progress, Shade } from "./components/Chrome";
+import { Brand, Credit, Flash, Grain, Progress, Shade } from "./components/Chrome";
 import { Captions } from "./components/Captions";
 import { Headline } from "./components/Headline";
 import { SceneMedia } from "./components/SceneMedia";
@@ -38,18 +38,21 @@ export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scen
           <Sequence key={`t${i}`} from={from} durationInFrames={len} name={`Text ${i + 1}`} layout="none">
             {scene.kind === "stat" && scene.stat ? <Stat value={scene.stat.value} unit={scene.stat.unit} /> : null}
             <Headline text={scene.headline} big={i === 0} exitAt={len} />
-            <Brand channel={channel} category={category} credit={scene.media.credit} />
+            <Credit text={scene.media.credit} />
           </Sequence>
         );
       })}
 
+      <Brand channel={channel} category={category} />
       <Captions words={words} />
 
-      {scenes.slice(1).map((scene, i) => (
-        <Sequence key={`f${i}`} from={starts[i + 1]} durationInFrames={8} layout="none">
-          <Flash strength={scene.transition === "flash" ? 0.55 : 0.18} />
-        </Sequence>
-      ))}
+      {scenes.slice(1).map((scene, i) =>
+        scene.transition === "flash" ? (
+          <Sequence key={`f${i}`} from={starts[i + 1]} durationInFrames={8} layout="none">
+            <Flash strength={0.6} />
+          </Sequence>
+        ) : null,
+      )}
 
       <Grain />
       <Progress />

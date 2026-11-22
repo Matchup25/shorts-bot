@@ -49,14 +49,14 @@ export const SceneMedia: React.FC<{ scene: Scene; index: number; darken: number 
   }
 
   return (
-    <AbsoluteFill style={{ overflow: "hidden", backgroundColor: "black" }}>
+    <AbsoluteFill style={{ overflow: "hidden", backgroundColor: isFirst ? "black" : "transparent" }}>
       <AbsoluteFill
         style={{
           translate: `${enterX}px 0px`,
           scale: enterScale,
           transform: `skewX(${enterSkew}deg)`,
           filter: `blur(${enterBlur}px) contrast(1.08) saturate(1.12) brightness(${darken})`,
-          opacity: isFirst ? 1 : interpolate(frame, [0, 3], [0.4, 1], clamp),
+          opacity: isFirst ? 1 : interpolate(frame, [0, 4], [0.6, 1], clamp),
         }}
       >
         <AbsoluteFill

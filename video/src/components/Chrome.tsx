@@ -46,11 +46,7 @@ export const Grain: React.FC = () => {
 };
 
 /** Channel badge, category and image credit at the top. */
-export const Brand: React.FC<{ channel: string; category: string; credit?: string }> = ({
-  channel,
-  category,
-  credit,
-}) => {
+export const Brand: React.FC<{ channel: string; category: string }> = ({ channel, category }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const inP = interpolate(frame, [0, 14], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
@@ -107,21 +103,30 @@ export const Brand: React.FC<{ channel: string; category: string; credit?: strin
           {category.toUpperCase()}
         </div>
       </div>
-      {credit ? (
-        <div
-          style={{
-            marginTop: 14,
-            marginLeft: 6,
-            fontFamily: BODY,
-            fontWeight: 600,
-            fontSize: 22,
-            color: "rgba(255,255,255,0.7)",
-            letterSpacing: 0.5,
-          }}
-        >
-          {credit}
-        </div>
-      ) : null}
+    </div>
+  );
+};
+
+/** Small picture credit under the badge (fades with each scene). */
+export const Credit: React.FC<{ text?: string }> = ({ text }) => {
+  const frame = useCurrentFrame();
+  if (!text) return null;
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: 86,
+        top: 232,
+        fontFamily: BODY,
+        fontWeight: 600,
+        fontSize: 22,
+        color: "rgba(255,255,255,0.72)",
+        letterSpacing: 0.5,
+        opacity: interpolate(frame, [4, 14], [0, 1], clamp),
+        textShadow: "0 2px 8px rgba(0,0,0,0.8)",
+      }}
+    >
+      {text}
     </div>
   );
 };
