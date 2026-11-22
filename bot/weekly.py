@@ -126,7 +126,7 @@ def prepare(count: int, test: bool) -> None:
         idx += k
         pics = media.gather({"category": seg["category"], "scenes": seg["scenes"]}, str(RUN),
                             prefix=f"s{si + 1}_", used=used, editorial=True,
-                            place=seg["place"])
+                            place=seg["place"], allow_plain=False)
         scenes = []
         for j, (sc, tm, md) in enumerate(zip(seg["scenes"], tms, pics)):
             kind = sc["visual"]["kind"] if md else "map"

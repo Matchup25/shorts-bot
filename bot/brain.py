@@ -199,12 +199,12 @@ Use ONLY facts stated in the sources. Never invent numbers, quotes, names or dat
 no opinions, no loaded words, attribute claims ("officials said", "according to"). Never describe violence graphically.
 {fix}
 RULES
-- 5 scenes, 140-170 words in total (about one minute). No greeting, no call to action.
+- 6 scenes, 165-195 words in total (about one minute). No greeting, no call to action.
 - Scene 1 opens the story with where and what happened, in one or two sentences. Its visual is {{"kind": "map"}}.
-- Scenes 2-5 explain what happened, the background, why it matters and what comes next.
+- Scenes 2-6 explain what happened, the background, the reactions, why it matters and what comes next.
 - "headline": 3 to 6 words, neutral (shown on screen).
 - "category": one of {CATEGORIES}.
-- visuals for scenes 2-5:
+- visuals for scenes 2-6:
     {{"kind": "media", "footage": "<2-4 literal words for a stock VIDEO search. Prefer neutral close-ups that fit any
       country: hands typing, documents, newspaper, microphone, flag, computer screen, satellite, ambulance, ship at sea.
       Never ask for a skyline, street or city view unless you write the exact city name in the search>",
@@ -222,7 +222,7 @@ Return JSON: {{"headline": "...", "category": "...", "scenes": [{{"narration": "
         if isinstance(seg, list):  # sometimes the answer is wrapped in a list
             seg = seg[0] if seg and isinstance(seg[0], dict) else {}
         scenes = []
-        for i, sc in enumerate((seg.get("scenes") or [])[:6]):
+        for i, sc in enumerate((seg.get("scenes") or [])[:7]):
             narration = str(sc.get("narration", "")).strip()
             if not narration:
                 continue

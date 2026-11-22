@@ -11,6 +11,7 @@ import base64
 import io
 import os
 import random
+import re
 import subprocess
 
 import requests
@@ -255,9 +256,18 @@ def nasa_image(query: str, path: str, used: set, min_score: float = 0.75) -> dic
     return None
 
 
+def _clean_secret(value: str) -> str:
+    """Secrets pasted with extra lines or words (e.g. 'Bearer xyz'): keep the part that looks like a key."""
+    parts = [p for p in value.split() if p.lower() != "bearer"]
+    keyish = [p for p in parts if re.fullmatch(r"[A-Za-z0-9_\-]{20,}", p)]
+    if len(parts) > 1:
+        log(f"    note: a Cloudflare secret contains {len(parts)} pieces of text; using the one that looks like a key")
+    return (keyish or parts or [""])[0]
+
+
 def ai_image(prompt: str, path: str, style: str = AI_STYLE) -> dict | None:
-    account = os.environ.get("CF_ACCOUNT_ID", "").strip()
-    token = os.environ.get("CF_API_TOKEN", "").strip()
+    account = _clean_secret(os.environ.get("CF_ACCOUNT_ID", ""))
+    token = _clean_secret(os.environ.get("CF_API_TOKEN", ""))
     if not (account and token and prompt):
         return None
     url = f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/@cf/black-forest-labs/flux-1-schnell"
@@ -292,7 +302,7 @@ def plain_background(path: str, seed: int) -> dict:
 
 # ------------------------------------------------------------------ main entry
 def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None = None,
-           editorial: bool = False, place: dict | None = None) -> list:
+           editorial: bool = False, place: dict | None = None, allow_plain: bool = True) -> list:
     """Return one media description per scene; files are saved in run_dir."""
     used = used if used is not None else set()
     style = AI_STYLE_EDITORIAL if editorial else AI_STYLE
@@ -320,14 +330,19 @@ def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None =
             ("AI image", lambda: ai_image(prompt, base + ".jpg", style)),
             ("Pixabay photo", lambda: pixabay_photo(footage, base + ".jpg", used, place_words)),
             ("Pexels photo", lambda: pexels_photo(footage, base + ".jpg", used)),
-            ("NASA", lambda: nasa_image(nasa_q or footage, base + ".jpg", used, min_score=0.6)),
         ]
+        if space:  # NASA pictures only make sense for space and science stories
+            steps.append(("NASA", lambda: nasa_image(nasa_q or footage, base + ".jpg", used, min_score=0.6)))
         media = None
         for name, step in steps:
             media = step()
             if media:
                 log(f"  scene {i + 1}: {name}")
                 break
+        if not media and not allow_plain:
+            log(f"  scene {i + 1}: nothing suitable, the globe card is used instead")
+            out.append(None)
+            continue
         if not media:
             log(f"  scene {i + 1}: plain background")
             media = plain_background(base + ".jpg", i)
