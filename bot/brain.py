@@ -71,7 +71,7 @@ class Brain:
         raise RuntimeError(f"Gemini did not answer: {last_error}")
 
     # ---------------------------------------------------------------- agents
-    def pick_stories(self, stories: list, history: list) -> list:
+    def pick_stories(self, stories: list, history: list, trends: list | None = None) -> list:
         listing = "\n".join(
             f"[{s['id']}] ({s['source']}, reported by {s.get('outlets', 1)} outlets) {s['title']} — {s['summary'][:220]}"
             for s in stories[:150]
@@ -86,6 +86,9 @@ big business/tech milestones, inventions, culture phenomena. Prefer stories repo
 NEVER PICK: {avoid}. Also avoid tragedies, anything graphic, and anything that would be unfair to a private person.
 Do not pick a story we already covered:
 {done}
+
+What people are searching for on Google right now (prefer stories that match these, if they fit the rules):
+{", ".join((trends or [])[:30]) or "(not available)"}
 
 Today's stories:
 {listing}
@@ -109,9 +112,12 @@ Use ONLY facts stated in the sources below. Never invent numbers, quotes, names 
 cautious version. Neutral tone, no opinions on politics. Write in English, simple words, short punchy sentences.
 {fix}
 RULES
-- 5 to 7 scenes. Total narration 105-135 words (about 45 seconds).
-- Scene 1 is the hook: one surprising sentence that creates curiosity (true to the story).
-- Last scene ends with: "Follow for more stories like this."
+- 4 or 5 scenes. Total narration 75-95 words (about 30 seconds): short Shorts are watched to the end.
+- Scene 1 is the hook and must make people stop scrolling in under 2 seconds: start with the most surprising
+  fact or number of the story itself (the payoff first, not a setup), max 14 words, true to the story.
+- Every following sentence adds a new fact. No filler, no greeting, no "in today's video".
+- The last sentence must lead naturally back to the first one, so the Short loops seamlessly when it restarts.
+  Do NOT end with "follow", "subscribe" or any call to action.
 - "headline": 2 to 5 words shown big on screen (uppercase-friendly), different from the narration.
 - "visual" for each scene (what the viewer SEES behind the text):
     {{"kind": "media",
@@ -125,8 +131,9 @@ RULES
   Footage must never show the WRONG place: if the story is about a specific country or city, either name it in the
   search ("seoul city night") or choose neutral close-ups (hands on phone, exam paper, microphone, documents).
   Use simple, literal, filmable words that a stock video site would tag, not abstract ideas.
-- "title": a curiosity "bait" title, max 65 characters, 0-1 emoji. It must be TRUE to the story (no fake claims,
-  no "you won't believe"), for example: "This 'Dead' Star Fooled Astronomers for 15 Years".
+- "title": a curiosity "bait" title, max 50 characters (longer titles get cut in the Shorts feed), with the main
+  keyword people would search, 0-1 emoji. It must be TRUE to the story (no fake claims, no "you won't believe"),
+  for example: "This 'Dead' Star Fooled Astronomers for 15 Years".
 - "category": one of {CATEGORIES}.
 - "description": 2 sentences summarising the story for the YouTube description.
 - "search_keywords": 2-4 short keywords to find similar videos.
@@ -250,7 +257,8 @@ Hashtags used right now by the most viewed similar Shorts (with how often they a
 Google search trends right now (only use one if it is truly related to the topic):
 {trends[:25]}
 
-Choose 5 hashtags: the most popular ones that are RELEVANT to this video (misleading hashtags are against YouTube rules).
+Choose 3 hashtags: the most popular ones that are RELEVANT to this video (misleading hashtags are against YouTube rules).
+YouTube shows the first three above the title, more do not help.
 Format: "#word" with no spaces. Return JSON: {{"hashtags": ["#...", ...]}}"""
         result = self.ask(prompt, temperature=0.3)
         tags = []
@@ -258,7 +266,7 @@ Format: "#word" with no spaces. Return JSON: {{"hashtags": ["#...", ...]}}"""
             tag = "#" + re.sub(r"[^A-Za-z0-9_]", "", str(tag))
             if len(tag) > 2 and tag.lower() not in [t.lower() for t in tags]:
                 tags.append(tag)
-        return tags[:5]
+        return tags[:3]
 
 
 # ---------------------------------------------------------------------- helpers

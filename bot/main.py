@@ -58,7 +58,8 @@ def main() -> None:
 
     brain = Brain(cfg)
     log("2/6 Choosing the best stories…")
-    picks = brain.pick_stories(stories, history)
+    trends = youtube.google_trends()
+    picks = brain.pick_stories(stories, history, trends)
     yt = None if dry_run and not os.environ.get("YT_REFRESH_TOKEN") else youtube.service()
 
     made = 0
@@ -82,10 +83,7 @@ def main() -> None:
 
         log("4/6 Finding trending hashtags…")
         candidates = youtube.popular_hashtags(yt, script["search_keywords"]) if yt else []
-        trends = youtube.google_trends()
         tags = brain.choose_hashtags(script, candidates, trends)
-        if "#shorts" not in [t.lower() for t in tags]:
-            tags.append("#Shorts")
         log(f"  {' '.join(tags)}")
 
         log("5/6 Pictures, voice and animation…")
