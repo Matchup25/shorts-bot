@@ -89,17 +89,52 @@ def pexels_photo(query: str, path: str, used: set) -> dict | None:
     return None
 
 
-def nasa_image(query: str, path: str, used: set) -> dict | None:
+BAD_WORDS = ("chart", "graph", "diagram", "plot", "spectrum", "light curve", "map", "logo", "poster", "infographic",
+             "comparison", "conference", "briefing", "portrait", "ceremony", "meeting", "award", "panel", "model",
+             "schematic", "data", "table", "slide", "illustration of the", "artist's concept of the instrument")
+
+
+def _look_score(img: Image.Image) -> float:
+    """How good a picture looks as a full-screen background: colourful, bright enough, not mostly black."""
+    import numpy as np
+    a = np.asarray(img.convert("RGB").resize((64, 64)), dtype=np.float32) / 255
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    rg, yb = r - g, 0.5 * (r + g) - b
+    colour = float(np.sqrt(rg.std() ** 2 + yb.std() ** 2) + 0.3 * np.sqrt(rg.mean() ** 2 + yb.mean() ** 2))
+    lit = float((a.max(axis=2) > 0.18).mean())
+    bright = float(a.mean())
+    return colour * 3 + lit * 1.2 + min(bright, 0.45)
+
+
+def nasa_image(query: str, path: str, used: set, min_score: float = 0.75) -> dict | None:
+    """Best-looking NASA picture for the query (public domain, no key needed)."""
     if not query:
         return None
     try:
         res = _get("https://images-api.nasa.gov/search",
-                   params={"q": query, "media_type": "image", "page_size": 25}).json()
+                   params={"q": query, "media_type": "image", "page_size": 40}).json()
+        candidates = []
         for item in res.get("collection", {}).get("items", []):
             meta = (item.get("data") or [{}])[0]
             nasa_id = meta.get("nasa_id")
-            if not nasa_id or nasa_id in used:
+            text = (meta.get("title", "") + " " + " ".join(meta.get("keywords", []) or [])).lower()
+            thumb = next((l.get("href") for l in item.get("links", []) if l.get("render") == "image"), None)
+            if not nasa_id or nasa_id in used or not thumb or any(w in text for w in BAD_WORDS):
                 continue
+            candidates.append((nasa_id, meta, thumb))
+            if len(candidates) >= 12:
+                break
+        scored = []
+        for nasa_id, meta, thumb in candidates:
+            try:
+                img = Image.open(io.BytesIO(_get(thumb.replace("http://", "https://")).content))
+                scored.append((_look_score(img), nasa_id, meta))
+            except Exception:
+                continue
+        scored.sort(key=lambda x: x[0], reverse=True)
+        for score, nasa_id, meta in scored[:4]:
+            if score < min_score:
+                break
             assets = _get(f"https://images-api.nasa.gov/asset/{nasa_id}").json()
             hrefs = [a["href"] for a in assets.get("collection", {}).get("items", [])]
             pick = next((h for h in hrefs if "~large" in h and h.lower().endswith(".jpg")), None) or \
@@ -111,6 +146,7 @@ def nasa_image(query: str, path: str, used: set) -> dict | None:
                 continue
             used.add(nasa_id)
             center = meta.get("center") or ""
+            log(f"    NASA pick: {meta.get('title', '')[:60]} (score {score:.2f})")
             return {"type": "image", **dims, "credit": f"Image: NASA{' ' + center if center else ''}"}
     except Exception as exc:
         log(f"    NASA search failed: {exc}")
@@ -171,13 +207,13 @@ def gather(script: dict, run_dir: str) -> list:
             ("Pexels video", lambda: pexels_video(footage, base + ".mp4", used)),
             ("AI image", lambda: ai_image(prompt, base + ".jpg")),
             ("Pexels photo", lambda: pexels_photo(footage, base + ".jpg", used)),
-            ("NASA", lambda: nasa_image(nasa_q or footage, base + ".jpg", used)),
+            ("NASA", lambda: nasa_image(nasa_q or footage, base + ".jpg", used, min_score=0.6)),
         ]
         media = None
         for name, step in steps:
             media = step()
             if media:
-                log(f"  scene {i + 1}: {name} ({footage or prompt[:40]})")
+                log(f"  scene {i + 1}: {name}")
                 break
         if not media:
             log(f"  scene {i + 1}: plain background")
