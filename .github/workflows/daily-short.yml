@@ -28,6 +28,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # to start the Instagram stories step at every wake-up
 
 
 jobs:
@@ -48,6 +49,12 @@ jobs:
           PRIVACY_OVERRIDE: ${{ inputs.privacy }}
           BOT_TRIGGER: ${{ inputs.auto }}
         run: pip install -q pyyaml && python -m bot.slots
+      - name: Start the Instagram stories step
+        if: inputs.test_mode != true
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run stories.yml -R "$GITHUB_REPOSITORY" --ref main
 
   make-short:
     needs: check

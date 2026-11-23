@@ -1,0 +1,73 @@
+name: Instagram stories
+
+# A "LAST MINUTE" or "DID YOU KNOW?" story at the story times in config.yaml (Zurich time).
+# Started by every wake-up of the Daily Short workflow (and by this timer as a backup);
+# it posts only when a story time has just passed and that story is not out yet.
+on:
+  schedule:
+    - cron: "50 6,9,12,15,18,21 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "auto = only if due; now = post one now; dry = only draw the card (saved on the story-preview branch)"
+        type: choice
+        options: [auto, now, dry]
+        default: auto
+      kind:
+        description: "For now/dry: last_minute or fact"
+        default: "last_minute"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram-stories
+  cancel-in-progress: false
+
+jobs:
+  story:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+      IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+      IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
+      CHROME_PATH: /usr/bin/google-chrome
+    steps:
+      - name: Is Instagram set up?
+        id: ig
+        run: |
+          if [ -n "$IG_ACCESS_TOKEN" ]; then echo "on=true" >> "$GITHUB_OUTPUT"; else echo "Instagram is not set up: skipping."; fi
+      - uses: actions/checkout@v5
+        if: steps.ig.outputs.on == 'true'
+      - uses: actions/setup-python@v6
+        if: steps.ig.outputs.on == 'true'
+        with:
+          python-version: "3.12"
+      - name: Install
+        if: steps.ig.outputs.on == 'true'
+        run: |
+          sudo apt-get -qq update >/dev/null && sudo apt-get -qq install -y ffmpeg >/dev/null
+          pip install -q requests feedparser trafilatura google-genai pillow pyyaml cryptography numpy
+      - name: Make and post the story
+        if: steps.ig.outputs.on == 'true'
+        run: |
+          MODE="${{ inputs.mode || 'auto' }}"
+          if [ "$MODE" = "now" ]; then python -m bot.stories --force --kind "${{ inputs.kind }}";
+          elif [ "$MODE" = "dry" ]; then python -m bot.stories --dry --kind "${{ inputs.kind }}";
+          else python -m bot.stories; fi
+      - name: Save the preview (dry runs)
+        if: steps.ig.outputs.on == 'true' && inputs.mode == 'dry'
+        run: |
+          mkdir -p /tmp/prev && cp output/story/card.png /tmp/prev/card.png && cd /tmp/prev
+          git init -q -b story-preview && git config user.name "shorts-bot" && git config user.email "shorts-bot@users.noreply.github.com"
+          git add . && git commit -q -m "Story preview" && git push -q -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" story-preview
+      - name: Remember the story
+        if: steps.ig.outputs.on == 'true' && inputs.mode != 'dry'
+        run: |
+          git config user.name "shorts-bot"
+          git config user.email "shorts-bot@users.noreply.github.com"
+          git add data/stories_history.json 2>/dev/null || true
+          git commit -q -m "Posted a story" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done

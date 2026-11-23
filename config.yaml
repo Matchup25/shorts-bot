@@ -21,6 +21,9 @@ publish_times:
   - "13:00"
   - "19:00"
 
+# Instagram stories ("LAST MINUTE" / "DID YOU KNOW?", alternating), Zurich time
+story_times: ["07:45", "10:45", "13:45", "16:45", "19:45", "22:45"]
+
 # Weekly show (every Sunday): number of stories and time it goes live
 weekly_stories: 15
 weekly_publish_time: "19:00"

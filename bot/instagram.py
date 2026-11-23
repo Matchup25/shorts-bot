@@ -174,10 +174,11 @@ def _wait_ready(api: str, token: str, container: str) -> None:
     raise RuntimeError("Instagram was still processing the video after 15 minutes")
 
 
-def _container_upload(acc: dict, token: str, video_path: str, caption: str) -> str:
+def _container_upload(acc: dict, token: str, video_path: str, caption: str, media_type: str = "REELS") -> str:
     """Unified/Facebook login: send the file itself (no public link needed)."""
-    r = _call("POST", f"{acc['api']}/{acc['ig_id']}/media", token, media_type="REELS",
-              upload_type="resumable", caption=caption, share_to_feed="true")
+    extra = {"caption": caption, "share_to_feed": "true"} if media_type == "REELS" else {}
+    r = _call("POST", f"{acc['api']}/{acc['ig_id']}/media", token, media_type=media_type,
+              upload_type="resumable", **extra)
     if not r.ok:
         raise RuntimeError(f"Instagram refused the Reel: {r.text[:600]}")
     body = r.json()
