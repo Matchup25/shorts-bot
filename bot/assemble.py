@@ -106,9 +106,11 @@ def build_props(script: dict, timings: list, words: list, media: list, channel: 
             "end": round(tm["end"], 3),
             "headline": sc["headline"],
             "kind": "stat" if vis.get("kind") == "stat" and vis.get("value") else "media",
-            "media": md,
+            "media": {k: v for k, v in md.items() if k != "alt"},
             "transition": TRANSITIONS[(i + offset) % len(TRANSITIONS)],
         }
+        if md.get("alt"):
+            scene["media2"] = md["alt"]
         if scene["kind"] == "stat":
             scene["stat"] = {"value": str(vis.get("value", "")), "unit": str(vis.get("unit", ""))}
         scenes.append(scene)

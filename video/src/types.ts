@@ -18,8 +18,9 @@ export type Scene = {
   headline: string;
   kind: "media" | "stat";
   media: Media;
+  media2?: Media; // second shot for the second half of the scene (faster rhythm)
   stat?: { value: string; unit: string };
-  transition: "zoom" | "whip-left" | "whip-right" | "flash";
+  transition: "zoom" | "whip-left" | "whip-right" | "flash" | "cut";
 };
 
 export type ShortProps = {

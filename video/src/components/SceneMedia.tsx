@@ -22,17 +22,23 @@ export const SceneMedia: React.FC<{
   scene: { media: Media; transition: Scene["transition"] };
   index: number;
   darken: number;
+  part?: number; // 0 = first shot of the scene, 1 = second shot (after the mid-scene cut)
+  zoom?: number; // extra zoom: a "punch-in" when the second shot reuses the same picture
+  trimBefore?: number; // frames to skip at the start of a video (continue where the first shot was)
 }> = ({
   scene,
   index,
   darken,
+  part = 0,
+  zoom = 1,
+  trimBefore,
 }) => {
   const frame = useCurrentFrame();
   const { durationInFrames, width, height } = useVideoConfig();
   const media = scene.media;
   const isLandscape = (media.width ?? width) / (media.height ?? height) > (width / height) * 1.3;
-  const drift = index % 2 === 0 ? 1 : -1;
-  const isFirst = index === 0;
+  const drift = (index + part) % 2 === 0 ? 1 : -1;
+  const isFirst = index === 0 && part === 0;
 
   const enter = isFirst
     ? 1
@@ -42,7 +48,10 @@ export const SceneMedia: React.FC<{
   let enterX = 0;
   let enterBlur = 0;
   let enterSkew = 0;
-  if (scene.transition === "zoom") {
+  if (scene.transition === "cut") {
+    // hard cut with a small punch, like an editor's jump cut
+    enterScale = interpolate(frame, [0, 6], [1.12, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
+  } else if (scene.transition === "zoom") {
     enterScale = interpolate(enter, [0, 1], [1.45, 1]);
     enterBlur = interpolate(enter, [0, 1], [22, 0]);
   } else if (scene.transition === "whip-left" || scene.transition === "whip-right") {
@@ -60,12 +69,12 @@ export const SceneMedia: React.FC<{
           scale: enterScale,
           transform: `skewX(${enterSkew}deg)`,
           filter: `blur(${enterBlur}px) contrast(1.08) saturate(1.12) brightness(${darken})`,
-          opacity: isFirst ? 1 : interpolate(frame, [0, 4], [0.6, 1], clamp),
+          opacity: isFirst || scene.transition === "cut" ? 1 : interpolate(frame, [0, 4], [0.6, 1], clamp),
         }}
       >
         <AbsoluteFill
           style={{
-            scale: interpolate(frame, [0, durationInFrames], [1.06, 1.2], clamp),
+            scale: zoom * interpolate(frame, [0, durationInFrames], [1.06, 1.2], clamp),
             translate: `${interpolate(frame, [0, durationInFrames], [0, drift * 24], clamp)}px ${interpolate(
               frame,
               [0, durationInFrames],
@@ -79,6 +88,7 @@ export const SceneMedia: React.FC<{
               src={staticFile(media.src)}
               muted
               loop
+              trimBefore={trimBefore}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           ) : (

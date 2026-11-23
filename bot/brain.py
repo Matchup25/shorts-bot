@@ -189,6 +189,7 @@ RULES
 - "visual" for each scene (what the viewer SEES behind the text):
     {{"kind": "media",
      "footage": "<2-4 word stock VIDEO search in English, concrete and filmable, e.g. 'telescope night sky', 'container ship ocean', 'city traffic timelapse'>",
+     "footage2": "<a DIFFERENT 2-4 word stock video search for a second shot of the same moment (another angle or a close-up)>",
      "ai_prompt": "<one vivid sentence describing a beautiful cinematic image of this moment; no real people's faces, no logos, no text>",
      "nasa": "<only for space/astronomy stories: 2-4 word NASA image search, e.g. 'Chandra galaxy', else empty>"}}
     or for 1-2 scenes with a striking number from the sources:
@@ -379,7 +380,7 @@ def _normalise_script(script: dict) -> dict:
         visual = dict(sc.get("visual") or {})
         if visual.get("kind") != "stat" or not str(visual.get("value", "")).strip():
             visual["kind"] = "media"
-        for key in ("footage", "ai_prompt", "nasa"):
+        for key in ("footage", "footage2", "ai_prompt", "nasa"):
             visual[key] = str(visual.get(key) or "").strip()
         scenes.append({"narration": narration, "headline": str(sc.get("headline", "")).strip()[:40], "visual": visual})
     if len(scenes) < 3:

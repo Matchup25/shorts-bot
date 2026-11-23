@@ -307,8 +307,11 @@ def plain_background(path: str, seed: int) -> dict:
 
 # ------------------------------------------------------------------ main entry
 def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None = None,
-           editorial: bool = False, place: dict | None = None, allow_plain: bool = True) -> list:
-    """Return one media description per scene; files are saved in run_dir."""
+           editorial: bool = False, place: dict | None = None, allow_plain: bool = True,
+           second: bool = False) -> list:
+    """Return one media description per scene; files are saved in run_dir.
+    With second=True each scene also gets a second, different stock clip ("alt") when one is found,
+    so the animation can cut to it halfway through the scene."""
     used = used if used is not None else set()
     style = AI_STYLE_EDITORIAL if editorial else AI_STYLE
     place_words = None
@@ -355,5 +358,15 @@ def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None =
             media = plain_background(base + ".jpg", i)
         ext = ".mp4" if media["type"] == "video" else ".jpg"
         media["src"] = f"run/{prefix}{i + 1}{ext}"
+        if second and media.get("credit"):
+            alt_q = vis.get("footage2") or footage
+            alt = (pixabay_video(alt_q, base + "b.mp4", used, place_words)
+                   or pexels_video(alt_q, base + "b.mp4", used))
+            if not alt and alt_q != footage:
+                alt = pixabay_video(footage, base + "b.mp4", used, place_words)
+            if alt:
+                alt["src"] = f"run/{prefix}{i + 1}b.mp4"
+                media["alt"] = alt
+                log(f"  scene {i + 1}: second shot found")
         out.append(media)
     return out

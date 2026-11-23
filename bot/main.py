@@ -117,7 +117,7 @@ def main() -> None:
 
         log("5/6 Pictures, voice and animation…")
         run_dir = render.reset_run_dir()
-        media_list = media.gather(script, run_dir)
+        media_list = media.gather(script, run_dir, second=True)
         audio, timings, words = voice.narrate(script["scenes"], cfg["voice"], cfg["voice_speed"])
         duration = assemble.build_mix(audio, timings, f"{run_dir}/mix.wav")
         source_names = list(dict.fromkeys(s["source"] for s in sources))

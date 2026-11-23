@@ -10,6 +10,7 @@ import "./fonts";
 import type { ShortProps } from "./types";
 
 const OVERLAP = 10; // frames the next scene overlaps the previous one (its entrance)
+const CUT_AFTER = 4.2; // seconds: longer scenes are split into two shots
 
 export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scenes, words }) => {
   const { fps, durationInFrames } = useVideoConfig();
@@ -21,10 +22,35 @@ export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scen
         const from = starts[i];
         const next = i + 1 < scenes.length ? starts[i + 1] : durationInFrames;
         const len = Math.max(1, next - from + OVERLAP);
+        const darken = scene.kind === "stat" ? 0.55 : 0.88;
+        // Faster rhythm: scenes longer than ~4 s get a cut halfway, to a second shot
+        // (or a punch-in on the same picture when there is no second one).
+        const cut = next - from >= Math.round(CUT_AFTER * fps) ? Math.round((next - from) / 2) : 0;
+        if (!cut) {
+          return (
+            <Sequence key={`m${i}`} from={from} durationInFrames={len} name={`Scene ${i + 1}`}>
+              <SceneMedia scene={scene} index={i} darken={darken} />
+            </Sequence>
+          );
+        }
+        const second = scene.media2 ?? scene.media;
+        const same = !scene.media2;
         return (
-          <Sequence key={`m${i}`} from={from} durationInFrames={len} name={`Scene ${i + 1}`}>
-            <SceneMedia scene={scene} index={i} darken={scene.kind === "stat" ? 0.55 : 0.88} />
-          </Sequence>
+          <React.Fragment key={`m${i}`}>
+            <Sequence from={from} durationInFrames={cut + 2} name={`Scene ${i + 1}a`}>
+              <SceneMedia scene={scene} index={i} darken={darken} />
+            </Sequence>
+            <Sequence from={from + cut} durationInFrames={Math.max(1, len - cut)} name={`Scene ${i + 1}b`}>
+              <SceneMedia
+                scene={{ media: second, transition: "cut" }}
+                index={i}
+                part={1}
+                darken={darken}
+                zoom={same ? 1.32 : 1}
+                trimBefore={same && second.type === "video" ? cut : undefined}
+              />
+            </Sequence>
+          </React.Fragment>
         );
       })}
 
