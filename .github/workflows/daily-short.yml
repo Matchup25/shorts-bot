@@ -16,6 +16,9 @@ on:
       story:
         description: "Test runs only: words from the headline of a story to force"
         default: ""
+      llm:
+        description: "Test runs only: 'cloudflare' to try the backup AI instead of Gemini"
+        default: ""
       auto:
         description: "Behave like a scheduled run (for an outside timer)"
         type: boolean
@@ -122,6 +125,7 @@ jobs:
           PRIVACY_OVERRIDE: ${{ inputs.privacy }}
           BOT_TRIGGER: ${{ inputs.auto }}
           FORCE_STORY: ${{ inputs.story }}
+          LLM_FORCE: ${{ inputs.llm }}
         run: python -m bot.main
 
       - name: Keep the video for download

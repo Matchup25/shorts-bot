@@ -206,7 +206,7 @@ def main() -> None:
     log(f"Story for {key} ({kind})")
     brain = Brain(cfg)
     used = {h.get("link") for h in hist} | {link for h in load_history() for link in h.get("links", [])}
-    for attempt in range(3):
+    for attempt in range(2):
         picked = choose(brain, cfg, kind, used)
         if not picked:
             log("  nothing suitable found")

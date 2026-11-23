@@ -16,6 +16,8 @@ class Brain:
         self.models = list(cfg.get("gemini_models") or ["gemini-flash-latest"])
         self.cfg = cfg
         self._working_model = None
+        self._exhausted = set()   # Gemini models with no allowance left in this run
+        self._gemini_down = False
 
     # ------------------------------------------------------------------ core
     def _fallback_models(self) -> list:
@@ -34,35 +36,44 @@ class Brain:
         return sorted(found, key=rank)
 
     def ask(self, prompt: str, temperature: float = 0.7, prefer: list | None = None) -> dict:
-        """Send a prompt, get JSON back. Retries and falls back to other models.
-        `prefer`: models to try once first (e.g. a stronger model for fact-checking); on any error the
-        normal models are used."""
+        """Send a prompt, get JSON back.
+        Gemini first (several free models, each with its own daily allowance). A model whose daily
+        allowance is used up is skipped at once for the rest of the run. If no Gemini model answers,
+        the same prompt goes to Cloudflare Workers AI (free daily allowance on the account we already use
+        for pictures), so a Short is never lost just because Gemini is full or overloaded."""
+        import os
+        if os.environ.get("LLM_FORCE", "").lower() == "cloudflare":
+            return self._ask_cloudflare(prompt, temperature)
+        if not self._gemini_down:
+            try:
+                return self._ask_gemini(prompt, temperature, prefer)
+            except Exception as exc:
+                log(f"  Gemini not available ({str(exc)[:160]}); using Cloudflare AI instead")
+                self._gemini_down = True
+        return self._ask_cloudflare(prompt, temperature)
+
+    def _ask_gemini(self, prompt: str, temperature: float, prefer: list | None = None) -> dict:
         from google.genai import types
+        cfg = types.GenerateContentConfig(temperature=temperature, response_mime_type="application/json")
+        started = time.time()
         for model in prefer or []:
             try:
-                resp = self.client.models.generate_content(
-                    model=model, contents=prompt,
-                    config=types.GenerateContentConfig(temperature=temperature, response_mime_type="application/json"))
+                resp = self.client.models.generate_content(model=model, contents=prompt, config=cfg)
                 time.sleep(float(self.cfg.get("gemini_pause_seconds", 2)))
                 return _parse_json(resp.text)
             except Exception as exc:
                 log(f"  {model} not usable now ({str(exc)[:70]}), using the normal model")
         candidates = ([self._working_model] if self._working_model else []) + self.models
-        tried, last_error = set(), None
+        last_error = None
         for round_ in range(2):
             for model in candidates:
-                if not model or model in tried:
+                if not model or model in self._exhausted:
                     continue
-                for attempt in range(4):
+                for attempt in range(3):
+                    if time.time() - started > 300:  # never block a run for long: fall back instead
+                        raise RuntimeError(f"Gemini too slow right now ({last_error})")
                     try:
-                        resp = self.client.models.generate_content(
-                            model=model,
-                            contents=prompt,
-                            config=types.GenerateContentConfig(
-                                temperature=temperature,
-                                response_mime_type="application/json",
-                            ),
-                        )
+                        resp = self.client.models.generate_content(model=model, contents=prompt, config=cfg)
                         self._working_model = model
                         time.sleep(float(self.cfg.get("gemini_pause_seconds", 2)))  # stay under per-minute limits
                         return _parse_json(resp.text)
@@ -70,16 +81,50 @@ class Brain:
                         last_error = exc
                         msg = str(exc)
                         if "404" in msg or "NOT_FOUND" in msg or "not found" in msg.lower():
-                            log(f"  model {model} not available, trying next")
+                            self._exhausted.add(model)
                             break
-                        wait = 20 * (attempt + 1)
-                        log(f"  Gemini busy/limited ({msg[:90]}), waiting {wait}s")
+                        if "PerDay" in msg or "per day" in msg.lower() or "limit: 0" in msg:
+                            log(f"  {model}: daily free allowance used up, skipping it")
+                            self._exhausted.add(model)
+                            break
+                        wait = 15 * (attempt + 1)
+                        log(f"  {model} busy ({msg[:60]}), waiting {wait}s")
                         time.sleep(wait)
-                tried.add(model)
+                if model != self._working_model:
+                    self._exhausted.add(model)
             if round_ == 0:
-                candidates = self._fallback_models()
-                log(f"  fallback models: {candidates[:5]}")
+                candidates = [m for m in self._fallback_models() if m not in self._exhausted]
+                log(f"  other Gemini models: {candidates[:5]}")
         raise RuntimeError(f"Gemini did not answer: {last_error}")
+
+    def _ask_cloudflare(self, prompt: str, temperature: float) -> dict:
+        import os
+        import requests
+        from .media import _clean_secret
+        account = _clean_secret(os.environ.get("CF_ACCOUNT_ID", ""))
+        token = _clean_secret(os.environ.get("CF_API_TOKEN", ""))
+        if not account or not token:
+            raise RuntimeError("Gemini is not available and Cloudflare AI is not set up")
+        url = f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/v1/chat/completions"
+        last = None
+        for model in self.cfg.get("cloudflare_models") or ["@cf/openai/gpt-oss-120b", "@cf/meta/llama-3.3-70b-instruct-fp8-fast"]:
+            for attempt in range(2):
+                try:
+                    r = requests.post(url, timeout=180, headers={"Authorization": f"Bearer {token}"}, json={
+                        "model": model, "temperature": temperature, "max_tokens": 4000,
+                        "messages": [{"role": "system", "content": "You answer with one valid JSON object only, no other text."},
+                                     {"role": "user", "content": prompt}]})
+                    if not r.ok:
+                        raise RuntimeError(f"{r.status_code} {r.text[:200]}")
+                    content = r.json()["choices"][0]["message"].get("content") or ""
+                    data = _parse_json(content)
+                    log(f"  (answered by Cloudflare {model.split('/')[-1]})")
+                    return data
+                except Exception as exc:
+                    last = exc
+                    log(f"  Cloudflare {model.split('/')[-1]} failed: {str(exc)[:120]}")
+                    time.sleep(5)
+        raise RuntimeError(f"No AI model answered (Gemini full, Cloudflare: {last})")
 
     # ---------------------------------------------------------------- agents
     @staticmethod
