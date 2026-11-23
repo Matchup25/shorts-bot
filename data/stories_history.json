@@ -34,5 +34,14 @@
   "link": "https://www.bbc.co.uk/news/articles/cq62pn6j42jko?at_medium=RSS&at_campaign=rss",
   "headline": "Nvidia Shares Rally After Jensen Huang Returns",
   "media_id": "18128248195900689"
+ },
+ {
+  "slot": "2026-11-23T20:47Z",
+  "kind": "fact",
+  "date": "2026-11-23T20:47+00:00",
+  "title": "Cop31 collapses: why did climate talks fall apart? - The Latest",
+  "link": "https://www.theguardian.com/news/audio/2026/nov/23/cop31-collapses-why-did-climate-talks-fall-apart-the-latest",
+  "headline": "Climate talks fail for the first time in 17 years",
+  "media_id": "18117815954163916"
  }
 ]
