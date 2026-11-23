@@ -104,6 +104,8 @@ jobs:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
           CHROME_PATH: /usr/bin/google-chrome
           DRY_RUN: ${{ inputs.test_mode }}
           PRIVACY_OVERRIDE: ${{ inputs.privacy }}
@@ -138,11 +140,12 @@ jobs:
           git config user.name "shorts-bot"
           git config user.email "shorts-bot@users.noreply.github.com"
           git add data/history.json
+          git add data/playbook.md data/ig_history.json 2>/dev/null || true
           git commit -q -m "Published a new Short" || exit 0
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done
 
-  # The same Short as an Instagram Reel, published at the same time as on YouTube.
-  # Skipped automatically until the IG_ACCESS_TOKEN secret exists.
+  # When the Short goes live: post the discussion question as a YouTube comment and publish
+  # the same video as an Instagram Reel (Instagram is skipped until IG_ACCESS_TOKEN exists).
   instagram:
     needs: make-short
     if: inputs.test_mode != true
@@ -151,25 +154,29 @@ jobs:
     env:
       IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
       IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
+      YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+      YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+      YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
     steps:
       - name: Is Instagram set up?
         id: ig
         run: |
           if [ -n "$IG_ACCESS_TOKEN" ]; then echo "on=true" >> "$GITHUB_OUTPUT"; else echo "Instagram is not set up yet: skipping."; fi
       - uses: actions/checkout@v5
-        if: steps.ig.outputs.on == 'true'
       - uses: actions/setup-python@v6
-        if: steps.ig.outputs.on == 'true'
         with:
           python-version: "3.12"
       - name: Install
-        if: steps.ig.outputs.on == 'true'
-        run: pip install -q requests cryptography pyyaml
+        run: pip install -q requests cryptography pyyaml google-api-python-client google-auth
       - uses: actions/download-artifact@v4
-        if: steps.ig.outputs.on == 'true'
         with:
           name: shorts
           path: output
+      - name: Wait until the Short goes live
+        run: python -m bot.golive wait --meta output/ig.json
+      - name: Ask the viewers a question (YouTube comment)
+        continue-on-error: true
+        run: python -m bot.golive comment --meta output/ig.json
       - name: Put the video online for Instagram (ig-media branch)
         if: steps.ig.outputs.on == 'true'
         id: host

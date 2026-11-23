@@ -71,6 +71,15 @@ class Brain:
         raise RuntimeError(f"Gemini did not answer: {last_error}")
 
     # ---------------------------------------------------------------- agents
+    @staticmethod
+    def _playbook() -> str:
+        from .learn import playbook_text
+        text = playbook_text()
+        if not text:
+            return ""
+        return ("WHAT HAS WORKED ON OUR CHANNEL (from our own numbers; follow it when it fits, but never at the\n"
+                "expense of truth, neutrality or the other rules):\n" + text + "\n\n")
+
     def pick_stories(self, stories: list, history: list, trends: list | None = None) -> list:
         listing = "\n".join(
             f"[{s['id']}] ({s['source']}, reported by {s.get('outlets', 1)} outlets) {s['title']} — {s['summary'][:220]}"
@@ -87,7 +96,7 @@ NEVER PICK: {avoid}. Also avoid tragedies, anything graphic, and anything that w
 Do not pick a story we already covered:
 {done}
 
-What people are searching for on Google right now (prefer stories that match these, if they fit the rules):
+{self._playbook()}What people are searching for on Google right now (prefer stories that match these, if they fit the rules):
 {", ".join((trends or [])[:30]) or "(not available)"}
 
 Today's stories:
@@ -177,7 +186,7 @@ Return JSON:
         prompt = f"""Write a YouTube Short (cinematic animated news explainer) about this news story.
 Use ONLY facts stated in the sources below. Never invent numbers, quotes, names or dates. If sources disagree, use the
 cautious version. Neutral tone, no opinions on politics. Write in English, simple words, short punchy sentences.
-{fix}
+{fix}{self._playbook()}
 RULES
 - 4 or 5 scenes. Total narration 75-95 words (about 30 seconds): short Shorts are watched to the end.
 - Scene 1 is the hook and must make people stop scrolling in under 2 seconds: start with the most surprising

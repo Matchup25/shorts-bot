@@ -23,9 +23,49 @@ def service():
         client_id=env("YT_CLIENT_ID"),
         client_secret=env("YT_CLIENT_SECRET"),
         token_uri=TOKEN_URI,
-        scopes=["https://www.googleapis.com/auth/youtube.upload", "https://www.googleapis.com/auth/youtube.readonly"],
+        # no fixed scopes: the token keeps whatever permissions were granted when it was made
     )
     return build("youtube", "v3", credentials=creds, cache_discovery=False)
+
+
+def granted_scopes() -> list:
+    """Which YouTube permissions the saved token has (to know if comments/analytics are allowed)."""
+    try:
+        r = requests.post(TOKEN_URI, timeout=20, data={
+            "grant_type": "refresh_token", "refresh_token": env("YT_REFRESH_TOKEN"),
+            "client_id": env("YT_CLIENT_ID"), "client_secret": env("YT_CLIENT_SECRET")})
+        return r.json().get("scope", "").split() if r.ok else []
+    except Exception:
+        return []
+
+
+def comment(yt, video_id: str, text: str):
+    """Post a top-level comment on our own video (needs the youtube.force-ssl permission)."""
+    body = {"snippet": {"videoId": video_id, "topLevelComment": {"snippet": {"textOriginal": text}}}}
+    res = yt.commentThreads().insert(part="snippet", body=body).execute()
+    return res.get("id")
+
+
+def analytics_retention(video_ids: list, start: str, end: str) -> dict:
+    """Average % watched and seconds watched per video (needs yt-analytics.readonly). {} if not allowed."""
+    if not video_ids:
+        return {}
+    from google.oauth2.credentials import Credentials
+    from googleapiclient.discovery import build
+    creds = Credentials(token=None, refresh_token=env("YT_REFRESH_TOKEN"), client_id=env("YT_CLIENT_ID"),
+                        client_secret=env("YT_CLIENT_SECRET"), token_uri=TOKEN_URI)
+    try:
+        ya = build("youtubeAnalytics", "v2", credentials=creds, cache_discovery=False)
+        res = ya.reports().query(ids="channel==MINE", startDate=start, endDate=end, dimensions="video",
+                                 metrics="views,averageViewPercentage,averageViewDuration",
+                                 filters="video==" + ",".join(video_ids[:200]), maxResults=200).execute()
+    except Exception as exc:
+        log(f"  retention numbers not available ({str(exc)[:120]})")
+        return {}
+    out = {}
+    for row in res.get("rows", []) or []:
+        out[row[0]] = {"views": row[1], "avg_pct": round(row[2], 1), "avg_sec": round(row[3], 1)}
+    return out
 
 
 def popular_hashtags(yt, keywords: list) -> list:

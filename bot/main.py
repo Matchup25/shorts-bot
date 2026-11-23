@@ -5,7 +5,7 @@ import math
 import os
 import sys
 
-from . import assemble, instagram, media, news, render, slots, voice, youtube
+from . import assemble, instagram, learn, media, news, render, slots, voice, youtube
 from .brain import Brain
 from .util import OUTPUT, load_config, load_history, log, save_history, DATA
 
@@ -73,10 +73,18 @@ def main() -> None:
     log(f"  {len(stories)} fresh stories")
 
     brain = Brain(cfg)
+    yt = None if dry_run and not os.environ.get("YT_REFRESH_TOKEN") else youtube.service()
+    if yt:
+        log("Learning from our earlier videos…")
+        try:
+            learn.update_stats(yt, history)
+            learn.instagram_stats()
+            learn.maybe_write_playbook(brain, history)
+        except Exception as exc:  # learning must never stop a Short
+            log(f"  learning step skipped: {exc}")
     log("2/6 Choosing the best stories…")
     trends = youtube.google_trends()
     picks = brain.pick_stories(stories, history, trends)
-    yt = None if dry_run and not os.environ.get("YT_REFRESH_TOKEN") else youtube.service()
     if yt and picks:
         picks = rank_by_demand(yt, picks)
 

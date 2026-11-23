@@ -38,6 +38,10 @@ jobs:
           python - <<'PY'
           import json
           from bot import youtube
+          names = {"youtube.upload": "upload", "youtube.readonly": "read", "youtube.force-ssl": "comments",
+                   "yt-analytics.readonly": "analytics"}
+          got = [names.get(x.rsplit("/", 1)[-1], x) for x in youtube.granted_scopes()]
+          print("YOUTUBE PERMISSIONS:", ", ".join(got) or "(token not working)")
           yt = youtube.service()
           for ch in yt.channels().list(part="snippet", mine=True).execute().get("items", []):
               print("CHANNEL:", ch["snippet"]["title"], ch["snippet"].get("customUrl", ""), ch["id"])
