@@ -27,7 +27,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: daily-short
+  # test runs get their own lane, so they never wait behind a live run that is waiting to post on Instagram
+  group: daily-short-${{ inputs.test_mode == true && 'test' || 'live' }}
   cancel-in-progress: false
 
 jobs:

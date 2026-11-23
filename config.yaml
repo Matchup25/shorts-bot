@@ -17,6 +17,7 @@ privacy: public
 timezone: Europe/Zurich
 publish_times:
   - "07:00"
+  - "13:00"
   - "19:00"
 
 # Weekly show (every Sunday): number of stories and time it goes live
