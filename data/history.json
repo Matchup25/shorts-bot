@@ -6,7 +6,20 @@
       "https://www.theguardian.com/world/2026/nov/22/south-korea-education-minister-resigns-after-ai-cheating-scandal-engulfs-university-exams",
       "https://www.bbc.co.uk/news/articles/cw3dgk29d37no?at_medium=RSS&at_campaign=rss"
     ],
-    "video_id": "QQN-clSJmGw"
+    "video_id": "QQN-clSJmGw",
+    "stats": {
+      "latest": {
+        "view": 79,
+        "like": 2,
+        "comment": 0,
+        "age_days": 1.09
+      },
+      "1d": {
+        "view": 79,
+        "like": 2,
+        "comment": 0
+      }
+    }
   },
   {
     "date": "2026-11-22T14:34",
@@ -15,7 +28,15 @@
       "https://www.theguardian.com/games/2026/nov/21/a-new-record-for-entertainment-grand-theft-auto-vi-sales-hit-38bn-on-first-day-of-release-developer-says"
     ],
     "video_id": "TSxuU_H9WgU",
-    "publish_at": "2026-11-22T18:00:00Z"
+    "publish_at": "2026-11-22T18:00:00Z",
+    "stats": {
+      "latest": {
+        "view": 19,
+        "like": 1,
+        "comment": 0,
+        "age_days": 0.92
+      }
+    }
   },
   {
     "date": "2026-11-22T17:14",
@@ -25,7 +46,15 @@
     ],
     "video_id": "g0KnJ-1kXvk",
     "publish_at": "2026-11-23T06:00:00Z",
-    "slot": "2026-11-23T06:00:00Z"
+    "slot": "2026-11-23T06:00:00Z",
+    "stats": {
+      "latest": {
+        "view": 15,
+        "like": 0,
+        "comment": 0,
+        "age_days": 0.42
+      }
+    }
   },
   {
     "date": "2026-11-23T08:56",
@@ -87,6 +116,81 @@
         [
           24.0,
           "The US Army plans to detonate four tonnes of degraded explosives in Iowa."
+        ]
+      ]
+    },
+    "stats": {
+      "latest": {
+        "view": 4,
+        "like": 0,
+        "comment": 0,
+        "age_days": 0.17
+      }
+    }
+  },
+  {
+    "date": "2026-11-23T16:24",
+    "title": "89‑Year‑Old Uses Tesla With Almost No Steering",
+    "links": [
+      "https://www.npr.org/2026/11/23/nx-s1-6020559/senior-drivers-tesla-automated-driving-safety"
+    ],
+    "video_id": "w0-Iw_pHZis",
+    "publish_at": "2026-11-23T18:00:00Z",
+    "slot": "2026-11-23T18:00:00Z",
+    "category": "tech",
+    "hook": "An 89‑year‑old barely touches the steering wheel in her Tesla.",
+    "words": 84,
+    "seconds": 31.4,
+    "demand": {
+      "query": "Tesla senior drivers",
+      "videos": 4,
+      "views": 429,
+      "top": 338
+    },
+    "editor_rank": 6,
+    "contest": {
+      "titles": [
+        [
+          25.5,
+          "Tesla seniors: 89‑Year‑old rides with light wheel contact"
+        ],
+        [
+          25.0,
+          "Tesla senior driver: 89‑year‑old barely touches wheel"
+        ],
+        [
+          23.0,
+          "89‑Year‑Old Uses Tesla FSD, barely steering 🚗"
+        ],
+        [
+          22.5,
+          "Senior Tesla driver trusts FSD on Colorado slopes"
+        ],
+        [
+          22.0,
+          "89‑Year‑OF Uses Tesla With Almost No Steering"
+        ],
+        [
+          21.5,
+          "Elderly Tesla driver stays independent with FSD"
+        ]
+      ],
+      "hooks": [
+        [
+          26.5,
+          "Nine times safer, an 89‑year‑old barely steers her Tesla."
+        ],
+        [
+          25.0,
+          "Only light contact: 89‑year‑old navigates Colorado roads with Tesla FSD."
+        ],
+        [
+          23.5,
+          "She chooses routes on a touchscreen while Tesla drives herself."
+        ],
+        [
+          23.5,
+          "An 89‑year‑old barely touches the steering wheel in her Tesla."
         ]
       ]
     }
