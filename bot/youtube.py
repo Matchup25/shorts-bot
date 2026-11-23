@@ -60,7 +60,8 @@ def analytics_retention(video_ids: list, start: str, end: str) -> dict:
                                  metrics="views,averageViewPercentage,averageViewDuration",
                                  filters="video==" + ",".join(video_ids[:200]), maxResults=200).execute()
     except Exception as exc:
-        log(f"  retention numbers not available ({str(exc)[:120]})")
+        detail = getattr(exc, "reason", "") or str(exc)[-200:]
+        log(f"  retention numbers not available: {detail}")
         return {}
     out = {}
     for row in res.get("rows", []) or []:

@@ -85,6 +85,8 @@ def main() -> None:
     log("2/6 Choosing the best stories…")
     trends = youtube.google_trends()
     picks = brain.pick_stories(stories, history, trends)
+    if yt and picks:
+        picks = rank_by_demand(yt, picks)
     force = os.environ.get("FORCE_STORY", "").strip().lower()
     if dry_run and force:  # test runs only: make a Short about a chosen story
         forced = [s for s in stories if force in s["title"].lower()]
@@ -92,8 +94,6 @@ def main() -> None:
             forced[0]["yt_query"] = forced[0]["title"]
             picks = forced[:1] + [p for p in picks if p is not forced[0]]
             log(f"  test: forcing the story '{forced[0]['title']}'")
-    if yt and picks:
-        picks = rank_by_demand(yt, picks)
 
     made = 0
     for story in picks:
