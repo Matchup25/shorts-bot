@@ -308,7 +308,9 @@ Do this:
 2. For each impression copy the exact source sentence that proves it, or "" if none does. An impression is
    supported only if a source says the SAME thing with the SAME certainty and the SAME subject: a related problem,
    partial progress, an attempt, a claim or a prediction does NOT support "solved", "proved", "cured", "confirmed".
-3. Say whether our title claims MORE than the outlet's own headline (bigger, more certain, more famous subject).
+3. Say whether our title claims MORE than the outlet's own headline. Adding a fact or number that IS in the
+   article is fine. Only answer true when our title is more certain ("may" -> "will", "claims" -> "proved"),
+   bigger (a partial result presented as complete) or about a more famous subject than the headline.
 4. Check the narration, headlines and question: any wrong number, name or date, anything unsupported, misleading,
    one-sided on politics, defamatory or unfair to a real person.
 

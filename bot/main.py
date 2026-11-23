@@ -96,7 +96,7 @@ def main() -> None:
             log(f"  test: forcing the story '{forced[0]['title']}'")
 
     made = 0
-    for story in picks:
+    for story in picks[:3]:  # at most 3 stories per run (each costs several AI calls)
         log(f"3/6 Writing: {story['title']}")
         sources = [story] + news.related(story, stories)
         for s in sources:
