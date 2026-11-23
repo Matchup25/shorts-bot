@@ -26,5 +26,69 @@
     "video_id": "g0KnJ-1kXvk",
     "publish_at": "2026-11-23T06:00:00Z",
     "slot": "2026-11-23T06:00:00Z"
+  },
+  {
+    "date": "2026-11-23T08:56",
+    "title": "4-Ton Bomb Hazard: US Army Iowa Detonation ⚠️",
+    "links": [
+      "https://www.bbc.co.uk/news/articles/cvglrx764gdxo?at_medium=RSS&at_campaign=rss",
+      "https://www.aljazeera.com/news/2026/11/23/extremely-concerning-inside-a-us-army-plan-to-detonate-iowa-lead-stores?traffic_source=rss"
+    ],
+    "video_id": "0-9c8AREIL4",
+    "publish_at": "2026-11-23T12:00:00Z",
+    "slot": "2026-11-23T12:00:00Z",
+    "category": "world",
+    "hook": "68 barrels of US Army explosives in Iowa risk unplanned detonation.",
+    "words": 71,
+    "seconds": 32.3,
+    "demand": {
+      "query": "us army iowa detonation",
+      "videos": 10,
+      "views": 985329,
+      "top": 338101
+    },
+    "editor_rank": 1,
+    "contest": {
+      "titles": [
+        [
+          27.5,
+          "4-Ton Bomb Hazard: US Army Iowa Detonation ⚠️"
+        ],
+        [
+          26.5,
+          "Freeze Risk Spurs US Army Iowa Detonation ⚠️"
+        ],
+        [
+          26.0,
+          "US Army Iowa Detonation Risks 4-Ton Explosion"
+        ],
+        [
+          25.5,
+          "US Army Iowa Detonation Blocked by Court"
+        ],
+        [
+          24.5,
+          "US Army Iowa Detonation Facing Court Pause"
+        ]
+      ],
+      "hooks": [
+        [
+          27.5,
+          "68 barrels of US Army explosives in Iowa risk unplanned detonation."
+        ],
+        [
+          27.0,
+          "Over 9,700 pounds of US Army explosives became volatile in Iowa."
+        ],
+        [
+          26.5,
+          "Four tonnes of unstable US Army explosives risk detonating below 30°F."
+        ],
+        [
+          24.0,
+          "The US Army plans to detonate four tonnes of degraded explosives in Iowa."
+        ]
+      ]
+    }
   }
 ]
