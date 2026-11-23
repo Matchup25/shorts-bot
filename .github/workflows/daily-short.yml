@@ -29,10 +29,6 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  # test runs get their own lane, so they never wait behind a live run that is waiting to post on Instagram
-  group: daily-short-${{ inputs.test_mode == true && 'test' || 'live' }}
-  cancel-in-progress: false
 
 jobs:
   check:
@@ -56,6 +52,11 @@ jobs:
   make-short:
     needs: check
     if: needs.check.outputs.due == 'true'
+    # one Short at a time (test runs have their own lane). Only this job is serialised, so a run that is
+    # waiting to post on Instagram never blocks the next wake-up.
+    concurrency:
+      group: make-short-${{ inputs.test_mode == true && 'test' || 'live' }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
