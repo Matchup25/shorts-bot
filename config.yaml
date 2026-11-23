@@ -22,7 +22,7 @@ publish_times:
   - "19:00"
 
 # Instagram stories ("LAST MINUTE" / "DID YOU KNOW?", alternating), Zurich time
-story_times: ["07:45", "10:45", "13:45", "16:45", "19:45", "22:45"]
+story_times: ["06:47", "09:47", "12:47", "15:47", "18:47", "21:47"]  # = the wake-ups of the cron-job.org timer
 
 # Weekly show (every Sunday): number of stories and time it goes live
 weekly_stories: 15

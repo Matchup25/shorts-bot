@@ -27,7 +27,7 @@ from .util import DATA, OUTPUT, ROOT, load_config, load_history, log
 
 HISTORY = DATA / "stories_history.json"
 WINDOW = dt.timedelta(minutes=150)
-DEFAULT_TIMES = ["07:45", "10:45", "13:45", "16:45", "19:45", "22:45"]
+DEFAULT_TIMES = ["06:47", "09:47", "12:47", "15:47", "18:47", "21:47"]
 KINDS = ["last_minute", "fact"]
 
 
