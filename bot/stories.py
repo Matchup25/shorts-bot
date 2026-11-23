@@ -108,13 +108,18 @@ does not support "done"). Also say whether the card claims more than the outlet'
 Return JSON: {{"impressions": [{{"claim": "...", "evidence": "...", "supported": true}}],
  "stronger_than_outlet": false, "approved": true, "problems": ["..."]}}"""
     res = brain.ask(prompt, temperature=0.0)
+    from .brain import evidence_in, numbers_backed
     imps = res.get("impressions") or []
-    weak = [i for i in imps if not i.get("supported") or not str(i.get("evidence", "")).strip()]
-    ok = str(res.get("approved")).lower() in {"true", "yes", "1"} and imps and not weak \
+    article = f"{story['title']}\n{story['text']}"
+    weak = [i for i in imps if not i.get("supported") or not evidence_in(i.get("evidence", ""), article)]
+    unbacked = numbers_backed(f"{card.get('headline')} {card.get('text')}",
+                              [i.get("evidence", "") for i in imps if i not in weak])
+    ok = str(res.get("approved")).lower() in {"true", "yes", "1"} and imps and not weak and not unbacked \
         and res.get("stronger_than_outlet") not in (True, "true", "True")
     if not ok:
         log("  card rejected by the fact-check: " + "; ".join(
-            [str(i.get("claim")) for i in weak] + [str(p) for p in res.get("problems") or []]))
+            [str(i.get("claim")) for i in weak] + [str(p) for p in res.get("problems") or []]
+            + ([f"numbers not in the article quotes: {unbacked}"] if unbacked else [])))
     return bool(ok)
 
 

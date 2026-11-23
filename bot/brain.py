@@ -320,7 +320,12 @@ Return JSON:
         result = self.ask(prompt, temperature=0.0, prefer=self.cfg.get("checker_models"))
         problems = list(result.get("problems") or [])
         impressions = result.get("impressions") or []
-        weak = [i for i in impressions if not i.get("supported") or not str(i.get("evidence", "")).strip()]
+        all_text = "\n".join(f"{s['title']}\n{s['text']}" for s in sources)
+        weak = [i for i in impressions if not i.get("supported") or not evidence_in(i.get("evidence", ""), all_text)]
+        unbacked = numbers_backed(f"{script['title']} {script['scenes'][0]['narration']}",
+                                  [i.get("evidence", "") for i in impressions if i not in weak])
+        if unbacked:
+            problems.append(f"Numbers in the title or first sentence not found in the quoted sources: {unbacked}")
         if not impressions:
             problems.append("The fact-check did not list what the title and first sentence claim.")
         for i in weak:
@@ -328,7 +333,7 @@ Return JSON:
         if result.get("stronger_than_outlet") in (True, "true", "True"):
             problems.append(f"The title claims more than the outlet's own headline ('{outlet}').")
         ok = str(result.get("approved")).lower() in {"true", "yes", "1"} and not weak and impressions \
-            and result.get("stronger_than_outlet") not in (True, "true", "True")
+            and not unbacked and result.get("stronger_than_outlet") not in (True, "true", "True")
         return {"approved": bool(ok), "problems": problems, "impressions": impressions}
 
     # ------------------------------------------------------------ weekly show
@@ -436,6 +441,30 @@ Format: "#word" with no spaces. Return JSON: {{"hashtags": ["#...", ...]}}"""
 
 
 # ---------------------------------------------------------------------- helpers
+def _norm(text: str) -> str:
+    return " ".join(re.sub(r"[^a-z0-9%$.,]+", " ", str(text).lower()).split())
+
+
+def evidence_in(evidence: str, source_text: str) -> bool:
+    """True if the quoted evidence really comes from the article (not invented by the checker)."""
+    ev, src = _norm(evidence), _norm(source_text)
+    if len(ev) < 12:
+        return False
+    if ev in src:
+        return True
+    words = ev.split()
+    grams = [" ".join(words[i:i + 3]) for i in range(max(1, len(words) - 2))]
+    found = sum(1 for g in grams if g in src)
+    return found >= 0.85 * len(grams)
+
+
+def numbers_backed(text: str, evidences: list) -> list:
+    """Numbers in our text that appear in none of the (verified) evidence sentences."""
+    nums = set(re.findall(r"\d+(?:[.,]\d+)?", str(text)))
+    joined = " ".join(_norm(e) for e in evidences)
+    return [n for n in nums if n not in joined]
+
+
 def _parse_json(text: str) -> dict:
     text = (text or "").strip()
     text = re.sub(r"^```(?:json)?|```$", "", text, flags=re.MULTILINE).strip()
