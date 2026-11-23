@@ -5,6 +5,7 @@
 
 # Name shown at the top of every video
 channel_name: "WORLD IN A SHOT"
+youtube_handle: "@shottheworld"
 
 # Who can see the uploaded video:
 #   private  = only you (use this while testing)

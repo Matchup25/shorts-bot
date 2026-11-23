@@ -204,6 +204,9 @@ RULES
 - "category": one of {CATEGORIES}.
 - "description": 2 sentences summarising the story for the YouTube description.
 - "search_keywords": 2-4 short keywords to find similar videos.
+- "question": one short open question for the comments that invites viewers to share their view or experience
+  about this story (max 15 words). Neutral: never take a side on politics, never mock anyone, no yes/no about
+  guilt or tragedy. Example: "Would you trust an AI to check your exam answers?"
 - "claims": list every factual claim used in the narration and title.
 
 SOURCES
@@ -211,7 +214,7 @@ SOURCES
 
 Return JSON:
 {{"title": "...", "category": "...", "scenes": [{{"narration": "...", "headline": "...", "visual": {{...}}}}],
- "description": "...", "search_keywords": ["..."], "claims": ["..."]}}"""
+ "description": "...", "search_keywords": ["..."], "question": "...", "claims": ["..."]}}"""
         script = self.ask(prompt, temperature=0.8)
         return _normalise_script(script)
 
@@ -230,6 +233,7 @@ Reject if:
 Small simplifications of wording are fine; changes in certainty or in who did what are not.
 
 TITLE: {script['title']}
+COMMENT QUESTION (must be neutral and must not assume facts that are not in the sources): {script.get('question', '')}
 FIRST SENTENCE: {script['scenes'][0]['narration']}
 HEADLINES: {[sc['headline'] for sc in script['scenes']]}
 NARRATION:
@@ -387,5 +391,6 @@ def _normalise_script(script: dict) -> dict:
         "scenes": scenes,
         "description": str(script.get("description", "")).strip(),
         "search_keywords": [str(k) for k in script.get("search_keywords", [])][:4],
+        "question": str(script.get("question", "")).strip()[:140],
         "claims": script.get("claims", []),
     }

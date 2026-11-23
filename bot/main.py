@@ -7,7 +7,7 @@ import sys
 
 from . import assemble, instagram, media, news, render, slots, voice, youtube
 from .brain import Brain
-from .util import OUTPUT, load_config, load_history, log, save_history
+from .util import OUTPUT, load_config, load_history, log, save_history, DATA
 
 
 def summary(md: str) -> None:
@@ -16,6 +16,16 @@ def summary(md: str) -> None:
     if path:
         with open(path, "a", encoding="utf-8") as fh:
             fh.write(md + "\n")
+
+
+def weekly_link(cfg: dict) -> str:
+    """The latest Sunday show, or the channel's videos page until the first one is out."""
+    try:
+        hist = json.loads((DATA / "weekly_history.json").read_text())
+        vid = [h for h in hist if h.get("video_id")][-1]["video_id"]
+        return f"https://youtu.be/{vid}"
+    except Exception:
+        return f"https://www.youtube.com/{cfg.get('youtube_handle', '@shottheworld')}/videos"
 
 
 def rank_by_demand(yt, picks: list) -> list:
@@ -123,6 +133,8 @@ def main() -> None:
                           for m in media_list} - {""})
         description = (
             f"{script['description']}\n\n"
+            + (f"💬 {script['question']}\n\n" if script.get("question") else "")
+            + f"📺 The whole week in 15 stories, every Sunday 19:00 CET: {weekly_link(cfg)}\n\n"
             "Sources:\n" + "\n".join(f"• {s['source']}: {s['link']}" for s in sources) + "\n\n"
             "Narration voice is AI-generated."
             + (" Visuals: " + "; ".join(credits) + "." if credits else "") + "\n\n" + " ".join(tags)
@@ -160,7 +172,9 @@ def main() -> None:
             (OUTPUT / "ig.json").write_text(json.dumps({
                 "title": script["title"], "slot": slot, "publish_at": publish_at, "video_id": video_id,
                 "video": os.path.basename(out),
-                "caption": instagram.caption_for(script["title"], script["description"], source_names, tags),
+                "caption": instagram.caption_for(script["title"], script["description"], source_names, tags,
+                                                 script.get("question", ""), cfg.get("youtube_handle", "")),
+                "question": script.get("question", ""),
             }, ensure_ascii=False, indent=1), encoding="utf-8")
 
         link = f"https://youtube.com/shorts/{video_id}" if video_id else "(test mode – see Artifacts below)"
