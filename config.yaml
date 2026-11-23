@@ -40,6 +40,9 @@ ai_disclosure: true
 max_story_age_hours: 36
 
 # Gemini models to try, in order (the bot falls back automatically)
+# A stronger model for the fact-check, tried first (skipped automatically if not available for free)
+checker_models:
+  - gemini-3.5-pro
 gemini_models:
   - gemini-3.5-flash
   - gemini-flash-latest

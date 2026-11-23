@@ -85,6 +85,13 @@ def main() -> None:
     log("2/6 Choosing the best stories…")
     trends = youtube.google_trends()
     picks = brain.pick_stories(stories, history, trends)
+    force = os.environ.get("FORCE_STORY", "").strip().lower()
+    if dry_run and force:  # test runs only: make a Short about a chosen story
+        forced = [s for s in stories if force in s["title"].lower()]
+        if forced:
+            forced[0]["yt_query"] = forced[0]["title"]
+            picks = forced[:1] + [p for p in picks if p is not forced[0]]
+            log(f"  test: forcing the story '{forced[0]['title']}'")
     if yt and picks:
         picks = rank_by_demand(yt, picks)
 
@@ -97,7 +104,7 @@ def main() -> None:
         script, feedback = None, ""
         for attempt in range(2):
             draft = brain.write_script(story, sources, feedback)
-            check = brain.verify(draft, sources)
+            check = brain.verify(draft, sources, story["title"])
             if str(check.get("approved")).lower() in {"true", "yes", "1"}:
                 script = draft
                 break
@@ -107,9 +114,9 @@ def main() -> None:
             log("  skipping this story (could not pass the fact-check)")
             continue
         # Title and hook contest; the winner must pass the fact-check again, otherwise the checked original stays.
-        sharp = brain.sharpen(script, story.get("yt_query", ""))
+        sharp = brain.sharpen(script, story.get("yt_query", ""), story["title"])
         if (sharp["title"], sharp["scenes"][0]["narration"]) != (script["title"], script["scenes"][0]["narration"]):
-            check = brain.verify(sharp, sources)
+            check = brain.verify(sharp, sources, story["title"])
             if str(check.get("approved")).lower() in {"true", "yes", "1"}:
                 script = sharp
                 log("  the contest winner passed the fact-check")

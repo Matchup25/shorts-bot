@@ -13,6 +13,9 @@ on:
         description: "Test mode: make the video but do NOT upload it"
         type: boolean
         default: false
+      story:
+        description: "Test runs only: words from the headline of a story to force"
+        default: ""
       auto:
         description: "Behave like a scheduled run (for an outside timer)"
         type: boolean
@@ -110,6 +113,7 @@ jobs:
           DRY_RUN: ${{ inputs.test_mode }}
           PRIVACY_OVERRIDE: ${{ inputs.privacy }}
           BOT_TRIGGER: ${{ inputs.auto }}
+          FORCE_STORY: ${{ inputs.story }}
         run: python -m bot.main
 
       - name: Keep the video for download

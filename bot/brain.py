@@ -33,9 +33,20 @@ class Brain:
             return (-nums[0], "lite" in name, "preview" in name)
         return sorted(found, key=rank)
 
-    def ask(self, prompt: str, temperature: float = 0.7) -> dict:
-        """Send a prompt, get JSON back. Retries and falls back to other models."""
+    def ask(self, prompt: str, temperature: float = 0.7, prefer: list | None = None) -> dict:
+        """Send a prompt, get JSON back. Retries and falls back to other models.
+        `prefer`: models to try once first (e.g. a stronger model for fact-checking); on any error the
+        normal models are used."""
         from google.genai import types
+        for model in prefer or []:
+            try:
+                resp = self.client.models.generate_content(
+                    model=model, contents=prompt,
+                    config=types.GenerateContentConfig(temperature=temperature, response_mime_type="application/json"))
+                time.sleep(float(self.cfg.get("gemini_pause_seconds", 2)))
+                return _parse_json(resp.text)
+            except Exception as exc:
+                log(f"  {model} not usable now ({str(exc)[:70]}), using the normal model")
         candidates = ([self._working_model] if self._working_model else []) + self.models
         tried, last_error = set(), None
         for round_ in range(2):
@@ -119,7 +130,7 @@ with the 6 best stories, best first."""
                 picks.append(story)
         return picks
 
-    def sharpen(self, script: dict, query: str = "") -> dict:
+    def sharpen(self, script: dict, query: str = "", headline: str = "") -> dict:
         """Title and hook contest: several candidates, scored on fixed criteria; the best one wins."""
         first = script["scenes"][0]["narration"]
         last = script["scenes"][-1]["narration"]
@@ -128,6 +139,7 @@ with the 6 best stories, best first."""
         prompt = f"""You optimise YouTube Shorts for news. Viewers decide in under 2 seconds whether to keep watching,
 from the TITLE in the feed and the FIRST SENTENCE they hear.
 
+The news outlet's own headline (our title must NEVER claim more than this): {headline or "(unknown)"}
 Current title: {script['title']}
 Current first sentence (hook): {first}
 Last sentence (the Short loops back to the hook, so the hook must still follow naturally from it): {last}
@@ -228,37 +240,49 @@ Return JSON:
         script = self.ask(prompt, temperature=0.8)
         return _normalise_script(script)
 
-    def verify(self, script: dict, sources: list) -> dict:
-        source_block = "\n\n".join(f"SOURCE {i+1} ({s['source']}):\n{s['text']}" for i, s in enumerate(sources))
+    def verify(self, script: dict, sources: list, headline: str = "") -> dict:
+        source_block = "\n\n".join(f"SOURCE {i+1} ({s['source']}): {s['title']}\n{s['text']}" for i, s in enumerate(sources))
         narration = "\n".join(f"- {sc['narration']}" for sc in script["scenes"])
-        prompt = f"""You are a strict fact-checker for a news channel. Check the TITLE, the FIRST SENTENCE, the HEADLINES and
-the NARRATION of a news Short against the sources.
+        outlet = headline or (sources[0]["title"] if sources else "")
+        prompt = f"""You are a strict fact-checker for a news channel. Viewers often see ONLY our title and hear ONLY our
+first sentence, so those two must be exactly as true and as certain as the news itself.
 
-Reject if:
-- any claim is not supported by the sources, or a number, name or date is wrong;
-- the title or the first sentence OVERSTATES the news: an attempt, a claim, a partial or related result presented as
-  done or as the famous big problem ("helped" -> "solved", "may" -> "will", "claims" -> "proved", "related to X" -> "X",
-  "progress on" -> "cracked"), or the action is credited to the wrong person or thing;
-- the title is misleading, or anything could be defamatory or unfair to a real person.
-Small simplifications of wording are fine; changes in certainty or in who did what are not.
-
-TITLE: {script['title']}
+THE NEWS OUTLET'S OWN HEADLINE: {outlet}
+OUR TITLE: {script['title']}
+OUR FIRST SENTENCE: {script['scenes'][0]['narration']}
 COMMENT QUESTION (must be neutral and must not assume facts that are not in the sources): {script.get('question', '')}
-FIRST SENTENCE: {script['scenes'][0]['narration']}
-HEADLINES: {[sc['headline'] for sc in script['scenes']]}
+HEADLINES ON SCREEN: {[sc['headline'] for sc in script['scenes']]}
 NARRATION:
 {narration}
 
 {source_block}
 
-First copy the exact source sentence that supports the TITLE and the one that supports the FIRST SENTENCE
-(empty if there is none), then decide.
-Return JSON: {{"title_evidence": "...", "hook_evidence": "...", "approved": true/false, "problems": ["..."]}}"""
-        result = self.ask(prompt, temperature=0.0)
-        if not str(result.get("title_evidence", "")).strip() or not str(result.get("hook_evidence", "")).strip():
-            result["approved"] = False
-            result.setdefault("problems", []).append("Title or first sentence has no supporting sentence in the sources.")
-        return result
+Do this:
+1. List every impression a viewer would get from OUR TITLE and OUR FIRST SENTENCE alone, in plain words
+   (e.g. "the Riemann hypothesis has been solved", "AI did it", "it happened this week").
+2. For each impression copy the exact source sentence that proves it, or "" if none does. An impression is
+   supported only if a source says the SAME thing with the SAME certainty and the SAME subject: a related problem,
+   partial progress, an attempt, a claim or a prediction does NOT support "solved", "proved", "cured", "confirmed".
+3. Say whether our title claims MORE than the outlet's own headline (bigger, more certain, more famous subject).
+4. Check the narration, headlines and question: any wrong number, name or date, anything unsupported, misleading,
+   one-sided on politics, defamatory or unfair to a real person.
+
+Return JSON:
+{{"impressions": [{{"claim": "...", "evidence": "...", "supported": true}}],
+ "stronger_than_outlet": false, "approved": true, "problems": ["..."]}}"""
+        result = self.ask(prompt, temperature=0.0, prefer=self.cfg.get("checker_models"))
+        problems = list(result.get("problems") or [])
+        impressions = result.get("impressions") or []
+        weak = [i for i in impressions if not i.get("supported") or not str(i.get("evidence", "")).strip()]
+        if not impressions:
+            problems.append("The fact-check did not list what the title and first sentence claim.")
+        for i in weak:
+            problems.append(f"Not supported by the sources: {i.get('claim')}")
+        if result.get("stronger_than_outlet") in (True, "true", "True"):
+            problems.append(f"The title claims more than the outlet's own headline ('{outlet}').")
+        ok = str(result.get("approved")).lower() in {"true", "yes", "1"} and not weak and impressions \
+            and result.get("stronger_than_outlet") not in (True, "true", "True")
+        return {"approved": bool(ok), "problems": problems, "impressions": impressions}
 
     # ------------------------------------------------------------ weekly show
     def pick_weekly(self, stories: list, count: int, date_range: str) -> list:
