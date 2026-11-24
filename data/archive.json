@@ -1,5 +1,509 @@
 [
 {
+"title": "Huawei found guilty of stealing trade secrets but acquitted of racketeering",
+"summary": "The verdict follows a months-long trial in New York.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/cmy49ngydqzpo?at_medium=RSS&at_campaign=rss",
+"published": 1795558364
+},
+{
+"title": "Tech sell-off resumes as euphoria from Jensen Huang’s Nvidia return subsides",
+"summary": "Sell-off signals investors are bracing for further volatility in key AI sector driving economic growth worldwide Technology shares led a market retreat Tuesday as caution returned after Jensen Huang’s extraordinary return to Nvidia days after he was forced to resign, with investors bracing for further volatility in a key sector driving economic growth worldwide. A day after Huang’s reinstatement a",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/business/2026/nov/24/nvidia-stock-falls-jensen-huang",
+"published": 1795557921
+},
+{
+"title": "Todd Blanche declines to confirm if Nvidia’s Jensen Huang was investigated",
+"summary": "The US attorney general refused to discuss claims by Donald Trump that his administration conducted a 'thorough' probe.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/todd-blanche-declines-to-confirm-if-nvidias-jensen-huang-was-investigated?traffic_source=rss",
+"published": 1795557686
+},
+{
+"title": "Colombian president blames ex-FARC rebels for car bomb blast",
+"summary": "Colombian President De la Espriella blames the FARC for plotting a bombing that injured tens and pledges to retaliate.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/colombian-president-blames-ex-farc-rebels-for-car-bomb-blast?traffic_source=rss",
+"published": 1795556742
+},
+{
+"title": "China’s Huawei found guilty of trade secrets conspiracy, fraud in US trial",
+"summary": "Jurors acquit the company of the most serious charge it faced of engaging in a criminal racketeering conspiracy.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/economy/2026/11/24/chinese-tech-giant-huawei-found-guilty-of-conspiracy-to-steal-trade-secrets?traffic_source=rss",
+"published": 1795556614
+},
+{
+"title": "Armed men take at least 25 hostages in supermarket in Colombia tourist hotspot",
+"summary": "A group of armed men are holding at least 25 people hostage in a supermarket in Colombia, according to officials.",
+"source": "Sky News",
+"link": "https://news.sky.com/story/armed-men-take-at-least-25-hostages-in-supermarket-in-colombia-tourist-hotspot-13616139",
+"published": 1795556160
+},
+{
+"title": "US attorney general dodges questions about Nvidia investigation",
+"summary": "Nvidia's share price have fallen 7% as lawmakers demand answers about President Donald Trump's involvement in Huang's reinstatement.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/crpdw1qx7jgxo?at_medium=RSS&at_campaign=rss",
+"published": 1795555182
+},
+{
+"title": "How tariffs, fuel and fertilizer costs are squeezing the U.S.'s biggest apple region",
+"summary": "Washington's $9 billion industry grows more than 70% of the nation's fresh apples. Farmers are being pressed by high costs, tariffs and a strong dollar that diminishes foreign purchasing power.",
+"source": "NPR",
+"link": "https://www.npr.org/sections/the-picture-show/2026/11/24/g-s1-154620/how-high-costs-are-squeezing-apple-producers",
+"published": 1795554569
+},
+{
+"title": "Armed men hold hostages at supermarket in top Colombian tourist destination",
+"summary": "President says 15 people released and Cartagena incident stems from botched robbery by ‘common criminals’ Armed and masked men have been holding people hostage in a supermarket since early Tuesday morning in Cartagena, one of Colombia’s most popular tourist cities. The country’s president, Abelardo de la Espriella, said 30 people had initially been taken hostage, but five had been released, and ho",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/world/2026/nov/24/cartagena-colombia-hostages-supermarket",
+"published": 1795554397
+},
+{
+"title": "The U.S. government is investigating Iranian ties to as many as 50 hacked commercial vessels",
+"summary": "The attacks, if officials who spoke to NPR are correct, may be the latest example of Iranian cyberattacks against global critical infrastructure during the war with the U.S.",
+"source": "NPR",
+"link": "https://www.npr.org/2026/11/24/nx-s1-6052994/hack-commercial-vessels-iran",
+"published": 1795554290
+},
+{
+"title": "Hostage situation reported in Colombia as armed men flee into supermarket",
+"summary": "President Abelardo de la Espriella says police and military have been deployed as situation unfolds in Cartagena.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/hostage-situation-reported-in-colombia-as-armed-men-flee-into-supermarket?traffic_source=rss",
+"published": 1795554286
+},
+{
+"title": "Libya’s Haftar visits Turkiye days after Ukraine hits Russian warship",
+"summary": "Ahead of Erdogan’s Libya trip, Haftar’s visit suggests Turkiye seeks another way to bring the country's rivals together.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/libyas-haftar-visits-turkiye-days-after-ukraine-hits-russian-warship?traffic_source=rss",
+"published": 1795552503
+},
+{
+"title": "US Army to detonate more than 4 tonnes of lead azide in Iowa on Wednesday",
+"summary": "Despite alarm about toxic lead, federal officials say destroying the unstable explosives is the safest course of action.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/us-army-to-detonate-more-than-4-tonnes-of-lead-azide-in-iowa-on-wednesday?traffic_source=rss",
+"published": 1795552120
+},
+{
+"title": "Hundreds of thousands could lose disability benefits under Timms plans for Pip shake-up",
+"summary": "Minister’s review says Pip system no longer fit for purpose and recommends new test for who is allowed to claim Hundreds of thousands of people face losing their disability benefits under plans being considered by ministers as part of a shake-up of the welfare system. Officials are drawing up plans to redesign the personal independence payment (Pip) system for adults in England and Wales after the",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/world/2026/nov/24/disability-benefits-timms-review-pip-personal-independence-payments",
+"published": 1795550431
+},
+{
+"title": "Turkish military helicopter crash kills five in western Turkiye",
+"summary": "The Defence Ministry did not elaborate on the cause of the crash, days after another deadly army helicopter accident.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/turkish-military-helicopter-crash-kills-five-in-western-turkiye?traffic_source=rss",
+"published": 1795549941
+},
+{
+"title": "5 questions Nvidia still faces after bringing back Jensen Huang",
+"summary": "Despite Jensen Huang's shock return as Nvidia's CEO, experts say it's anything but business as usual for the chipmaker.",
+"source": "CBS News",
+"link": "https://www.cbsnews.com/news/nvidia-jensen-huang-challenges/",
+"published": 1795549320
+},
+{
+"title": "NHS trusts to be investigated over ‘repeated failures’ to admit treatment errors",
+"summary": "Failing in their legal duty of candour adds to the distress of patients and families and damages trust, says England’s public service ombudsman Hospitals will be investigated for regularly breaching their legal duty to tell patients and their relatives when mistakes have happened. The public service ombudsman for England is launching an investigation into “repeated failures” by NHS trusts to disch",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/society/2026/nov/24/nhs-trusts-to-be-investigated-over-repeated-failures-to-admit-treatment-errors",
+"published": 1795548930
+},
+{
+"title": "Alia Syed wins £10,000 Jarman award for ‘depth and maturity’ of her experimental films",
+"summary": "The Welsh-Indian artist takes this year’s award, an established bellwether for future stars, for work focused on memory, migration and hidden histories Alia Syed has won this year’s Film London Jarman award, the prestigious UK prize for groundbreaking artist film-makers in the UK. The Welsh-Indian film-maker’s work, which incorporates themes of memory, migration and hidden histories, was praised b",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/artanddesign/2026/nov/24/alia-syed-wins-10000-jarman-award-for-depth-and-maturity-of-her-experimental-films",
+"published": 1795548654
+},
+{
+"title": "Putin says retaliation ‘inevitable’ after Ukraine hit Russian oil plants",
+"summary": "Ukrainian attacks subsided after Trump's mid-October declaration of an energy ceasefire, but picked up again afterwards.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/putin-says-kyiv-hit-russian-oil-plants-despite-trump-plea-vows-retaliation?traffic_source=rss",
+"published": 1795548164
+},
+{
+"title": "China Southern Airlines unit to buy 50 Boeing 737-8 planes",
+"summary": "The agreement marks the US planemaker's first major order from China in almost a decade.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/economy/2026/11/24/china-southern-airlines-unit-to-buy-50-boeing-737-8-planes?traffic_source=rss",
+"published": 1795547990
+},
+{
+"title": "US House counsel denies backing controversial raid on Ilhan Omar’s home",
+"summary": "Legal counsel challenges DOJ's assertion of House's involvement in controversial raid on Ilhan Omar's home.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/us-house-counsel-denies-backing-controversial-raid-on-ilhan-omars-home?traffic_source=rss",
+"published": 1795547725
+},
+{
+"title": "Nigerian monarch, 92, suspended after sexual assault claims",
+"summary": "The Emir of Daura is one of Nigeria's best-known monarchs, with politicians often trying to gain his support.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/cmglrz462nn6o?at_medium=RSS&at_campaign=rss",
+"published": 1795547431
+},
+{
+"title": "Life expectancy in Cuba falls for first time since 1950 amid economic crisis",
+"summary": "WHO chief says life expectancy has fallen from 78.8 years in 2020 to 74.4 in 2025, figures that predate US fuel blockade Life expectancy has fallen for the first time in Cuba since 1950 as the island reels from a severe economic crisis, the head of the World Health Organization (WHO) said on Tuesday. On a visit to Havana, WHO chief Tedros Adhanom Ghebreyesus said life expectancy had fallen from 78",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/world/2026/nov/24/cuba-life-expectancy-decline",
+"published": 1795547246
+},
+{
+"title": "Israel’s Ben-Gvir accused of seeking ‘religious war’ over mosque raids",
+"summary": "Israeli police have confiscated mosque loudspeakers as far-right lawmakers push legislation to restrict call to prayer.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/israels-ben-gvir-accused-of-seeking-religious-war-over-mosque-raids?traffic_source=rss",
+"published": 1795546969
+},
+{
+"title": "Chicken Shop Date host says she ended YouTube show … to find a real date",
+"summary": "Amelia Dimoldenberg described two panic attacks and said she wanted to end the hit series ‘before I start resenting it’ Amelia Dimoldenberg, the host of Chicken Shop Date, has said she decided to end the popular YouTube series which had increasingly left her feeling “isolated” and made her search for real relationships more challenging. The comedian, 32, also revealed she had questioned the future",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/culture/2026/nov/24/chicken-shop-date-youtube-amelia-dimoldenberg",
+"published": 1795546935
+},
+{
+"title": "Burnham under fire over influencers’ No 10 reception after TikTok video row",
+"summary": "Tories accuse PM of ‘degrading’ Downing Street as Max Balegde takes down clip of himself miming explicit lyrics Andy Burnham is facing a backlash for inviting social media influencers to Downing Street after one of a group attending an event posted a clip of himself miming to a viral song with explicit lyrics outside No 10. Downing Street said it was right that Max Balegde had taken down a TikTok ",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/politics/2026/nov/24/andy-burnham-influencers-no-10-reception-max-balegde-tiktok-explicit-lyrics",
+"published": 1795546068
+},
+{
+"title": "Global landmine casualties hit a five-year high, driven by Myanmar, Syria",
+"summary": "Landmine monitor found 84 percent of deaths caused by landmines were in Southeast Asia.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/global-landmine-casualties-hit-a-five-year-high-driven-by-myanmar-syria?traffic_source=rss",
+"published": 1795546025
+},
+{
+"title": "Faisal Islam: Fears over the AI boom haven't gone away",
+"summary": "There were legitimate fears before Huang's abrupt exit from Nvidia - and his return won't fix it",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/c6894evgpel5o?at_medium=RSS&at_campaign=rss",
+"published": 1795544503
+},
+{
+"title": "Israel attempts to jail Palestinian student at Hebrew University without trial",
+"summary": "Mahdi Tounsi appeared to have suffered maltreatment at hearing where he was not allowed to hear prosecution case against him Palestinian student Mahdi Tounsi appeared in a closed-door court hearing in Jerusalem, as academics and activists warned that Israel’s attempt to jail him without trial marked a serious escalation in attacks on Palestinian rights. Yael Berda, a lawyer and sociology professor",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/world/2026/nov/24/israel-jail-palestinian-student-mahdi-tounsi-hebrew-university-without-trial",
+"published": 1795543373
+},
+{
+"title": "Cameroon separatist leader pleads not guilty at war crimes trial in Norway",
+"summary": "Lucas Cho Ayaba is accused of remotely planning attacks that killed and injured dozens of civilians.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/cameroon-separatist-leader-pleads-not-guilty-in-war-crimes-trial?traffic_source=rss",
+"published": 1795541958
+},
+{
+"title": "US sanctions on Lebanon’s Hezbollah-affiliates may have limited impact",
+"summary": "Analysts say US sanctions unlikely to weaken Hezbollah significantly, but risk hurting everyday Lebanese.",
+"source": "Al Jazeera",
+"link": "https://www.aljazeera.com/news/2026/11/24/us-sanctions-on-lebanons-hezbollah-affiliates-may-have-limited-impact?traffic_source=rss",
+"published": 1795541157
+},
+{
+"title": "Zimbabwean convicted in South Africa of trying to fight in Ukraine",
+"summary": "Hundreds of people from different African countries have been recruited to fight for Russia, according to Ukraine.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/cmqj5qlj5yz9o?at_medium=RSS&at_campaign=rss",
+"published": 1795539840
+},
+{
+"title": "French ex-President Sarkozy and wife Carla Bruni to face trial",
+"summary": "It is the latest case involving Nicolas Sarkozy who became the first French ex-president to go to jail last year.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/c65y17pwv1z7o?at_medium=RSS&at_campaign=rss",
+"published": 1795538947
+},
+{
+"title": "Badger cull ruled out by Welsh government after speculation",
+"summary": "Plaid Cymru ministers rule out mass badger cull as part of new plans to tackle bovine tuberculosis.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/cm930yjy97xyo?at_medium=RSS&at_campaign=rss",
+"published": 1795538825
+},
+{
+"title": "You Can See Everything’s chaotic battle for the narrative about Elizabeth Holmes",
+"summary": "In Nathan Fielder’s new documentary, the protagonists and film-makers battle over who is the hero and who is the villain. It’s a fascinating insight into modern celebrity promotion • Don’t get the Close Up delivered to your inbox? Sign up here Thank you for signing up to the Close Up newsletter. This is our first-ever edition! And, just like on the show , I’ll be zooming in on the big culture ques",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/culture/2026/nov/23/you-can-see-everythings-chaotic-battle-for-the-narrative-about-elizabeth-holmes",
+"published": 1795538274
+},
+{
+"title": "Who needs perfume? The incredible link between body odour and relationships that last",
+"summary": "The longer you have been with your partner, the more likely you are to find their natural scent arousing, according to a study from Radboud University in the Netherlands Name: Body odour. Age: Everyone has always smelled of something. Continue reading...",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/lifeandstyle/2026/nov/24/who-needs-perfume-the-incredible-link-between-body-odour-and-relationships-that-last",
+"published": 1795537928
+},
+{
+"title": "‘The mistake has been corrected’: end of Jensen Huang’s brief walk in the wilderness",
+"summary": "Tech sector’s campaign to reinstate Nvidia boss began soon after ousting over affair with alleged Chinese spy The tech billionaires could hardly contain their delight. “Jensen!” exclaimed OpenAI’s chief executive, Sam Altman, in a one-word post on X. “Thanksgiving”, said Travis Kalanick, the Uber founder, who had been part of a core group of Silicon Valley leaders campaigning for this moment. Cont",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/technology/2026/nov/24/mistake-corrected-jensen-huang-resinstated-nvidia-analysis",
+"published": 1795537661
+},
+{
+"title": "Record 5,200 heat-linked deaths estimated in England this year",
+"summary": "The UK Health Security Agency says this year's number of deaths is twice that of the previous record year.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/cq2e83egrez3o?at_medium=RSS&at_campaign=rss",
+"published": 1795537336
+},
+{
+"title": "Irish plan offers Burnham breakthrough on Made in Europe",
+"summary": "Irish presidency of EU proposes giving UK ‘partner’ status on assembly of cars in possible boost to reset of relations The UK would not have to follow the EU and apply tariffs on Chinese car imports under an Irish proposal that could prove another breakthrough for the prime minister, Andy Burnham, in his reset of relations with the bloc. The proposal comes as the UK’s foreign secretary, Ed Miliban",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/business/2026/nov/24/uk-eu-made-in-europe-trade-cars-tariffs",
+"published": 1795536552
+},
+{
+"title": "More than 300 Russians killed as Moscow props up Mali’s junta, leaked data reveals",
+"summary": "Exclusive: Records list 349 deaths in three years in Mali and also shed light on Russia’s military activity elsewhere in Africa When the attack on Kidal began before dawn on 25 April this year, the Russian fighters were caught off guard. Within the first hour, checkpoints on the outskirts of the remote desert city nestled among the rocky hills of northern Mali had fallen to the insurgents, who pus",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/world/2026/nov/24/russian-fighters-killed-in-mali-africa-leaked-data",
+"published": 1795536050
+},
+{
+"title": "Jimmy Kimmel on Jensen Huang’s return to Nvidia: ‘What a profoundly stupid time to be alive’",
+"summary": "Late-night hosts discussed disgraced Nvidia CEO’s quick return to his role after pressure from shareholder Trump Late-night hosts reacted to the reinstatement of Jensen Huang as CEO of Nvidia under political pressure from Donald Trump . Continue reading...",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/culture/2026/nov/24/jimmy-kimmel-jensen-huang-nvidia-trump",
+"published": 1795535460
+},
+{
+"title": "Israeli air strike kills Hamas internal security chief in Gaza",
+"summary": "Naeem Abu Nahel, who had been in the post for two months, is among seven Palestinians reportedly killed in Israeli strikes on Tuesday.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/c6rrg7ggq190o?at_medium=RSS&at_campaign=rss",
+"published": 1795534553
+},
+{
+"title": "The Royal Court’s new mission? To boldly go back to the 60s space race with The Afronauts",
+"summary": "Royal Court theatre, London Ryan Calais Cameron’s ‘true(ish)’ account of a charismatic freedom fighter’s plan to take a Zambian crew to the moon never quite lifts off Ryan Calais Cameron has proved himself a playwright of stratospheric talent. His previous plays For Black Boys Who Have Considered Suicide When the Hue Gets Too Heavy and Retrograde both streaked their way into the West End. This new",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/stage/2026/nov/24/the-afronauts-royal-court-theatre-london-ryan-calais-cameron-",
+"published": 1795534149
+},
+{
+"title": "Land mine casualties soar in Syria, two years after war",
+"summary": "Nearly 1,000 children are among those killed or injured by explosives left over from the conflict, figures show.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/c893rl37ywdgo?at_medium=RSS&at_campaign=rss",
+"published": 1795533448
+},
+{
+"title": "Gaza issues meningitis epidemic alert after steep rise in cases",
+"summary": "Health ministry records 272 new infections in October, more than eight times the normal monthly rate Gaza’s health ministry has issued an epidemic alert after a sharp rise in meningitis infections, with more than 270 new cases reported in October. Dr Nidal Ghoneim, a senior official at the ministry, said the spread of the disease posed a threat to the lives of hundreds of thousands of people, incl",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/world/2026/nov/24/gaza-meningitis-epidemic-alert",
+"published": 1795531878
+},
+{
+"title": "Chinese media hail Huang’s Nvidia return with warning over ‘witch-hunts’",
+"summary": "State-run Global Times says reports about CEO’s affair with alleged Chinese spy were ‘malicious’ Trump made up to $15m on Nvidia stock after Huang’s return Nvidia staff: what do you think of Jensen Huang’s return as chief executive? Chinese media have reacted with glee to the dramatic reinstatement of Jensen Huang as the chief executive of Nvidia, with one commentary warning against future “witch-",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/technology/2026/nov/24/china-media-jensen-huang-nvidia-ceo",
+"published": 1795531503
+},
+{
+"title": "Who really owns the Albanian land Jared Kushner wants to turn into a 5-star resort?",
+"summary": "Albania's Prime Minister Edi Rama has vowed that Kushner's resort project will go ahead as planned. But an ongoing investigation by Albania's state prosecutor into forged land titles could halt the project.",
+"source": "NPR",
+"link": "https://www.npr.org/2026/11/24/g-s1-154623/albania-jared-kushner-land-deal-protests",
+"published": 1795530244
+},
+{
+"title": "Mamdani says Nvidia drama shows stock market is overly dependent on AI",
+"summary": "New York City mayor notes ‘massive impact’ on working Americans’ lives when Jensen Huang stepped down as CEO Zohran Mamdani , New York City ’s mayor, on Monday weighed in on the corporate turbulence surrounding Nvidia and the chipmaker’s chief executive officer, Jensen Huang , saying he does not think working Americans “signed up for their pensions being tied to the question of … Huang’s fidelity ",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/us-news/2026/nov/24/mamdani-nvidia-stock-market-ai",
+"published": 1795530137
+},
+{
+"title": "Chinese police contacted members of WeChat group after they discussed Melbourne vigil for HungryPanda rider",
+"summary": "Several members of chat set up after alleged murder of Feng Jianming say they or their parents were called by police from their home towns in China Follow our Australia politics live blog for latest updates Get our breaking news email , free app or daily news podcast Chinese police have contacted several people who were part of a WeChat group that discussed attending a Melbourne vigil for Feng Jia",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/business/2026/nov/25/chinese-police-wechat-group-hungrypanda-delivery-rider-alleged-murder-melbourne-ntwnfb",
+"published": 1795528850
+},
+{
+"title": "Guardian Essential poll: Albanese’s disapproval rating hits highest level as problems mount for Labor",
+"summary": "Australians also turn against AI datacentres, with nearly half saying they don’t want one near their home Follow our Australia politics live blog for latest updates Get our daily political email , free app or daily news podcast Anthony Albanese’s approval ratings have nosedived in the latest Guardian Essential poll, with the prime minister reaching his highest level of disapproval after his net po",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/australia-news/2026/nov/25/guardian-essential-poll-anthony-albaneses-ai-datacentres-labor-one-nation-coalition",
+"published": 1795528849
+},
+{
+"title": "The Nvidia case is just the latest episode of Trump disregarding intelligence",
+"summary": "Trump’s reaction to sensitive information that contradicts his worldview mirrors his conduct towards war with Iran Donald Trump’s unwillingness to heed warnings of suspected Chinese penetration of the tech giant Nvidia follows a pattern of the US president ignoring sensitive intelligence that contradicts his world view. Trump disregarded repeated information that the company’s co-founder, Jensen H",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/technology/2026/nov/24/nvidia-trump-huang-intelligence",
+"published": 1795528848
+},
+{
+"title": "Days out from the Victorian election, nine datacentre projects await approval. What will their fate be?",
+"summary": "While parties have come out with policies on where datacentres can be built, not all are clear on whether they apply retrospectively Follow our Australia politics live blog for latest updates Get our breaking news email , free app or daily news podcast Days out from the Victorian state election, the fate of nine datacentre projects remains uncertain, with some companies confident they will be able",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/australia-news/2026/nov/24/nine-datacentre-projects-awaiting-approval-victoria-election",
+"published": 1795528848
+},
+{
+"title": "GTA VI’s jaw-dropping success: in figures",
+"summary": "Content creators have produced hundreds of millions of hours of video game since its launch Grand Theft Auto ( GTA) VI became the largest video game release of all time last week and while it is hard to say exactly how many people are playing the game (current estimates say at least 30 million), there are plenty of other jaw-dropping data points we do know. Data on streaming the game suggests that",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/games/2026/nov/24/gta-vi-streaming-numbers-charts",
+"published": 1795525246
+},
+{
+"title": "Russian governor detained in rare criminal case against regional leader",
+"summary": "Andrei Chibis, head of Russia's northern Murmansk region, is the first governor to be detained for five years.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/cmwy868v3nneo?at_medium=RSS&at_campaign=rss",
+"published": 1795524343
+},
+{
+"title": "Leftwing coalition leader calls for rental revolution as Spain heads for snap election",
+"summary": "Exclusive: Ada Colau hopes public anger over housing will transfer into support for her Broad Front coalition in Sunday’s vote The leader of Spain’s leftwing Broad Front coalition has called for a drastic rethink of the country’s entire housing rental system, and described the eviction of an 87-year-old woman – the spark for nationwide protests that in turn triggered Sunday’s snap general election",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/world/2026/nov/24/spain-election-ada-colau-broad-front-far-right",
+"published": 1795522924
+},
+{
+"title": "China 'sentences official to death for spying'",
+"summary": "China has sentenced to death an official who was said to have leaked state secrets to a foreign country.",
+"source": "Sky News",
+"link": "https://news.sky.com/story/china-reportedly-sentences-official-to-death-for-leaking-state-secrets-13615962",
+"published": 1795522920
+},
+{
+"title": "Jensen Huang returns to Nvidia. And, Rep. Gomez resigns amid alleged sexual misconduct",
+"summary": "President Trump took credit for negotiating Jensen Huang's return as CEO of Nvidia. And, Rep. Jimmy Gomez, D-Calif., says his resignation will be effective Dec. 1.",
+"source": "NPR",
+"link": "https://www.npr.org/2026/11/24/g-s1-155227/up-first-newsletter-nvidia-jensen-huang-trump-ukraine-russia-jimmy-gomez",
+"published": 1795522345
+},
+{
+"title": "FA chair had to sign NDA to view FIFA documents on World Cup sell-off",
+"summary": "Football Association chair Debbie Hewitt has now viewed some FIFA documents on the World Cup sell-off but had to sign a nondisclosure agreement, Sky News has learned.",
+"source": "Sky News",
+"link": "https://news.sky.com/story/fa-chair-had-to-sign-nda-to-view-fifa-documents-on-world-cup-sell-off-13615958",
+"published": 1795522320
+},
+{
+"title": "Their loss changed Appalachian forests for ever. Now the American chestnut is back",
+"summary": "The trees have been functionally extinct in the US for nearly a century. But new techniques are creating plants resistant to the parasitic blight that almost wiped them out Jeff White is starstruck by a tree. The farmer and environmentalist from rural Maryland has an affinity with the American chestnut but has never seen one stretch from root to sky like this one. “About how tall is it?” he asks. ",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/environment/2026/nov/24/american-chestnut-tree-restored-science-persistence-aoe",
+"published": 1795521644
+},
+{
+"title": "Car bomb tears through Colombian city wounding more than 20",
+"summary": "The explosion is the latest in a string of attacks on buildings housing the security forces and government offices.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/cjqlq2n4np7do?at_medium=RSS&at_campaign=rss",
+"published": 1795520752
+},
+{
+"title": "Storms targeting both US coasts threaten to snarl Thanksgiving travel for millions",
+"summary": "Two storms, including a major Nor'easter on the east coast, are expected to impact millions of people celebrating the holiday with family and friends.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/weather/articles/c5742nplemnno?at_medium=RSS&at_campaign=rss",
+"published": 1795520446
+},
+{
+"title": "What should it cost to insure a home in wildfire country?",
+"summary": "Some California homeowners have spent thousands making their homes safer from wildfires. Yet all that work has barely made a dent in their insurance bills. Should they be getting a bigger break?",
+"source": "NPR",
+"link": "https://www.npr.org/sections/planet-money/2026/11/24/g-s1-154477/what-should-it-cost-to-insure-a-home-in-wildfire-country",
+"published": 1795519800
+},
+{
+"title": "Pope Francis' diary reveals claims he saw the devil three times",
+"summary": "Published extracts from the late pontiff's diary claim one of the visions happened \"in the choir loft\" during Mass.",
+"source": "BBC News",
+"link": "https://www.bbc.co.uk/news/articles/cm78270l4z7no?at_medium=RSS&at_campaign=rss",
+"published": 1795518657
+},
+{
+"title": "Researcher who helped improve melanoma survival rates among winners of top Australian science prize",
+"summary": "Georgina Long and subatomic physicist Anthony Thomas recognised in Prime Minister’s prizes for science Follow our Australia politics live blog for latest updates Get our breaking news email , free app or daily news podcast When Prof Georgina Long was starting out in melanoma treatment and research, “my waiting room would change so rapidly”. Referring to her patients with stage 4 melanoma, the onco",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/australia-news/2026/nov/24/georgina-long-melanoma-anthony-thomas-2026-prime-ministers-prizes-for-science",
+"published": 1795518045
+},
+{
+"title": "Man Theft Auto – why did so few women review GTA VI, the biggest video game of the decade?",
+"summary": "Given that this is the first Grand Theft Auto in 30 years with a female protagonist, you might have expected to hear from female critics. But you would have expected mostly in vain Grand Theft Auto VI is now the biggest video game launch of all time, and is likely to become the biggest video game of all time. It’s a once-in-a-lifetime event, a phenomenon that will shape games as a medium and pop c",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/games/2026/nov/24/man-theft-auto-why-did-so-few-women-review-gta-vi-the-biggest-video-game-of-the-decade",
+"published": 1795518043
+},
+{
+"title": "EU to impose cap on Chinese hybrid EV imports next month",
+"summary": "Temporary quotas on vehicles entering the bloc will also apply to cars from the UK, Japan and Turkey The EU will next month impose its threatened caps on the number of Chinese hybrid cars that can be imported into the bloc, the European Commission has announced. The quotas will also apply to hybrids from Japan, Turkey, South Korea and the UK, but the principal purpose is to limit imports from Chin",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/business/2026/nov/24/eu-cap-chinese-hybrid-ev-imports-tariff-uk",
+"published": 1795517980
+},
+{
+"title": "Newly found farthest quasar from Earth is also oldest known to man",
+"summary": "Scientists have discovered the most distant quasar yet, the core of a galaxy with a slow-chomping black hole at its center dating back to nearly the dawn of the universe.",
+"source": "CBS News",
+"link": "https://www.cbsnews.com/news/quasar-farthest-oldest-found/",
+"published": 1795516800
+},
+{
+"title": "Doctors struggle to save babies after parents refuse vitamin K",
+"summary": "Doctors are fighting an uphill battle against disinformation about routine vitamin K shots given to newborns in the hospital. It helps prevent a rare but devastating bleeding disorder.",
+"source": "NPR",
+"link": "https://www.npr.org/2026/11/24/nx-s1-6001723/vitamin-k-deficiency-refusal-vaccine-misinformation-newborn-bleeding",
+"published": 1795514400
+},
+{
+"title": "They attended Trump's meme coin dinner. It didn't go well",
+"summary": "Trump's meme coin dinners have sparked intense controversy. These two guests attended his latest on Sunday — and agreed to provide NPR inside access.",
+"source": "NPR",
+"link": "https://www.npr.org/2026/11/24/nx-s1-6051604/trump-crypto-corruption-meme-coin-dinner",
+"published": 1795514400
+},
+{
+"title": "Black travelers on Route 66 weren't welcome at most gas stations — except this one",
+"summary": "Threatt Filling Station in Luther, Okla., was the first Black-owned gas station on Route 66. At a time when Black families needed the Green Book to find places to stay, eat, use the bathroom, it provided fuel and respite.",
+"source": "NPR",
+"link": "https://www.npr.org/2026/11/24/nx-s1-5928337/threatt-filling-station-oklahoma-route-66",
+"published": 1795514400
+},
+{
+"title": "For workplace culture champions, Jensen Huang's return is 'unfathomable'",
+"summary": "Some who have worked to promote diversity and inclusion in Silicon Valley say Jensen Huang's reinstatement as Nvidia's CEO sends a message that all that matters is money.",
+"source": "NPR",
+"link": "https://www.npr.org/2026/11/24/nx-s1-6051583/nvidia-huang-dei-trump-women",
+"published": 1795514400
+},
+{
+"title": "The human cost of the electric vehicle boom is at the center of a lawsuit in Congo",
+"summary": "A landmark lawsuit in Congo sees 27 residents accuse a Chinese-owned copper and cobalt mine of poisoning their community and the government of failing to protect them.",
+"source": "NPR",
+"link": "https://www.npr.org/2026/11/24/nx-s1-6042912/drc-congo-mining-china-copper-colbalt-critical-minerals",
+"published": 1795514400
+},
+{
 "title": "Trump faces backlash after saying he 'convinced' Nvidia to reinstate CEO Jensen Huang",
 "summary": "Nvidia had come under pressure from President Trump to reappoint Huang, whose comeback helped add $1tn to the company's stock value.",
 "source": "BBC News",
@@ -68,6 +572,13 @@
 "source": "Al Jazeera",
 "link": "https://www.aljazeera.com/news/2026/11/24/malaysia-set-to-return-thousands-of-rohingya-refugees-to-myanmar-2?traffic_source=rss",
 "published": 1795508501
+},
+{
+"title": "Morocco 'astonished' at decision to restore Senegal as Africa Cup of Nations champions",
+"summary": "Senegal have been awarded the Africa Cup of Nations title after successfully appealing against the decision to strip them of it.",
+"source": "Sky News",
+"link": "https://news.sky.com/story/senegal-awarded-africa-cup-of-nations-after-winning-appeal-over-title-being-stripped-13615900",
+"published": 1795507560
 },
 {
 "title": "Trump, Nvidia and power: could we be nearing the end of tech’s Gilded Age?",
@@ -852,6 +1363,13 @@
 "source": "BBC News",
 "link": "https://www.bbc.co.uk/news/articles/cw074km48myeo?at_medium=RSS&at_campaign=rss",
 "published": 1795439392
+},
+{
+"title": "Twenty Gaza students due to leave for Ireland after winning visa battle",
+"summary": "Group’s evacuation follows campaign to overturn decision to deny visas to more than 60 students from territory Twenty students from Gaza are to travel to Ireland to take up scholarships after winning a battle for visas that undercut the Irish government’s reputation as a champion of Palestinians . The group is due to leave the territory on Monday under strict Israeli controls and travel via Jordan",
+"source": "The Guardian",
+"link": "https://www.theguardian.com/world/2026/nov/23/students-from-gaza-win-visa-battle-to-study-in-ireland",
+"published": 1795438994
 },
 {
 "title": "AI conquered chess. What happened next should give us hope",
@@ -2896,26 +3414,5 @@
 "source": "The Guardian",
 "link": "https://www.theguardian.com/science/audio/2026/nov/17/nasa-voyager-1-probe-incredible-milestone-podcast",
 "published": 1794891604
-},
-{
-"title": "Nvidia's board of directors opposes restoring Jensen Huang as CEO",
-"summary": "Nvidia's board isn't considering rehiring Jensen Huang as CEO despite an online petition that has drawn more than 180,000 signatures.",
-"source": "CBS News",
-"link": "https://www.cbsnews.com/news/jensen-huang-nvidia-ceo-reinstatement-petition/",
-"published": 1794854100
-},
-{
-"title": "Right whale population drops, alarming scientists",
-"summary": "The population of one of the world's rarest whales has fallen after trending upward in recent years, worrying scientists who fear the animal could still be at risk of extinction.",
-"source": "CBS News",
-"link": "https://www.cbsnews.com/news/right-whale-population-drops-reversing-recent-trend-alarming-scientists/",
-"published": 1794834420
-},
-{
-"title": "Elon Musk joins 165,000 others calling for Nvidia to bring back Jensen Huang in open letter",
-"summary": "CEO ousted after affair with suspected Chinese spy reportedly plans comeback, but US treasury secretary urges ‘dramatic shake-up’ Megaspeed says it’s a ‘legitimate and lawful business’ Business live – latest updates Elon Musk and a host of other tech bosses have called for Jensen Huang’s reinstatement at Nvidia, amid reports the former chief executive is already plotting a return to the chip compa",
-"source": "The Guardian",
-"link": "https://www.theguardian.com/technology/2026/nov/16/elon-musk-tech-execs-open-letter-jensen-huang-return-nvidia-ceo",
-"published": 1794828635
 }
 ]
