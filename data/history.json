@@ -9,13 +9,18 @@
     "video_id": "QQN-clSJmGw",
     "stats": {
       "latest": {
-        "view": 42,
+        "view": 51,
         "like": 2,
         "comment": 0,
-        "age_days": 1.79
+        "age_days": 2.03
       },
       "1d": {
         "view": 79,
+        "like": 2,
+        "comment": 0
+      },
+      "2d": {
+        "view": 51,
         "like": 2,
         "comment": 0
       }
@@ -31,10 +36,10 @@
     "publish_at": "2026-11-22T18:00:00Z",
     "stats": {
       "latest": {
-        "view": 130,
+        "view": 131,
         "like": 1,
         "comment": 0,
-        "age_days": 1.62
+        "age_days": 1.87
       },
       "1d": {
         "view": 104,
@@ -54,10 +59,10 @@
     "slot": "2026-11-23T06:00:00Z",
     "stats": {
       "latest": {
-        "view": 23,
+        "view": 33,
         "like": 0,
         "comment": 0,
-        "age_days": 1.12
+        "age_days": 1.37
       },
       "1d": {
         "view": 23,
@@ -131,10 +136,15 @@
     },
     "stats": {
       "latest": {
-        "view": 4,
+        "view": 6,
         "like": 0,
         "comment": 0,
-        "age_days": 0.87
+        "age_days": 1.12
+      },
+      "1d": {
+        "view": 6,
+        "like": 0,
+        "comment": 0
       }
     }
   },
@@ -206,10 +216,10 @@
     },
     "stats": {
       "latest": {
-        "view": 33,
+        "view": 41,
         "like": 0,
         "comment": 1,
-        "age_days": 0.62
+        "age_days": 0.87
       }
     }
   },
@@ -277,10 +287,10 @@
     },
     "stats": {
       "latest": {
-        "view": 3,
+        "view": 19,
         "like": 0,
         "comment": 1,
-        "age_days": 0.12
+        "age_days": 0.37
       }
     }
   },
@@ -347,6 +357,77 @@
         [
           19.0,
           "An Indian party leader says airport officials stopped him from flying to the UK."
+        ]
+      ]
+    },
+    "stats": {
+      "latest": {
+        "view": 10,
+        "like": 0,
+        "comment": 1,
+        "age_days": 0.12
+      }
+    }
+  },
+  {
+    "date": "2026-11-24T15:07",
+    "title": "Apple iPhone Duo Costs $1,999 – First Foldable",
+    "links": [
+      "https://www.theguardian.com/technology/2026/nov/23/apple-iphone-duo-review-most-novel-interesting-iphone-in-almost-a-decade"
+    ],
+    "video_id": "6UVux8gHL-w",
+    "publish_at": "2026-11-24T18:00:00Z",
+    "slot": "2026-11-24T18:00:00Z",
+    "category": "tech",
+    "hook": "Apple's first foldable iPhone costs $1,999—more than most Android rivals.",
+    "words": 80,
+    "seconds": 34.8,
+    "demand": {
+      "query": "apple folding iphone review",
+      "videos": 10,
+      "views": 53958,
+      "top": 43002
+    },
+    "editor_rank": 3,
+    "contest": {
+      "titles": [
+        [
+          24.5,
+          "📱 Apple Folding iPhone Duo Review – $1,999 Price"
+        ],
+        [
+          24.5,
+          "Apple Folding iPhone Review: Duo Costs $1,999"
+        ],
+        [
+          23.0,
+          "Apple iPhone Duo: $1,999 Foldable, 2‑Day Battery"
+        ],
+        [
+          22.0,
+          "iPhone Duo Review – $1,999, Apple’s First Foldable"
+        ],
+        [
+          21.5,
+          "Apple iPhone Duo Review: 7.6‑inch OLED, $1,999"
+        ],
+        [
+          21.5,
+          "Apple iPhone Duo Costs $1,999 – First Foldable"
+        ]
+      ],
+      "hooks": [
+        [
+          24.0,
+          "84 mm width forces two‑hand use on Apple’s new folding iPhone Duo."
+        ],
+        [
+          23.5,
+          "Apple's first foldable iPhone costs $1,999—more than most Android rivals."
+        ],
+        [
+          23.0,
+          "Apple promises almost two days of battery on the $1,999 iPhone Duo."
         ]
       ]
     }
