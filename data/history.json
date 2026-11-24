@@ -9,10 +9,10 @@
     "video_id": "QQN-clSJmGw",
     "stats": {
       "latest": {
-        "view": 36,
+        "view": 42,
         "like": 2,
         "comment": 0,
-        "age_days": 1.53
+        "age_days": 1.79
       },
       "1d": {
         "view": 79,
@@ -31,10 +31,10 @@
     "publish_at": "2026-11-22T18:00:00Z",
     "stats": {
       "latest": {
-        "view": 104,
+        "view": 130,
         "like": 1,
         "comment": 0,
-        "age_days": 1.37
+        "age_days": 1.62
       },
       "1d": {
         "view": 104,
@@ -54,10 +54,15 @@
     "slot": "2026-11-23T06:00:00Z",
     "stats": {
       "latest": {
-        "view": 22,
+        "view": 23,
         "like": 0,
         "comment": 0,
-        "age_days": 0.87
+        "age_days": 1.12
+      },
+      "1d": {
+        "view": 23,
+        "like": 0,
+        "comment": 0
       }
     }
   },
@@ -129,7 +134,7 @@
         "view": 4,
         "like": 0,
         "comment": 0,
-        "age_days": 0.62
+        "age_days": 0.87
       }
     }
   },
@@ -201,10 +206,10 @@
     },
     "stats": {
       "latest": {
-        "view": 27,
+        "view": 33,
         "like": 0,
         "comment": 1,
-        "age_days": 0.37
+        "age_days": 0.62
       }
     }
   },
@@ -267,6 +272,81 @@
         [
           25.5,
           "A loose lioness near Istanbul triggered a hunt by seventy personnel using thermal drones."
+        ]
+      ]
+    },
+    "stats": {
+      "latest": {
+        "view": 3,
+        "like": 0,
+        "comment": 1,
+        "age_days": 0.12
+      }
+    }
+  },
+  {
+    "date": "2026-11-24T09:10",
+    "title": "Party Leader Says He Was Stopped From UK Flight",
+    "links": [
+      "https://www.bbc.co.uk/news/articles/cm5y1ezx2gqyo?at_medium=RSS&at_campaign=rss"
+    ],
+    "video_id": "s99N4Ceoets",
+    "publish_at": "2026-11-24T12:00:00Z",
+    "slot": "2026-11-24T12:00:00Z",
+    "category": "world",
+    "hook": "An Indian party leader says airport officials stopped him from flying to the UK.",
+    "words": 78,
+    "seconds": 27.4,
+    "demand": {
+      "query": "cockroach janta party",
+      "videos": 10,
+      "views": 739497,
+      "top": 369926
+    },
+    "editor_rank": 5,
+    "contest": {
+      "titles": [
+        [
+          27.5,
+          "Why Was Cockroach Janta Party Leader Stopped?"
+        ],
+        [
+          26.0,
+          "Cockroach Janta Party Leader Stopped From UK ✈️"
+        ],
+        [
+          26.0,
+          "Cockroach Janta Party Leader Says UK Trip Blocked"
+        ],
+        [
+          26.0,
+          "Cockroach Janta Party Leader Says UK Flight Denied"
+        ],
+        [
+          26.0,
+          "Cockroach Janta Party Leader Flagged At Airport"
+        ],
+        [
+          19.0,
+          "Party Leader Says He Was Stopped From UK Flight"
+        ]
+      ],
+      "hooks": [
+        [
+          26.0,
+          "Cockroach Janta Party leader Saurav Das says officials flagged his passport at airport."
+        ],
+        [
+          26.0,
+          "A Cockroach Janta Party leader says Delhi airport officials stopped his UK flight."
+        ],
+        [
+          24.0,
+          "Oxford Union speaker Saurav Das says airport officials stopped his UK flight."
+        ],
+        [
+          19.0,
+          "An Indian party leader says airport officials stopped him from flying to the UK."
         ]
       ]
     }
