@@ -52,5 +52,14 @@
   "link": "https://www.aljazeera.com/news/2026/11/24/un-chief-calls-for-world-to-agree-on-ai-oversight-within-a-year?traffic_source=rss",
   "headline": "UN Urges Global AI Governance Within One Year",
   "media_id": "18021990545750680"
+ },
+ {
+  "slot": "2026-11-24T08:47Z",
+  "kind": "fact",
+  "date": "2026-11-24T08:48+00:00",
+  "title": "Goats drafted in to tame Greenwich Park slope",
+  "link": "https://www.bbc.co.uk/news/articles/cq4gn2vde8m8o?at_medium=RSS&at_campaign=rss",
+  "headline": "Bagot goats maintain the slopes of London's Greenwich Park",
+  "media_id": "18055317746815292"
  }
 ]
