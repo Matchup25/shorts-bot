@@ -43,5 +43,14 @@
   "link": "https://www.theguardian.com/news/audio/2026/nov/23/cop31-collapses-why-did-climate-talks-fall-apart-the-latest",
   "headline": "Climate talks fail for the first time in 17 years",
   "media_id": "18117815954163916"
+ },
+ {
+  "slot": "2026-11-24T05:47Z",
+  "kind": "last_minute",
+  "date": "2026-11-24T05:50+00:00",
+  "title": "UN chief calls for world to agree on AI oversight within a year",
+  "link": "https://www.aljazeera.com/news/2026/11/24/un-chief-calls-for-world-to-agree-on-ai-oversight-within-a-year?traffic_source=rss",
+  "headline": "UN Urges Global AI Governance Within One Year",
+  "media_id": "18021990545750680"
  }
 ]
