@@ -13,8 +13,7 @@ import os
 import re
 import sys
 
-from . import assemble, media, render, research, slots, voice, youtube
-from .brain import Brain
+from . import slots
 from .util import DATA, OUTPUT, ROOT, load_config, log
 
 HISTORY = DATA / "explainer_history.json"
@@ -48,8 +47,9 @@ def summary(md: str) -> None:
             fh.write(md + "\n")
 
 
-def candidates(brain: Brain, ex: dict, history: list, yt) -> list:
+def candidates(brain, ex: dict, history: list, yt) -> list:
     """Topics to try, best first: Luca's list in order, otherwise proposals ranked by YouTube demand."""
+    from . import youtube
     done = {_norm(h["topic"]) for h in history}
     mine = [{"topic": t, "wikipedia": "", "query": t} for t in listed_topics() if _norm(t) not in done]
     if mine:
@@ -84,6 +84,8 @@ def due_check() -> None:
 
 
 def main() -> None:
+    from . import assemble, media, render, research, voice, youtube   # heavy: only needed when making a video
+    from .brain import Brain
     cfg = load_config()
     ex = cfg.get("explainer") or {}
     dry_run = os.environ.get("DRY_RUN", "").lower() == "true"
@@ -137,7 +139,7 @@ def main() -> None:
         audio, timings, words = voice.narrate(script["scenes"], ex.get("voice", cfg["voice"]),
                                               ex.get("voice_speed", cfg["voice_speed"]))
         duration = assemble.build_mix(audio, timings, f"{run_dir}/mix.wav")
-        props = assemble.build_props(script, timings, words, media_list, ex.get("channel_name", "HOW IT REALLY WORKS"),
+        props = assemble.build_props(script, timings, words, media_list, ex.get("channel_name", "RERUMFABRICA"),
                                      "run/mix.wav", duration)
         out = str(OUTPUT / f"explainer_{dt.datetime.utcnow():%Y%m%d_%H%M}.mp4")
         render.render(props, out)

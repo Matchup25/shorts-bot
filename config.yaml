@@ -84,9 +84,9 @@ feeds:
     - https://www.cbsnews.com/latest/rss/science
     - https://www.cbsnews.com/latest/rss/technology
 
-# Second channel: "how the world really works" explainers (English). Topics: topics.txt
+# Second channel: RerumFabrica, "how the world really works" explainers (English). Topics: topics.txt
 explainer:
-  channel_name: "HOW IT REALLY WORKS"
+  channel_name: "RERUMFABRICA"
   publish_times: ["17:00"]
   voice: bm_george
   voice_speed: 1.0
