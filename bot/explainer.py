@@ -19,6 +19,7 @@ from .util import DATA, OUTPUT, ROOT, load_config, log
 HISTORY = DATA / "explainer_history.json"
 TOPICS = ROOT / "topics.txt"
 TOKEN_ENV = "YT2_REFRESH_TOKEN"
+NEWS_CHANNEL_ID = "UCzhEYJIiDH-VR3uHWgEa-Ng"   # World in a Shot: explainers must never go there
 
 
 def _norm(t: str) -> str:
@@ -105,6 +106,13 @@ def main() -> None:
 
     brain = Brain(cfg)
     yt = youtube.service(TOKEN_ENV) if os.environ.get(TOKEN_ENV, "").strip() else None
+    if yt and not dry_run:
+        # safety: never publish an explainer on the news channel (or any channel not named like the explainer one)
+        mine = yt.channels().list(part="snippet", mine=True).execute().get("items", [])
+        title = mine[0]["snippet"]["title"] if mine else ""
+        wanted = _norm(ex.get("channel_title", "RerumFabrica")).replace(" ", "")
+        if not mine or mine[0]["id"] == NEWS_CHANNEL_ID or _norm(title).replace(" ", "") != wanted:
+            sys.exit(f"YT2_REFRESH_TOKEN belongs to the channel '{title}', not to RerumFabrica: nothing published.")
     forced = os.environ.get("FORCE_TOPIC", "").strip()
     picks = [{"topic": forced, "wikipedia": "", "query": forced}] if forced else candidates(brain, ex, history, yt)
 
