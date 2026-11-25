@@ -461,9 +461,14 @@ RULES
   or "MYTH" / "REALITY" for the myth scene, or a 2-4 word hook for scene 1.
 - "visual" for each scene:
     {{"kind": "media",
-     "footage": "<2-4 word stock VIDEO search, concrete and filmable, e.g. 'bricklayer laying bricks', 'electrician panel'>",
-     "footage2": "<a DIFFERENT 2-4 word stock video search for a second shot (another angle or a close-up)>",
-     "ai_prompt": "<one sentence for a clean illustrative image of the thing; no real people's faces, no logos, no text>",
+     "footage": "<2-3 common words that stock video sites really have, naming the OBJECT or the WORKER, e.g.
+                 'bricklayer', 'brick wall', 'electrician', 'power lines', 'airplane wing'. NEVER a technical term
+                 (stock sites have no 'perpend' or 'frog' clips) and never an abstract idea>",
+     "footage2": "<a DIFFERENT 2-3 word search of the same kind for a second shot (another angle or a close-up)>",
+     "illustrate": <true when the scene is about a specific technical detail that stock videos will not show
+                    (e.g. the hollow 'frog' of a brick, a damp-proof course); false otherwise>,
+     "ai_prompt": "<one sentence describing a realistic close-up of exactly that object or detail, physically
+                    correct; no people's faces, no logos, no text>",
      "nasa": ""}}
     or for 1 scene with a striking number from the sources:
     {{"kind": "stat", "value": "<number only>", "unit": "<short unit>", "footage": "...", "ai_prompt": "...", "nasa": ""}}

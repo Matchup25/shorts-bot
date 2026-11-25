@@ -334,6 +334,9 @@ def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None =
             steps.append(("NASA", lambda: nasa_image(nasa_q, base + ".jpg", used)))
         if editorial:  # weekly show: a symbolic illustration beats a loosely related stock clip
             steps.append(("AI image", lambda: ai_image(prompt, base + ".jpg", style)))
+        elif str(vis.get("illustrate")).lower() == "true" and prompt:
+            # explainers: a technical detail stock footage never shows (e.g. the "frog" of a brick)
+            steps.append(("AI image", lambda: ai_image(prompt, base + ".jpg", style)))
         steps += [
             ("Pixabay video", lambda: pixabay_video(footage, base + ".mp4", used, place_words)),
             ("Pexels video", lambda: pexels_video(footage, base + ".mp4", used)),
