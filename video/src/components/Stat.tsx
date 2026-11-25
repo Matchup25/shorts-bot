@@ -1,7 +1,7 @@
 import React from "react";
 import { Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { BODY, HEAD } from "../fonts";
-import { clamp, YELLOW } from "../theme";
+import { clamp, useAccent } from "../theme";
 
 const format = (value: string, p: number) => {
   const raw = value.replace(/,/g, "").trim();
@@ -18,6 +18,7 @@ const format = (value: string, p: number) => {
 
 /** Giant counting number with a glowing ring. */
 export const Stat: React.FC<{ value: string; unit: string; top?: number }> = ({ value, unit, top = 470 }) => {
+  const YELLOW = useAccent();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const p = interpolate(frame, [4, 1.1 * fps], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });

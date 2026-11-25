@@ -22,6 +22,12 @@ from .util import log
 UA = {"User-Agent": "ShortsNewsBot/1.0"}
 AI_STYLE = (", cinematic photograph, dramatic natural lighting, rich colours, shallow depth of field, "
             "vertical 9:16 composition, highly detailed, no text, no letters, no watermark, no logos")
+# explainer channel (RerumFabrica): stylised 3D "How It's Made" look
+EXPLAINER_STYLE = (", 3D stylized render like a high-end 'How It's Made' animated explainer, clean cutaway and "
+                   "exploded-view feel, crisp studio and industrial lighting, tactile materials (brushed metal, "
+                   "translucent glass, glowing energy or fluid trails), satisfying mechanical precision, physically "
+                   "plausible, high detail, vertical 9:16 composition, no text, no letters, no labels, no watermark, "
+                   "no logos")
 # for real news events: clearly an illustration, never a fake "photo" of what happened
 AI_STYLE_EDITORIAL = (", symbolic editorial illustration, painterly digital art, not photorealistic, "
                       "no recognisable people, no text, no letters, no watermark, no logos")
@@ -308,7 +314,7 @@ def plain_background(path: str, seed: int) -> dict:
 # ------------------------------------------------------------------ main entry
 def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None = None,
            editorial: bool = False, place: dict | None = None, allow_plain: bool = True,
-           second: bool = False) -> list:
+           second: bool = False, look3d: bool = False) -> list:
     """Return one media description per scene; files are saved in run_dir.
     With second=True each scene also gets a second, different stock clip ("alt") when one is found,
     so the animation can cut to it halfway through the scene."""
@@ -332,10 +338,9 @@ def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None =
         steps = []
         if space and nasa_q:
             steps.append(("NASA", lambda: nasa_image(nasa_q, base + ".jpg", used)))
-        if editorial:  # weekly show: a symbolic illustration beats a loosely related stock clip
-            steps.append(("AI image", lambda: ai_image(prompt, base + ".jpg", style)))
-        elif str(vis.get("illustrate")).lower() == "true" and prompt:
-            # explainers: a technical detail stock footage never shows (e.g. the "frog" of a brick)
+        if look3d:  # explainer channel: every scene is a 3D-style render; stock footage only as a fallback
+            steps.append(("3D image", lambda: ai_image(prompt, base + ".jpg", EXPLAINER_STYLE)))
+        elif editorial:  # weekly show: a symbolic illustration beats a loosely related stock clip
             steps.append(("AI image", lambda: ai_image(prompt, base + ".jpg", style)))
         steps += [
             ("Pixabay video", lambda: pixabay_video(footage, base + ".mp4", used, place_words)),
@@ -361,7 +366,13 @@ def gather(script: dict, run_dir: str, prefix: str = "scene", used: set | None =
             media = plain_background(base + ".jpg", i)
         ext = ".mp4" if media["type"] == "video" else ".jpg"
         media["src"] = f"run/{prefix}{i + 1}{ext}"
-        if second and media.get("credit"):
+        if second and look3d and media.get("type") == "image" and vis.get("ai_prompt2"):
+            alt = ai_image(vis["ai_prompt2"], base + "b.jpg", EXPLAINER_STYLE)
+            if alt:
+                alt["src"] = f"run/{prefix}{i + 1}b.jpg"
+                media["alt"] = alt
+                log(f"  scene {i + 1}: second 3D view made")
+        elif second and media.get("credit"):
             alt_q = vis.get("footage2") or footage
             alt = (pixabay_video(alt_q, base + "b.mp4", used, place_words)
                    or pexels_video(alt_q, base + "b.mp4", used))

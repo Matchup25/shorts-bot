@@ -1,10 +1,11 @@
 import React from "react";
 import { Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { HEAD } from "../fonts";
-import { clamp, YELLOW } from "../theme";
+import { clamp, useAccent } from "../theme";
 
 /** Scene title: words rise out of a mask one after another, with a growing accent bar. */
 export const Headline: React.FC<{ text: string; big: boolean; exitAt: number }> = ({ text, big, exitAt }) => {
+  const YELLOW = useAccent();
   // the very first title is already on screen at frame 0 (it is often the thumbnail)
   const frame = useCurrentFrame() + (big ? 30 : 0);
   const { fps } = useVideoConfig();

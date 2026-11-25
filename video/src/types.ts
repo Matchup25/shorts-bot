@@ -25,6 +25,8 @@ export type Scene = {
 
 export type ShortProps = {
   channel: string;
+  accent?: string; // channel colour (default yellow)
+  look?: "3d"; // "3d": stills get a slow orbiting camera (explainer channel)
   category: string;
   audio: string; // path inside public/
   duration: number; // seconds

@@ -143,12 +143,13 @@ def main() -> None:
         tags = brain.choose_hashtags(script, youtube.popular_hashtags(yt, script["search_keywords"]) if yt else [], [])
 
         run_dir = render.reset_run_dir()
-        media_list = media.gather(script, run_dir, second=True)
+        media_list = media.gather(script, run_dir, second=True, look3d=True)
         audio, timings, words = voice.narrate(script["scenes"], ex.get("voice", cfg["voice"]),
                                               ex.get("voice_speed", cfg["voice_speed"]))
         duration = assemble.build_mix(audio, timings, f"{run_dir}/mix.wav")
         props = assemble.build_props(script, timings, words, media_list, ex.get("channel_name", "RERUMFABRICA"),
                                      "run/mix.wav", duration)
+        props.update({"accent": ex.get("accent", "#FF6A1A"), "look": "3d"})
         out = str(OUTPUT / f"explainer_{dt.datetime.utcnow():%Y%m%d_%H%M}.mp4")
         render.render(props, out)
 
@@ -158,7 +159,7 @@ def main() -> None:
             + "This video explains how things work and what professionals do. It is not a how-to guide: "
               "rules differ between countries, and risky work belongs to qualified professionals.\n\n"
             + "Sources (CC BY-SA):\n" + "\n".join(f"• Wikipedia – {s['title']}: {s['link']}" for s in sources)
-            + "\n\nNarration voice is AI-generated. Visuals: Pixabay / Pexels stock footage.\n\n" + " ".join(tags)
+            + "\n\nNarration voice and 3D visuals are AI-generated (simplified illustrations).\n\n" + " ".join(tags)
         )
         if dry_run:
             log("Test mode: not uploading.")

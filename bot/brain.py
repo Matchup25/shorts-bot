@@ -434,10 +434,14 @@ Return JSON: {{"headline": "...", "category": "...", "scenes": [{{"narration": "
                 "category": category if category in CATEGORIES else "world", "scenes": scenes,
                 "claims": seg.get("claims", [])}
 
+    MASCOT = ("a stylized 3D cartoon young engineer with big expressive eyes, short dark curly hair, a bright orange "
+              "work jacket and a white hard hat")
+
     def write_explainer(self, topic: str, sources: list, feedback: str = "") -> dict:
         """A Short for the explainer channel: how something really works / what professionals really do."""
         source_block = "\n\n".join(f"SOURCE {i+1} ({s['source']}): {s['title']}\n{s['text'][:7000]}" for i, s in enumerate(sources))
         fix = f"\nA fact-checker rejected your previous draft. Fix these problems:\n{feedback}\n" if feedback else ""
+        MASCOT = self.MASCOT
         prompt = f"""Write a YouTube Short for an English explainer channel about how the world really works.
 TOPIC: {topic}
 Show what really happens / what professionals really do, with the correct TECHNICAL NAMES, and bust one common
@@ -459,19 +463,21 @@ RULES
 - The last sentence leads naturally back to the first one (the Short loops). No call to action.
 - "headline": the TECHNICAL TERM of that scene (2-4 words, e.g. "DAMP-PROOF COURSE", "RESIDUAL CURRENT DEVICE"),
   or "MYTH" / "REALITY" for the myth scene, or a 2-4 word hook for scene 1.
-- "visual" for each scene:
+- "visual" for each scene (the pictures are 3D renders in the style of a high-end "How It's Made" animation):
     {{"kind": "media",
-     "footage": "<2-3 common words that stock video sites really have, naming the OBJECT or the WORKER, e.g.
-                 'bricklayer', 'brick wall', 'electrician', 'power lines', 'airplane wing'. NEVER a technical term
-                 (stock sites have no 'perpend' or 'frog' clips) and never an abstract idea>",
-     "footage2": "<a DIFFERENT 2-3 word search of the same kind for a second shot (another angle or a close-up)>",
-     "illustrate": <true when the scene is about a specific technical detail that stock videos will not show
-                    (e.g. the hollow 'frog' of a brick, a damp-proof course); false otherwise>,
-     "ai_prompt": "<one sentence describing a realistic close-up of exactly that object or detail, physically
-                    correct; no people's faces, no logos, no text>",
+     "ai_prompt": "<one sentence: what the 3D shot shows, concrete and physically correct, e.g. 'cutaway of a brick
+                   wall at ground level, a thin dark waterproof layer between two courses of red bricks'>",
+     "ai_prompt2": "<a DIFFERENT view of the same thing for the second half of the scene: exploded view, extreme
+                    close-up, the mechanism in action, or a wider shot>",
+     "footage": "<2-3 common words for a stock video as a fallback, naming the object or the worker, e.g. 'brick wall'>",
      "nasa": ""}}
     or for 1 scene with a striking number from the sources:
-    {{"kind": "stat", "value": "<number only>", "unit": "<short unit>", "footage": "...", "ai_prompt": "...", "nasa": ""}}
+    {{"kind": "stat", "value": "<number only>", "unit": "<short unit>", "ai_prompt": "...", "ai_prompt2": "",
+     "footage": "...", "nasa": ""}}
+  Scene 1 picture: a dramatic close-up of the moment of tension (e.g. water creeping up a wall, a spark at a
+  loose wire, a gear about to jam) WITH the channel's character: {MASCOT}.
+  Last scene picture: the payoff (the finished thing working) with the same character, described with the same words.
+  Never put text, labels or numbers in the pictures; no real people, no brands.
 - "title": max 50 characters, curiosity but TRUE, with the main search keyword, 0-1 emoji
   (e.g. "Why Walls Have a Hidden Plastic Layer").
 - "category": "education".
@@ -572,7 +578,7 @@ def _normalise_script(script: dict) -> dict:
         visual = dict(sc.get("visual") or {})
         if visual.get("kind") != "stat" or not str(visual.get("value", "")).strip():
             visual["kind"] = "media"
-        for key in ("footage", "footage2", "ai_prompt", "nasa"):
+        for key in ("footage", "footage2", "ai_prompt", "ai_prompt2", "nasa"):
             visual[key] = str(visual.get(key) or "").strip()
         scenes.append({"narration": narration, "headline": str(sc.get("headline", "")).strip()[:40], "visual": visual})
     if len(scenes) < 3:

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { BODY } from "../fonts";
-import { clamp, YELLOW } from "../theme";
+import { clamp, useAccent } from "../theme";
 import type { Word } from "../types";
 
 type Chunk = { words: Word[]; start: number; end: number };
@@ -36,6 +36,7 @@ export const Captions: React.FC<{
   maxChars?: number;
 }> = ({ words, top = 1130, scale = 1, maxWords = 3, maxChars = 17 }) => {
   const frame = useCurrentFrame();
+  const YELLOW = useAccent();
   const { fps } = useVideoConfig();
   const t = frame / fps;
   const chunks = useMemo(() => buildChunks(words, maxWords, maxChars), [words, maxWords, maxChars]);

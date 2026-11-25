@@ -9,7 +9,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { BODY } from "../fonts";
-import { CATEGORY_COLORS, clamp, RED, YELLOW } from "../theme";
+import { CATEGORY_COLORS, clamp, RED, useAccent } from "../theme";
 
 /** Darkening gradients + vignette so text is always readable. */
 export const Shade: React.FC = () => (
@@ -47,6 +47,7 @@ export const Grain: React.FC = () => {
 
 /** Channel badge, category and image credit at the top. */
 export const Brand: React.FC<{ channel: string; category: string }> = ({ channel, category }) => {
+  const YELLOW = useAccent();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const inP = interpolate(frame, [0, 14], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
@@ -133,6 +134,7 @@ export const Credit: React.FC<{ text?: string }> = ({ text }) => {
 
 /** Thin progress line at the very top. */
 export const Progress: React.FC = () => {
+  const YELLOW = useAccent();
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   return (

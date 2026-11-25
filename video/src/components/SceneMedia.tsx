@@ -25,6 +25,7 @@ export const SceneMedia: React.FC<{
   part?: number; // 0 = first shot of the scene, 1 = second shot (after the mid-scene cut)
   zoom?: number; // extra zoom: a "punch-in" when the second shot reuses the same picture
   trimBefore?: number; // frames to skip at the start of a video (continue where the first shot was)
+  orbit?: boolean; // 3D look: stills turn slowly as if the camera were orbiting around the object
 }> = ({
   scene,
   index,
@@ -32,6 +33,7 @@ export const SceneMedia: React.FC<{
   part = 0,
   zoom = 1,
   trimBefore,
+  orbit = false,
 }) => {
   const frame = useCurrentFrame();
   const { durationInFrames, width, height } = useVideoConfig();
@@ -74,7 +76,14 @@ export const SceneMedia: React.FC<{
       >
         <AbsoluteFill
           style={{
-            scale: zoom * interpolate(frame, [0, durationInFrames], [1.06, 1.2], clamp),
+            transform:
+              orbit && media.type === "image"
+                ? `perspective(1600px) rotateY(${interpolate(frame, [0, durationInFrames], [drift * -6, drift * 6], {
+                    ...clamp,
+                    easing: Easing.inOut(Easing.sin),
+                  })}deg) rotateX(${interpolate(frame, [0, durationInFrames], [3, -2], clamp)}deg)`
+                : undefined,
+            scale: zoom * interpolate(frame, [0, durationInFrames], orbit && media.type === "image" ? [1.14, 1.3] : [1.06, 1.2], clamp),
             translate: `${interpolate(frame, [0, durationInFrames], [0, drift * 24], clamp)}px ${interpolate(
               frame,
               [0, durationInFrames],

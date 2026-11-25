@@ -7,16 +7,19 @@ import { Headline } from "./components/Headline";
 import { SceneMedia } from "./components/SceneMedia";
 import { Stat } from "./components/Stat";
 import "./fonts";
+import { AccentContext, YELLOW } from "./theme";
 import type { ShortProps } from "./types";
 
 const OVERLAP = 10; // frames the next scene overlaps the previous one (its entrance)
 const CUT_AFTER = 4.2; // seconds: longer scenes are split into two shots
 
-export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scenes, words }) => {
+export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scenes, words, accent, look }) => {
   const { fps, durationInFrames } = useVideoConfig();
   const starts = scenes.map((s, i) => (i === 0 ? 0 : Math.round(s.start * fps) - 4));
+  const orbit = look === "3d";
 
   return (
+    <AccentContext.Provider value={accent ?? YELLOW}>
     <AbsoluteFill style={{ backgroundColor: "black" }}>
       {scenes.map((scene, i) => {
         const from = starts[i];
@@ -29,7 +32,7 @@ export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scen
         if (!cut) {
           return (
             <Sequence key={`m${i}`} from={from} durationInFrames={len} name={`Scene ${i + 1}`}>
-              <SceneMedia scene={scene} index={i} darken={darken} />
+              <SceneMedia scene={scene} index={i} darken={darken} orbit={orbit} />
             </Sequence>
           );
         }
@@ -38,7 +41,7 @@ export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scen
         return (
           <React.Fragment key={`m${i}`}>
             <Sequence from={from} durationInFrames={cut + 2} name={`Scene ${i + 1}a`}>
-              <SceneMedia scene={scene} index={i} darken={darken} />
+              <SceneMedia scene={scene} index={i} darken={darken} orbit={orbit} />
             </Sequence>
             <Sequence from={from + cut} durationInFrames={Math.max(1, len - cut)} name={`Scene ${i + 1}b`}>
               <SceneMedia
@@ -46,6 +49,7 @@ export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scen
                 index={i}
                 part={1}
                 darken={darken}
+                orbit={orbit}
                 zoom={same ? 1.32 : 1}
                 trimBefore={same && second.type === "video" ? cut : undefined}
               />
@@ -84,5 +88,6 @@ export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scen
       <Progress />
       <Audio src={staticFile(audio)} />
     </AbsoluteFill>
+    </AccentContext.Provider>
   );
 };

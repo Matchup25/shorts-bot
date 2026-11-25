@@ -88,6 +88,7 @@ feeds:
 explainer:
   channel_name: "RERUMFABRICA"        # shown in the videos
   channel_title: "RerumFabrica"       # the YouTube channel's name: the bot refuses to publish anywhere else
+  accent: "#FF6A1A"                   # channel colour in the videos
   publish_times: ["17:00"]
   voice: bm_george
   voice_speed: 1.0
