@@ -3,9 +3,8 @@ name: Explainer Short
 # Second channel ("how the world really works"). Started by every wake-up of the Daily Short workflow
 # (and by this timer as a backup); it makes a Short only when one of explainer.publish_times is due.
 # Nothing happens until the YT2_REFRESH_TOKEN secret exists (except test runs).
+# PAUSED (Nov 2026): no timer and not started by the Daily Short wake-ups; only manual test runs.
 on:
-  schedule:
-    - cron: "17 2,8,14,20 * * *"
   workflow_dispatch:
     inputs:
       test_mode:
