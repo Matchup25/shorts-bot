@@ -42,6 +42,8 @@ jobs:
       due: ${{ steps.due.outputs.due }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -71,6 +73,8 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
 
       - uses: actions/setup-python@v6
         with:
@@ -156,7 +160,7 @@ jobs:
           git config user.name "shorts-bot"
           git config user.email "shorts-bot@users.noreply.github.com"
           git add data/history.json
-          git add data/playbook.md data/ig_history.json 2>/dev/null || true
+          for f in data/playbook.md data/ig_history.json; do [ -f "$f" ] && git add "$f"; done
           git commit -q -m "Published a new Short" || exit 0
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done
 
@@ -179,6 +183,8 @@ jobs:
         run: |
           if [ -n "$IG_ACCESS_TOKEN" ]; then echo "on=true" >> "$GITHUB_OUTPUT"; else echo "Instagram is not set up yet: skipping."; fi
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -202,8 +208,9 @@ jobs:
           mkdir -p /tmp/ig && cp "output/$VIDEO" "/tmp/ig/$NAME"
           cd /tmp/ig && git init -q -b ig-media && git config user.name "shorts-bot" && git config user.email "shorts-bot@users.noreply.github.com"
           git add . && git commit -q -m "Reel $NAME"
-          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" ig-media
-          echo "url=https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/ig-media/$NAME" >> "$GITHUB_OUTPUT"
+          # only a fallback (the video is normally uploaded directly), so a failed push must not stop the Reel
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" ig-media \
+            && echo "url=https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/ig-media/$NAME" >> "$GITHUB_OUTPUT" || true
       - name: Publish the Reel (waits for the publishing time)
         if: steps.ig.outputs.on == 'true'
         run: python -m bot.instagram post --meta output/ig.json --url "${{ steps.host.outputs.url }}"
@@ -212,6 +219,6 @@ jobs:
         run: |
           git config user.name "shorts-bot"
           git config user.email "shorts-bot@users.noreply.github.com"
-          git add data/ig_history.json data/ig_token.enc 2>/dev/null || true
+          for f in data/ig_history.json data/ig_token.enc; do [ -f "$f" ] && git add "$f"; done
           git commit -q -m "Published a Reel" || exit 0
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done

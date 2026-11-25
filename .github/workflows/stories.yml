@@ -42,6 +42,8 @@ jobs:
         run: |
           if [ -n "$IG_ACCESS_TOKEN" ]; then echo "on=true" >> "$GITHUB_OUTPUT"; else echo "Instagram is not set up: skipping."; fi
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
         if: steps.ig.outputs.on == 'true'
       - uses: actions/setup-python@v6
         if: steps.ig.outputs.on == 'true'
@@ -70,6 +72,6 @@ jobs:
         run: |
           git config user.name "shorts-bot"
           git config user.email "shorts-bot@users.noreply.github.com"
-          git add data/stories_history.json 2>/dev/null || true
+          [ -f data/stories_history.json ] && git add data/stories_history.json
           git commit -q -m "Posted a story" || exit 0
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done
