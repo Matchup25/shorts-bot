@@ -106,5 +106,14 @@
   "link": "https://www.bbc.co.uk/news/articles/c6x2e0j3kx28o?at_medium=RSS&at_campaign=rss",
   "headline": "Pakistan's First Astronaut Launches Aboard Chinese Spacecraft",
   "media_id": "18024826058958682"
+ },
+ {
+  "slot": "2026-11-25T08:47Z",
+  "kind": "fact",
+  "date": "2026-11-25T08:47+00:00",
+  "title": "Tidal bans 100% AI-generated music with plans to delete more than 27m tracks",
+  "link": "https://www.theguardian.com/music/2026/nov/25/tidal-streaming-service-bans-ai-generated-music",
+  "headline": "Nearly half of recent music uploads were entirely AI-generated",
+  "media_id": "17908756311356026"
  }
 ]
