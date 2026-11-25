@@ -9,10 +9,10 @@
     "video_id": "QQN-clSJmGw",
     "stats": {
       "latest": {
-        "view": 51,
+        "view": 46,
         "like": 2,
         "comment": 0,
-        "age_days": 2.03
+        "age_days": 2.53
       },
       "1d": {
         "view": 79,
@@ -24,6 +24,11 @@
         "like": 2,
         "comment": 0
       }
+    },
+    "retention": {
+      "views": 27,
+      "avg_pct": 29.7,
+      "avg_sec": 14
     }
   },
   {
@@ -39,13 +44,23 @@
         "view": 131,
         "like": 1,
         "comment": 0,
-        "age_days": 1.87
+        "age_days": 2.37
       },
       "1d": {
         "view": 104,
         "like": 1,
         "comment": 0
+      },
+      "2d": {
+        "view": 131,
+        "like": 1,
+        "comment": 0
       }
+    },
+    "retention": {
+      "views": 17,
+      "avg_pct": 79.0,
+      "avg_sec": 22
     }
   },
   {
@@ -59,16 +74,21 @@
     "slot": "2026-11-23T06:00:00Z",
     "stats": {
       "latest": {
-        "view": 33,
+        "view": 35,
         "like": 0,
         "comment": 0,
-        "age_days": 1.37
+        "age_days": 1.87
       },
       "1d": {
         "view": 23,
         "like": 0,
         "comment": 0
       }
+    },
+    "retention": {
+      "views": 10,
+      "avg_pct": 43.5,
+      "avg_sec": 13
     }
   },
   {
@@ -136,10 +156,10 @@
     },
     "stats": {
       "latest": {
-        "view": 6,
+        "view": 29,
         "like": 0,
         "comment": 0,
-        "age_days": 1.12
+        "age_days": 1.62
       },
       "1d": {
         "view": 6,
@@ -216,10 +236,15 @@
     },
     "stats": {
       "latest": {
-        "view": 41,
+        "view": 87,
         "like": 0,
         "comment": 1,
-        "age_days": 0.87
+        "age_days": 1.37
+      },
+      "1d": {
+        "view": 87,
+        "like": 0,
+        "comment": 1
       }
     }
   },
@@ -287,10 +312,10 @@
     },
     "stats": {
       "latest": {
-        "view": 19,
+        "view": 45,
         "like": 0,
         "comment": 1,
-        "age_days": 0.37
+        "age_days": 0.87
       }
     }
   },
@@ -362,10 +387,10 @@
     },
     "stats": {
       "latest": {
-        "view": 10,
-        "like": 0,
+        "view": 107,
+        "like": 1,
         "comment": 1,
-        "age_days": 0.12
+        "age_days": 0.62
       }
     }
   },
@@ -428,6 +453,77 @@
         [
           23.0,
           "Apple promises almost two days of battery on the $1,999 iPhone Duo."
+        ]
+      ]
+    },
+    "stats": {
+      "latest": {
+        "view": 60,
+        "like": 1,
+        "comment": 1,
+        "age_days": 0.37
+      }
+    }
+  },
+  {
+    "date": "2026-11-25T02:52",
+    "title": "Oldest quasar discovered by telescope",
+    "links": [
+      "https://www.cbsnews.com/news/quasar-farthest-oldest-found/"
+    ],
+    "video_id": "4eUS1fqq5FU",
+    "publish_at": "2026-11-25T06:00:00Z",
+    "slot": "2026-11-25T06:00:00Z",
+    "category": "space",
+    "hook": "A telescope helped spot the oldest quasar dating back to the cosmos dawn.",
+    "words": 55,
+    "seconds": 20.0,
+    "demand": {
+      "query": "oldest quasar discovered",
+      "videos": 10,
+      "views": 1701,
+      "top": 931
+    },
+    "editor_rank": 1,
+    "contest": {
+      "titles": [
+        [
+          23.5,
+          "Oldest quasar discovered by telescope"
+        ],
+        [
+          23.5,
+          "New oldest quasar discovered"
+        ],
+        [
+          22.5,
+          "Oldest Quasar Discovered in the Universe"
+        ],
+        [
+          22.0,
+          "Oldest quasar discovered in space"
+        ],
+        [
+          22.0,
+          "Oldest quasar discovered ever"
+        ],
+        [
+          19.5,
+          "Oldest quasar discovered found"
+        ]
+      ],
+      "hooks": [
+        [
+          24.0,
+          "A telescope helped spot the oldest quasar dating back to the cosmos dawn."
+        ],
+        [
+          23.5,
+          "Scientists found the most distant quasar yet from the dawn of the cosmos."
+        ],
+        [
+          22.5,
+          "This ancient black hole is three hundred sixty million times our sun."
         ]
       ]
     }
