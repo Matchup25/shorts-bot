@@ -302,7 +302,8 @@ THE NEWS OUTLET'S OWN HEADLINE: {outlet}"""
             intro = """You are a strict fact-checker for an explainer channel (how things work, what professionals do).
 Viewers often see ONLY our title and hear ONLY our first sentence, so those two must be exactly true.
 A statement clearly presented as a MYTH or misconception that the video then corrects is not a claim of ours;
-the correction itself must be supported by the sources."""
+the correction itself must be supported by the sources. Phrases that only announce what the video shows
+("here is how it is built") are not claims either: do not list them as impressions."""
             step3 = "3. Answer stronger_than_outlet: false (there is no news headline here)."
             extra = """
 5. SAFETY: reject (approved false) if the video works as step-by-step instructions for dangerous work (electricity,
@@ -448,9 +449,13 @@ Write simple words, short punchy sentences, a curious and friendly tone.
 {fix}
 RULES
 - 5 or 6 scenes. Total narration 110-140 words (about 45 seconds).
-- Scene 1 is the hook (max 14 words): the myth, or the most surprising fact, stated so people need to know more.
+- Every sentence must be something the sources actually say (simplified, but with the same meaning).
+  No vague hype the sources do not state: no "secret tricks", "never fails", "always", "the strongest".
+- Scene 1 is the hook (max 14 words): ONE concrete, surprising fact taken from the sources, stated so people
+  need to know more (e.g. "Most brick walls hide a waterproof strip just above the ground.").
 - Each middle scene introduces ONE technical term and what it does, in plain words.
-- One scene says clearly "Myth: ... Reality: ..." (or similar wording) with the busted misconception.
+- One scene starts with "Myth:" followed by the misconception, then "Reality:" with what the sources say.
+  Only bust a myth if the sources contain the facts that correct it.
 - The last sentence leads naturally back to the first one (the Short loops). No call to action.
 - "headline": the TECHNICAL TERM of that scene (2-4 words, e.g. "DAMP-PROOF COURSE", "RESIDUAL CURRENT DEVICE"),
   or "MYTH" / "REALITY" for the myth scene, or a 2-4 word hook for scene 1.

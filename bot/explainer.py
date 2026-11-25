@@ -116,7 +116,7 @@ def main() -> None:
             log("  no reference article found, next topic")
             continue
         script, feedback = None, ""
-        for attempt in range(2):
+        for attempt in range(3):
             draft = brain.write_explainer(topic, sources, feedback)
             check = brain.verify(draft, sources, compare_headline=False)
             if check.get("approved"):
