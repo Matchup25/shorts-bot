@@ -455,8 +455,10 @@ RULES
 - 5 or 6 scenes. Total narration 110-140 words (about 45 seconds).
 - Every sentence must be something the sources actually say (simplified, but with the same meaning).
   No vague hype the sources do not state: no "secret tricks", "never fails", "always", "the strongest".
-- Scene 1 is the hook (max 14 words): ONE concrete, surprising fact taken from the sources, stated so people
-  need to know more (e.g. "Most brick walls hide a waterproof strip just above the ground.").
+- Scene 1 is the hook (max 14 words): ONE concrete, surprising fact from the sources about the thing as it is
+  built or used TODAY, that makes viewers ask "wait, why?" (e.g. "Most brick walls hide a waterproof strip just
+  above the ground."). No history trivia as a hook.
+- Every sentence must be crystal clear to a 12-year-old on first hearing; if a fact is confusing, leave it out.
 - Each middle scene introduces ONE technical term and what it does, in plain words.
 - One scene starts with "Myth:" followed by the misconception, then "Reality:" with what the sources say.
   Only bust a myth if the sources contain the facts that correct it.
@@ -465,8 +467,10 @@ RULES
   or "MYTH" / "REALITY" for the myth scene, or a 2-4 word hook for scene 1.
 - "visual" for each scene (the pictures are 3D renders in the style of a high-end "How It's Made" animation):
     {{"kind": "media",
-     "ai_prompt": "<one sentence: what the 3D shot shows, concrete and physically correct, e.g. 'cutaway of a brick
-                   wall at ground level, a thin dark waterproof layer between two courses of red bricks'>",
+     "ai_prompt": "<one sentence that STARTS with the real object and its real materials, then the view, e.g.
+                   'a red clay brick wall with grey mortar joints, cutaway at ground level showing a thin black
+                   waterproof layer between two rows of bricks'. Concrete and physically correct: no glowing, neon,
+                   glass or sci-fi elements unless the real object has them>",
      "ai_prompt2": "<a DIFFERENT view of the same thing for the second half of the scene: exploded view, extreme
                     close-up, the mechanism in action, or a wider shot>",
      "footage": "<2-3 common words for a stock video as a fallback, naming the object or the worker, e.g. 'brick wall'>",

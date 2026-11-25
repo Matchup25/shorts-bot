@@ -23,10 +23,10 @@ UA = {"User-Agent": "ShortsNewsBot/1.0"}
 AI_STYLE = (", cinematic photograph, dramatic natural lighting, rich colours, shallow depth of field, "
             "vertical 9:16 composition, highly detailed, no text, no letters, no watermark, no logos")
 # explainer channel (RerumFabrica): stylised 3D "How It's Made" look
-EXPLAINER_STYLE = (", 3D stylized render like a high-end 'How It's Made' animated explainer, clean cutaway and "
-                   "exploded-view feel, crisp studio and industrial lighting, tactile materials (brushed metal, "
-                   "translucent glass, glowing energy or fluid trails), satisfying mechanical precision, physically "
-                   "plausible, high detail, vertical 9:16 composition, no text, no letters, no labels, no watermark, "
+EXPLAINER_STYLE = (", stylised 3D animation still like a high-end 'How It's Made' explainer, Pixar-quality render, "
+                   "the main object large, centred and instantly recognisable, realistic materials true to the real "
+                   "object, clean cutaway or close-up view, crisp soft studio lighting, subtle depth of field, "
+                   "vertical 9:16 composition, absolutely no text, no letters, no numbers, no labels, no watermark, "
                    "no logos")
 # for real news events: clearly an illustration, never a fake "photo" of what happened
 AI_STYLE_EDITORIAL = (", symbolic editorial illustration, painterly digital art, not photorealistic, "
