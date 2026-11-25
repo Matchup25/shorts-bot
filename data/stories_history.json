@@ -142,5 +142,14 @@
   "link": "https://www.theguardian.com/us-news/2026/nov/25/new-york-bans-ai-toys",
   "headline": "New York State bans internet-connected AI toys",
   "media_id": "18150957571601227"
+ },
+ {
+  "slot": "2026-11-25T20:47Z",
+  "kind": "fact",
+  "date": "2026-11-25T20:47+00:00",
+  "title": "Stadium-sized crater left in asteroid after NASA 'Earth protection test'",
+  "link": "https://news.sky.com/story/stadium-sized-crater-left-in-asteroid-after-nasas-planetary-protection-test-13616510",
+  "headline": "NASA spacecraft leaves stadium-sized crater on asteroid",
+  "media_id": "18138667846776271"
  }
 ]
