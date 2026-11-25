@@ -12,7 +12,7 @@
         "view": 46,
         "like": 2,
         "comment": 0,
-        "age_days": 2.53
+        "age_days": 2.78
       },
       "1d": {
         "view": 79,
@@ -44,7 +44,7 @@
         "view": 131,
         "like": 1,
         "comment": 0,
-        "age_days": 2.37
+        "age_days": 2.62
       },
       "1d": {
         "view": 104,
@@ -74,13 +74,18 @@
     "slot": "2026-11-23T06:00:00Z",
     "stats": {
       "latest": {
-        "view": 35,
+        "view": 37,
         "like": 0,
         "comment": 0,
-        "age_days": 1.87
+        "age_days": 2.12
       },
       "1d": {
         "view": 23,
+        "like": 0,
+        "comment": 0
+      },
+      "2d": {
+        "view": 37,
         "like": 0,
         "comment": 0
       }
@@ -156,10 +161,10 @@
     },
     "stats": {
       "latest": {
-        "view": 29,
+        "view": 33,
         "like": 0,
         "comment": 0,
-        "age_days": 1.62
+        "age_days": 1.87
       },
       "1d": {
         "view": 6,
@@ -236,10 +241,10 @@
     },
     "stats": {
       "latest": {
-        "view": 87,
+        "view": 105,
         "like": 0,
         "comment": 1,
-        "age_days": 1.37
+        "age_days": 1.62
       },
       "1d": {
         "view": 87,
@@ -312,10 +317,15 @@
     },
     "stats": {
       "latest": {
-        "view": 45,
+        "view": 56,
         "like": 0,
         "comment": 1,
-        "age_days": 0.87
+        "age_days": 1.12
+      },
+      "1d": {
+        "view": 56,
+        "like": 0,
+        "comment": 1
       }
     }
   },
@@ -387,10 +397,10 @@
     },
     "stats": {
       "latest": {
-        "view": 107,
+        "view": 130,
         "like": 1,
         "comment": 1,
-        "age_days": 0.62
+        "age_days": 0.87
       }
     }
   },
@@ -458,10 +468,10 @@
     },
     "stats": {
       "latest": {
-        "view": 60,
+        "view": 70,
         "like": 1,
         "comment": 1,
-        "age_days": 0.37
+        "age_days": 0.62
       }
     }
   },
@@ -524,6 +534,81 @@
         [
           22.5,
           "This ancient black hole is three hundred sixty million times our sun."
+        ]
+      ]
+    },
+    "stats": {
+      "latest": {
+        "view": 28,
+        "like": 1,
+        "comment": 1,
+        "age_days": 0.12
+      }
+    }
+  },
+  {
+    "date": "2026-11-25T08:57",
+    "title": "Turkeys Chase Woman Into Stranger's Car 🦃",
+    "links": [
+      "https://www.bbc.co.uk/news/videos/cknv4mq93gd2o?at_medium=RSS&at_campaign=rss"
+    ],
+    "video_id": "ZE8Fzhvc2Dg",
+    "publish_at": "2026-11-25T12:00:00Z",
+    "slot": "2026-11-25T12:00:00Z",
+    "category": "weird",
+    "hook": "Chased by a flock of turkeys, a woman jumped into a stranger's car.",
+    "words": 74,
+    "seconds": 24.2,
+    "demand": {
+      "query": "turkeys chase woman car",
+      "videos": 10,
+      "views": 165940,
+      "top": 137503
+    },
+    "editor_rank": 2,
+    "contest": {
+      "titles": [
+        [
+          27.5,
+          "Turkeys Chase Woman Into Stranger's Car 🦃"
+        ],
+        [
+          27.0,
+          "Turkeys Chase Woman Until She Jumps in Car 🦃"
+        ],
+        [
+          25.5,
+          "Flock of Turkeys Chases Woman Into Car 🦃"
+        ],
+        [
+          25.0,
+          "Woman Escapes Turkey Chase in Stranger's Car 🦃"
+        ],
+        [
+          25.0,
+          "Turkeys Chase Woman: Saved by Stranger's Car 🦃"
+        ],
+        [
+          24.0,
+          "Woman Hides in Stranger's Car as Turkeys Chase 🦃"
+        ]
+      ],
+      "hooks": [
+        [
+          27.0,
+          "Chased by a flock of turkeys, a woman jumped into a stranger's car."
+        ],
+        [
+          26.5,
+          "To escape chasing turkeys, a woman jumped right into a stranger's car."
+        ],
+        [
+          25.0,
+          "A woman escaped a flock of chasing turkeys by jumping into a stranger's car."
+        ],
+        [
+          25.0,
+          "A flock of chasing turkeys forced a woman into a stranger's car."
         ]
       ]
     }
