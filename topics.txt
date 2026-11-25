@@ -1,0 +1,13 @@
+# Topics for the explainer channel, one per line, in the order you want them.
+# The bot takes the first one it has not done yet. Lines starting with # are ignored.
+# When the list runs out, the bot chooses topics itself (the ones people watch most on YouTube).
+How a brick wall is built
+How a house is connected to the electricity grid
+How an airplane wing creates lift
+How tap water is made safe to drink
+How a suspension bridge holds its weight
+How a refrigerator keeps food cold
+How concrete hardens
+How a hydroelectric dam makes electricity
+How an elevator is kept safe
+How bread dough rises

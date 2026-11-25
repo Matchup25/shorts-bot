@@ -29,10 +29,11 @@ def comment(meta: dict) -> None:
     if not question or not vid:
         log("No question or no video: nothing to comment.")
         return
-    if "https://www.googleapis.com/auth/youtube.force-ssl" not in youtube.granted_scopes():
+    token_env = meta.get("token_env") or "YT_REFRESH_TOKEN"
+    if "https://www.googleapis.com/auth/youtube.force-ssl" not in youtube.granted_scopes(token_env):
         log("Comment skipped: the YouTube token does not have the permission to comment yet.")
         return
-    yt = youtube.service()
+    yt = youtube.service(token_env)
     for attempt in range(4):
         try:
             cid = youtube.comment(yt, vid, question)

@@ -5,7 +5,7 @@ import time
 
 from .util import env, log
 
-CATEGORIES = ["science", "space", "tech", "world", "business", "health", "nature", "weird", "culture"]
+CATEGORIES = ["science", "space", "tech", "world", "business", "health", "nature", "weird", "culture", "education"]
 
 
 class Brain:
@@ -285,14 +285,29 @@ Return JSON:
         script = self.ask(prompt, temperature=0.8)
         return _normalise_script(script)
 
-    def verify(self, script: dict, sources: list, headline: str = "") -> dict:
+    def verify(self, script: dict, sources: list, headline: str = "", compare_headline: bool = True) -> dict:
         source_block = "\n\n".join(f"SOURCE {i+1} ({s['source']}): {s['title']}\n{s['text']}" for i, s in enumerate(sources))
         narration = "\n".join(f"- {sc['narration']}" for sc in script["scenes"])
         outlet = headline or (sources[0]["title"] if sources else "")
-        prompt = f"""You are a strict fact-checker for a news channel. Viewers often see ONLY our title and hear ONLY our
+        if compare_headline:
+            intro = f"""You are a strict fact-checker for a news channel. Viewers often see ONLY our title and hear ONLY our
 first sentence, so those two must be exactly as true and as certain as the news itself.
 
-THE NEWS OUTLET'S OWN HEADLINE: {outlet}
+THE NEWS OUTLET'S OWN HEADLINE: {outlet}"""
+            step3 = """3. Say whether our title claims MORE than the outlet's own headline. Adding a fact or number that IS in the
+   article is fine. Only answer true when our title is more certain ("may" -> "will", "claims" -> "proved"),
+   bigger (a partial result presented as complete) or about a more famous subject than the headline."""
+            extra = ""
+        else:
+            intro = """You are a strict fact-checker for an explainer channel (how things work, what professionals do).
+Viewers often see ONLY our title and hear ONLY our first sentence, so those two must be exactly true.
+A statement clearly presented as a MYTH or misconception that the video then corrects is not a claim of ours;
+the correction itself must be supported by the sources."""
+            step3 = "3. Answer stronger_than_outlet: false (there is no news headline here)."
+            extra = """
+5. SAFETY: reject (approved false) if the video works as step-by-step instructions for dangerous work (electricity,
+   gas, chemicals, heights, weapons, medicine) or presents a rule of one country as true everywhere."""
+        prompt = f"""{intro}
 OUR TITLE: {script['title']}
 OUR FIRST SENTENCE: {script['scenes'][0]['narration']}
 COMMENT QUESTION (must be neutral and must not assume facts that are not in the sources): {script.get('question', '')}
@@ -308,11 +323,9 @@ Do this:
 2. For each impression copy the exact source sentence that proves it, or "" if none does. An impression is
    supported only if a source says the SAME thing with the SAME certainty and the SAME subject: a related problem,
    partial progress, an attempt, a claim or a prediction does NOT support "solved", "proved", "cured", "confirmed".
-3. Say whether our title claims MORE than the outlet's own headline. Adding a fact or number that IS in the
-   article is fine. Only answer true when our title is more certain ("may" -> "will", "claims" -> "proved"),
-   bigger (a partial result presented as complete) or about a more famous subject than the headline.
+{step3}
 4. Check the narration, headlines and question: any wrong number, name or date, anything unsupported, misleading,
-   one-sided on politics, defamatory or unfair to a real person.
+   one-sided on politics, defamatory or unfair to a real person.{extra}
 
 Return JSON:
 {{"impressions": [{{"claim": "...", "evidence": "...", "supported": true}}],
@@ -330,10 +343,11 @@ Return JSON:
             problems.append("The fact-check did not list what the title and first sentence claim.")
         for i in weak:
             problems.append(f"Not supported by the sources: {i.get('claim')}")
-        if result.get("stronger_than_outlet") in (True, "true", "True"):
+        stronger = compare_headline and result.get("stronger_than_outlet") in (True, "true", "True")
+        if stronger:
             problems.append(f"The title claims more than the outlet's own headline ('{outlet}').")
         ok = str(result.get("approved")).lower() in {"true", "yes", "1"} and not weak and impressions \
-            and not unbacked and result.get("stronger_than_outlet") not in (True, "true", "True")
+            and not unbacked and not stronger
         return {"approved": bool(ok), "problems": problems, "impressions": impressions}
 
     # ------------------------------------------------------------ weekly show
@@ -418,6 +432,65 @@ Return JSON: {{"headline": "...", "category": "...", "scenes": [{{"narration": "
         return {"title": str(seg.get("headline", "")).strip()[:60], "headline": str(seg.get("headline", "")).strip()[:60],
                 "category": category if category in CATEGORIES else "world", "scenes": scenes,
                 "claims": seg.get("claims", [])}
+
+    def write_explainer(self, topic: str, sources: list, feedback: str = "") -> dict:
+        """A Short for the explainer channel: how something really works / what professionals really do."""
+        source_block = "\n\n".join(f"SOURCE {i+1} ({s['source']}): {s['title']}\n{s['text'][:7000]}" for i, s in enumerate(sources))
+        fix = f"\nA fact-checker rejected your previous draft. Fix these problems:\n{feedback}\n" if feedback else ""
+        prompt = f"""Write a YouTube Short for an English explainer channel about how the world really works.
+TOPIC: {topic}
+Show what really happens / what professionals really do, with the correct TECHNICAL NAMES, and bust one common
+myth or misconception about it. Use ONLY facts stated in the sources below; never invent numbers, names or rules.
+If something differs between countries (rules, colours, standards), say so or name the place.
+SAFETY: this is not a tutorial. Never give step-by-step instructions for anything dangerous (electricity, gas,
+chemicals, heights, weapons, medicine). For risky work say that trained / licensed professionals do it and why.
+Write simple words, short punchy sentences, a curious and friendly tone.
+{fix}
+RULES
+- 5 or 6 scenes. Total narration 110-140 words (about 45 seconds).
+- Scene 1 is the hook (max 14 words): the myth, or the most surprising fact, stated so people need to know more.
+- Each middle scene introduces ONE technical term and what it does, in plain words.
+- One scene says clearly "Myth: ... Reality: ..." (or similar wording) with the busted misconception.
+- The last sentence leads naturally back to the first one (the Short loops). No call to action.
+- "headline": the TECHNICAL TERM of that scene (2-4 words, e.g. "DAMP-PROOF COURSE", "RESIDUAL CURRENT DEVICE"),
+  or "MYTH" / "REALITY" for the myth scene, or a 2-4 word hook for scene 1.
+- "visual" for each scene:
+    {{"kind": "media",
+     "footage": "<2-4 word stock VIDEO search, concrete and filmable, e.g. 'bricklayer laying bricks', 'electrician panel'>",
+     "footage2": "<a DIFFERENT 2-4 word stock video search for a second shot (another angle or a close-up)>",
+     "ai_prompt": "<one sentence for a clean illustrative image of the thing; no real people's faces, no logos, no text>",
+     "nasa": ""}}
+    or for 1 scene with a striking number from the sources:
+    {{"kind": "stat", "value": "<number only>", "unit": "<short unit>", "footage": "...", "ai_prompt": "...", "nasa": ""}}
+- "title": max 50 characters, curiosity but TRUE, with the main search keyword, 0-1 emoji
+  (e.g. "Why Walls Have a Hidden Plastic Layer").
+- "category": "education".
+- "description": 2 sentences: what the video explains.
+- "search_keywords": 2-4 keywords.
+- "question": one short open question for the comments (max 15 words), e.g. "Did you know walls need this layer?"
+- "claims": every factual claim used in the narration and title.
+
+SOURCES
+{source_block}
+
+Return JSON:
+{{"title": "...", "category": "education", "scenes": [{{"narration": "...", "headline": "...", "visual": {{...}}}}],
+ "description": "...", "search_keywords": ["..."], "question": "...", "claims": ["..."]}}"""
+        script = _normalise_script(self.ask(prompt, temperature=0.7))
+        script["category"] = "education"
+        return script
+
+    def explainer_topics(self, done: list, categories: list) -> list:
+        """Propose topics (used when Luca's list is empty)."""
+        prompt = f"""Propose 8 topics for short English explainer videos about how the world really works
+(what professionals really do, how everyday things work, with technical names and one common myth each).
+Spread them over these areas: {", ".join(categories)}.
+Must be explainable from an encyclopedia article. No dangerous how-to topics (weapons, drugs, hacking, self-harm).
+Already done (do not repeat): {"; ".join(done[-60:]) or "(none)"}
+Return JSON: {{"topics": [{{"topic": "<e.g. How a brick wall is built>", "wikipedia": "<best English Wikipedia
+article title, e.g. Brickwork>", "query": "<2-4 words people type on YouTube>"}}]}}"""
+        res = self.ask(prompt, temperature=0.9)
+        return [t for t in res.get("topics", []) if isinstance(t, dict) and t.get("topic")]
 
     def choose_hashtags(self, script: dict, candidates: list, trends: list) -> list:
         prompt = f"""Pick hashtags for this YouTube Short. Title: "{script['title']}". Topic: {script['description']}

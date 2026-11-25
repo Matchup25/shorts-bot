@@ -10,16 +10,17 @@ from .util import env, log
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 CATEGORY_IDS = {  # YouTube category numbers
     "science": "28", "space": "28", "tech": "28", "health": "28", "nature": "15",
-    "world": "25", "business": "25", "weird": "24", "culture": "24",
+    "world": "25", "business": "25", "weird": "24", "culture": "24", "education": "27",
 }
 
 
-def service():
+def service(token_env: str = "YT_REFRESH_TOKEN"):
+    """YouTube API for one channel: YT_REFRESH_TOKEN = World in a Shot, YT2_REFRESH_TOKEN = explainer channel."""
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build
     creds = Credentials(
         token=None,
-        refresh_token=env("YT_REFRESH_TOKEN"),
+        refresh_token=env(token_env),
         client_id=env("YT_CLIENT_ID"),
         client_secret=env("YT_CLIENT_SECRET"),
         token_uri=TOKEN_URI,
@@ -28,11 +29,11 @@ def service():
     return build("youtube", "v3", credentials=creds, cache_discovery=False)
 
 
-def granted_scopes() -> list:
+def granted_scopes(token_env: str = "YT_REFRESH_TOKEN") -> list:
     """Which YouTube permissions the saved token has (to know if comments/analytics are allowed)."""
     try:
         r = requests.post(TOKEN_URI, timeout=20, data={
-            "grant_type": "refresh_token", "refresh_token": env("YT_REFRESH_TOKEN"),
+            "grant_type": "refresh_token", "refresh_token": env(token_env),
             "client_id": env("YT_CLIENT_ID"), "client_secret": env("YT_CLIENT_SECRET")})
         return r.json().get("scope", "").split() if r.ok else []
     except Exception:

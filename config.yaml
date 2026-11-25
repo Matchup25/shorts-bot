@@ -83,3 +83,12 @@ feeds:
   CBS News:
     - https://www.cbsnews.com/latest/rss/science
     - https://www.cbsnews.com/latest/rss/technology
+
+# Second channel: "how the world really works" explainers (English). Topics: topics.txt
+explainer:
+  channel_name: "HOW IT REALLY WORKS"
+  publish_times: ["17:00"]
+  voice: bm_george
+  voice_speed: 1.0
+  categories: [homes and construction, electricity and energy, transport, the human body, food and farming,
+               internet and technology, money and the economy, nature and weather, factories and materials, space]
