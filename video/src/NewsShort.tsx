@@ -4,6 +4,7 @@ import { AbsoluteFill, Sequence, staticFile, useVideoConfig } from "remotion";
 import { Brand, Credit, Flash, Grain, Progress, Shade } from "./components/Chrome";
 import { Captions } from "./components/Captions";
 import { Headline } from "./components/Headline";
+import { MapScene, PlaceLabel } from "./components/MapScene";
 import { SceneMedia } from "./components/SceneMedia";
 import { Stat } from "./components/Stat";
 import "./fonts";
@@ -28,6 +29,13 @@ export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scen
         const darken = scene.kind === "stat" ? 0.55 : 0.88;
         // Faster rhythm: scenes longer than ~4 s get a cut halfway, to a second shot
         // (or a punch-in on the same picture when there is no second one).
+        if (scene.kind === "map" && scene.place) {
+          return (
+            <Sequence key={`m${i}`} from={from} durationInFrames={len} name={`Scene ${i + 1} (map)`}>
+              <MapScene place={scene.place} index={i} />
+            </Sequence>
+          );
+        }
         const cut = next - from >= Math.round(CUT_AFTER * fps) ? Math.round((next - from) / 2) : 0;
         if (!cut) {
           return (
@@ -67,8 +75,9 @@ export const NewsShort: React.FC<ShortProps> = ({ channel, category, audio, scen
         return (
           <Sequence key={`t${i}`} from={from} durationInFrames={len} name={`Text ${i + 1}`} layout="none">
             {scene.kind === "stat" && scene.stat ? <Stat value={scene.stat.value} unit={scene.stat.unit} /> : null}
+            {scene.kind === "map" && scene.place ? <PlaceLabel place={scene.place} /> : null}
             <Headline text={scene.headline} big={i === 0} exitAt={len} />
-            <Credit text={scene.media.credit} />
+            <Credit text={scene.kind === "map" ? undefined : scene.media.credit} />
           </Sequence>
         );
       })}

@@ -10,7 +10,7 @@ from .util import env, log
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 CATEGORY_IDS = {  # YouTube category numbers
     "science": "28", "space": "28", "tech": "28", "health": "28", "nature": "15",
-    "world": "25", "business": "25", "weird": "24", "culture": "24", "education": "27",
+    "world": "25", "business": "25", "weird": "24", "culture": "24", "education": "27", "explained": "27",
 }
 
 

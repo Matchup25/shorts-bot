@@ -16,8 +16,9 @@ export type Scene = {
   start: number; // seconds
   end: number; // seconds
   headline: string;
-  kind: "media" | "stat";
-  media: Media;
+  kind: "media" | "stat" | "map";
+  media: Media; // for "map" scenes: a dark placeholder (not shown)
+  place?: { label: string; country: string; lat: number; lon: number }; // "map" scenes
   media2?: Media; // second shot for the second half of the scene (faster rhythm)
   stat?: { value: string; unit: string };
   transition: "zoom" | "whip-left" | "whip-right" | "flash" | "cut";

@@ -1,0 +1,2 @@
+# World Explained topics to do first, one per line (a question works best). Lines starting with # are ignored.
+# When this list is empty the bot proposes evergreen topics itself and picks the ones people watch most.

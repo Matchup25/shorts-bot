@@ -149,9 +149,9 @@ def get_token(renew: bool = True) -> tuple[str, dict]:
 
 
 def caption_for(title: str, summary: str, sources: list, tags: list, question: str = "", handle: str = "",
-                music: str = "") -> str:
+                music: str = "", extra_tags: tuple = ("#news", "#worldnews")) -> str:
     ig_tags = [t for t in tags if t.lower() != "#shorts"]
-    for extra in ("#news", "#worldnews"):
+    for extra in extra_tags:
         if extra not in [t.lower() for t in ig_tags]:
             ig_tags.append(extra)
     text = f"{title}\n\n{summary}\n\n"

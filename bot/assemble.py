@@ -124,6 +124,19 @@ def build_props(script: dict, timings: list, words: list, media: list, channel: 
     scenes = []
     for i, (sc, tm, md) in enumerate(zip(script["scenes"], timings, media)):
         vis = sc["visual"]
+        if vis.get("kind") == "map" and isinstance(vis.get("place"), dict):
+            # geography scene: a globe turns to the place (no picture needed)
+            pl = vis["place"]
+            scenes.append({
+                "start": round(tm["start"], 3), "end": round(tm["end"], 3), "headline": sc["headline"],
+                "kind": "map", "media": {"type": "image", "src": ""},
+                "place": {"label": str(pl.get("label") or pl.get("country") or "World"),
+                          "country": str(pl.get("country") or ""),
+                          "lat": float(pl.get("lat") or 0), "lon": float(pl.get("lon") or 0)},
+                "transition": TRANSITIONS[(i + offset) % len(TRANSITIONS)],
+            })
+            continue
+        md = md or {"type": "image", "src": ""}
         scene = {
             "start": round(tm["start"], 3),
             "end": round(tm["end"], 3),

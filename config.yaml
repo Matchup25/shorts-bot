@@ -97,3 +97,10 @@ explainer:
   voice_speed: 1.0
   categories: [homes and construction, electricity and energy, transport, the human body, food and farming,
                internet and technology, money and the economy, nature and weather, factories and materials, space]
+
+# "World Explained": one extra Short a day that teaches an evergreen curiosity about the world (borders, enclaves,
+# flags, time zones...). Same channel, also posted as a Reel. Topics to do first: curiosity_topics.txt
+curiosity:
+  enabled: false   # turned on after the test video is approved
+  publish_times: ["21:00"]
+  instagram_tags: ["#geography", "#history"]

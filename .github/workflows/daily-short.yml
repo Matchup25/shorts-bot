@@ -62,7 +62,9 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run stories.yml -R "$GITHUB_REPOSITORY" --ref main
+        run: |
+          gh workflow run stories.yml -R "$GITHUB_REPOSITORY" --ref main
+          gh workflow run curiosity.yml -R "$GITHUB_REPOSITORY" --ref main -f auto=true
 
   make-short:
     needs: check

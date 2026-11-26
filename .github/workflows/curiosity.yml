@@ -1,0 +1,218 @@
+name: World Explained
+
+# One extra Short a day (21:00 Zurich): an evergreen curiosity about the world, also posted as a Reel.
+# Started by every wake-up of the Daily Short workflow (and by this timer as a backup); it makes a video only
+# when curiosity.publish_times is due. Settings: config.yaml -> curiosity.
+on:
+  schedule:
+    - cron: "40 */3 * * *"
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: "Test: make the video but do not upload (saved on the curiosity-test-output branch)"
+        type: boolean
+        default: false
+      topic:
+        description: "Optional: topic to use (e.g. Why is Kaliningrad part of Russia?)"
+        default: ""
+      auto:
+        description: "Behave like a scheduled run"
+        type: boolean
+        default: false
+      privacy:
+        description: "Upload as (empty = config)"
+        default: ""
+      llm:
+        description: "Test only: 'cloudflare' skips Gemini"
+        default: ""
+      voice:
+        description: "Test only: voice to use"
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      due: ${{ steps.due.outputs.due }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Is an explainer Short due?
+        id: due
+        env:
+          DRY_RUN: ${{ inputs.test_mode }}
+          PRIVACY_OVERRIDE: ${{ inputs.privacy }}
+          BOT_TRIGGER: ${{ inputs.auto }}
+        run: pip install -q pyyaml && python -m bot.curiosity --check
+
+  make:
+    needs: check
+    if: needs.check.outputs.due == 'true'
+    # one Short at a time (test runs have their own lane). Only this job is serialised, so a run that is
+    # waiting to post on Instagram never blocks the next wake-up.
+    concurrency:
+      group: curiosity-${{ inputs.test_mode == true && 'test' || 'live' }}
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      published: ${{ steps.make.outputs.published }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: video/package-lock.json
+
+      - name: Install animation engine
+        run: npm ci --prefix video --no-audit --no-fund
+
+      - name: Install video tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-color-emoji libcairo2 > /dev/null
+
+      - name: Restore voice model
+        id: models
+        uses: actions/cache@v4
+        with:
+          path: models
+          key: kokoro-v1.0
+
+      - name: Download voice model (first run only)
+        if: steps.models.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p models
+          curl -sSL -o models/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
+          curl -sSL -o models/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+
+      - name: Install Python packages
+        run: pip install -q -r requirements.txt
+
+      - name: Make and publish the World Explained Short
+        id: make
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CHROME_PATH: /usr/bin/google-chrome
+          DRY_RUN: ${{ inputs.test_mode }}
+          PRIVACY_OVERRIDE: ${{ inputs.privacy }}
+          BOT_TRIGGER: ${{ inputs.auto }}
+          FORCE_TOPIC: ${{ inputs.topic }}
+          LLM_FORCE: ${{ inputs.llm }}
+          VOICE_OVERRIDE: ${{ inputs.voice }}
+        run: |
+          python -m bot.curiosity
+          if [ -f output/ig.json ]; then echo "published=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Keep the video for download
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: curiosity
+          path: |
+            output/*.mp4
+            output/ig.json
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Save the test video on the test-output branch
+        if: success() && inputs.test_mode == true
+        run: |
+          mkdir /tmp/out && cp output/*.mp4 /tmp/out/ && cp video/public/run/props.json /tmp/out/
+          cd /tmp/out
+          git init -q -b curiosity-test-output
+          git config user.name "shorts-bot"
+          git config user.email "shorts-bot@users.noreply.github.com"
+          git add . && git commit -q -m "Test render ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:curiosity-test-output
+
+      - name: Remember published topics
+        if: success() && inputs.test_mode != true
+        run: |
+          git config user.name "shorts-bot"
+          git config user.email "shorts-bot@users.noreply.github.com"
+          [ -f data/curiosity_history.json ] && git add data/curiosity_history.json
+          git commit -q -m "Published a World Explained Short" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done
+
+
+  instagram:
+    needs: make
+    if: needs.make.outputs.published == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 380
+    env:
+      IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+      IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
+      YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+      YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+      YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+    steps:
+      - name: Is Instagram set up?
+        id: ig
+        run: |
+          if [ -n "$IG_ACCESS_TOKEN" ]; then echo "on=true" >> "$GITHUB_OUTPUT"; else echo "Instagram is not set up yet: skipping."; fi
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -q requests cryptography pyyaml google-api-python-client google-auth
+      - uses: actions/download-artifact@v4
+        with:
+          name: curiosity
+          path: output
+      - name: Wait until the Short goes live
+        run: python -m bot.golive wait --meta output/ig.json
+      - name: Ask the viewers a question (YouTube comment)
+        continue-on-error: true
+        run: python -m bot.golive comment --meta output/ig.json
+      - name: Put the video online for Instagram (ig-media branch)
+        if: steps.ig.outputs.on == 'true'
+        id: host
+        run: |
+          VIDEO=$(python -c "import json;print(json.load(open('output/ig.json'))['video'])")
+          NAME="reel_$(date -u +%Y%m%d_%H%M%S).mp4"
+          mkdir -p /tmp/ig && cp "output/$VIDEO" "/tmp/ig/$NAME"
+          cd /tmp/ig && git init -q -b ig-media && git config user.name "shorts-bot" && git config user.email "shorts-bot@users.noreply.github.com"
+          git add . && git commit -q -m "Reel $NAME"
+          # only a fallback (the video is normally uploaded directly), so a failed push must not stop the Reel
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" ig-media \
+            && echo "url=https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/ig-media/$NAME" >> "$GITHUB_OUTPUT" || true
+      - name: Publish the Reel (waits for the publishing time)
+        if: steps.ig.outputs.on == 'true'
+        run: python -m bot.instagram post --meta output/ig.json --url "${{ steps.host.outputs.url }}"
+      - name: Remember the Reel
+        if: always() && steps.ig.outputs.on == 'true'
+        run: |
+          git config user.name "shorts-bot"
+          git config user.email "shorts-bot@users.noreply.github.com"
+          for f in data/ig_history.json data/ig_token.enc; do [ -f "$f" ] && git add "$f"; done
+          git commit -q -m "Published a Reel" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q && break; sleep 5; done

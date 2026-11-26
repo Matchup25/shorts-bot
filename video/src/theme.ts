@@ -18,6 +18,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
   weird: "#F472B6",
   culture: "#FBBF24",
   education: "#FF6A1A",
+  explained: "#38BDF8",
 };
 
 export const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;

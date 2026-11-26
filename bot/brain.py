@@ -6,7 +6,7 @@ import time
 from . import polish
 from .util import env, log
 
-CATEGORIES = ["science", "space", "tech", "world", "business", "health", "nature", "weird", "culture", "education"]
+CATEGORIES = ["science", "space", "tech", "world", "business", "health", "nature", "weird", "culture", "education", "explained"]
 
 
 class Brain:
@@ -520,6 +520,73 @@ article title, e.g. Brickwork>", "query": "<2-4 words people type on YouTube>"}}
         res = self.ask(prompt, temperature=0.9)
         return [t for t in res.get("topics", []) if isinstance(t, dict) and t.get("topic")]
 
+    def curiosity_topics(self, done: list) -> list:
+        """Evergreen geography/geopolitics curiosities for the evening "World Explained" video."""
+        prompt = f"""Propose 10 topics for one-minute YouTube Shorts that TEACH a surprising, evergreen fact about how
+the world is organised: odd borders, enclaves and exclaves, why a territory belongs to a country, capitals, flags,
+time zones, straits and canals, tiny or unusual countries, how a historic treaty still shapes a map today, etc.
+Each topic must be explainable from one English Wikipedia article and must NOT be breaking news.
+Avoid topics centred on an ongoing war, terrorism, or an ethnic or religious conflict.
+Already done (do not repeat, not even reworded): {"; ".join(done[-80:]) or "(none)"}
+Return JSON: {{"topics": [{{"topic": "<a question, e.g. Why is Kaliningrad part of Russia?>",
+ "wikipedia": "<exact English Wikipedia article title, e.g. Kaliningrad Oblast>",
+ "query": "<2-4 words people type on YouTube, e.g. kaliningrad russia>",
+ "place": {{"label": "<short place label, e.g. Kaliningrad, Russia>", "country": "<English country name>",
+            "lat": <latitude>, "lon": <longitude>}}}}]}}"""
+        res = self.ask(prompt, temperature=0.95)
+        return [t for t in res.get("topics", []) if isinstance(t, dict) and t.get("topic")]
+
+    def write_curiosity(self, topic: dict, sources: list, feedback: str = "") -> dict:
+        """One-minute Short that teaches the 'why' behind a curiosity about the world."""
+        place = topic.get("place") or {}
+        source_block = "\n\n".join(f"SOURCE {i+1} ({s['source']}): {s['title']}\n{s['text'][:9000]}"
+                                    for i, s in enumerate(sources))
+        fix = f"\nA fact-checker rejected your previous draft. Fix these problems:\n{feedback}\n" if feedback else ""
+        prompt = f"""Write a one-minute YouTube Short for "World Explained", the evening series of an English channel.
+It must TEACH something: the history, geography, law or economics that explains the curiosity, not just state it.
+TOPIC: {topic['topic']}
+Use ONLY facts stated in the sources below; never invent numbers, dates or names.
+Be strictly neutral: if a territory or name is disputed, say who claims what, without taking sides or judging.
+{fix}
+RULES
+- 6 or 7 scenes. Total narration 140-165 words (about 55-60 seconds). Simple words, short sentences.
+- Scene 1 is the hook (max 14 words): the surprising fact or a question viewers want answered.
+- Then explain step by step WHY (cause -> consequence), with at least two concrete dates, numbers or names
+  from the sources. End with one takeaway sentence that leads naturally back to the first sentence (the Short loops).
+- "headline" for each scene: 2-4 words in capitals-friendly style (e.g. "A 1945 DECISION", "CUT OFF BY LAND").
+- Scene 1 visual is a map: {{"kind": "map", "place": {json.dumps(place) if place else '{"label": "...", "country": "...", "lat": 0, "lon": 0}'}}}
+  You may use ONE more map scene later for another place that matters to the story (English country name,
+  correct latitude and longitude).
+- Other scenes: {{"kind": "media",
+   "footage": "<2-3 common words a stock video site has, e.g. 'baltic sea coast', 'old treaty document', 'border crossing'>",
+   "footage2": "<a DIFFERENT 2-3 word stock search for a second shot>",
+   "ai_prompt": "<one sentence for a realistic illustrative image, no text, no real people's faces, no flags with errors>",
+   "nasa": ""}}
+  or for 1 scene with a striking number from the sources:
+   {{"kind": "stat", "value": "<number only>", "unit": "<short unit>", "footage": "...", "ai_prompt": "...", "nasa": ""}}
+- "title": max 50 characters, a question or a curiosity, TRUE, with the main search keyword, 0-1 emoji
+  (e.g. "Why Is Kaliningrad Part of Russia? 🇷🇺").
+- "category": "explained".
+- "description": 2 sentences on what the video explains.
+- "search_keywords": 3-4 keywords.
+- "question": one short open question for the comments (max 15 words).
+- "claims": every factual claim used in the narration and title.
+
+SOURCES
+{source_block}
+
+Return JSON:
+{{"title": "...", "category": "explained", "scenes": [{{"narration": "...", "headline": "...", "visual": {{...}}}}],
+ "description": "...", "search_keywords": ["..."], "question": "...", "claims": ["..."]}}"""
+        raw = self.ask(prompt, temperature=0.7)
+        for sc in raw.get("scenes", []) if isinstance(raw, dict) else []:
+            vis = sc.get("visual") if isinstance(sc, dict) else None
+            if isinstance(vis, dict) and vis.get("kind") == "map" and not isinstance(vis.get("place"), dict) and place:
+                vis["place"] = place
+        script = _normalise_script(raw)
+        script["category"] = "explained"
+        return script
+
     def choose_hashtags(self, script: dict, candidates: list, trends: list) -> list:
         prompt = f"""Pick hashtags for this YouTube Short. Title: "{script['title']}". Topic: {script['description']}
 
@@ -588,7 +655,9 @@ def _normalise_script(script: dict) -> dict:
         if not narration:
             continue
         visual = dict(sc.get("visual") or {})
-        if visual.get("kind") != "stat" or not str(visual.get("value", "")).strip():
+        if visual.get("kind") == "map" and isinstance(visual.get("place"), dict):
+            pass  # geography scene (globe turning to the place)
+        elif visual.get("kind") != "stat" or not str(visual.get("value", "")).strip():
             visual["kind"] = "media"
         for key in ("footage", "footage2", "ai_prompt", "ai_prompt2", "nasa"):
             visual[key] = str(visual.get(key) or "").strip()
