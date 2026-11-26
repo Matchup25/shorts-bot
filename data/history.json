@@ -9,10 +9,10 @@
     "video_id": "QQN-clSJmGw",
     "stats": {
       "latest": {
-        "view": 44,
+        "view": 45,
         "like": 2,
         "comment": 0,
-        "age_days": 3.53
+        "age_days": 3.78
       },
       "1d": {
         "view": 79,
@@ -44,7 +44,7 @@
         "view": 131,
         "like": 1,
         "comment": 0,
-        "age_days": 3.37
+        "age_days": 3.62
       },
       "1d": {
         "view": 104,
@@ -77,7 +77,7 @@
         "view": 37,
         "like": 0,
         "comment": 0,
-        "age_days": 2.87
+        "age_days": 3.12
       },
       "1d": {
         "view": 23,
@@ -164,7 +164,7 @@
         "view": 37,
         "like": 0,
         "comment": 0,
-        "age_days": 2.62
+        "age_days": 2.87
       },
       "1d": {
         "view": 6,
@@ -254,7 +254,7 @@
         "view": 119,
         "like": 1,
         "comment": 1,
-        "age_days": 2.37
+        "age_days": 2.62
       },
       "1d": {
         "view": 87,
@@ -337,13 +337,18 @@
     },
     "stats": {
       "latest": {
-        "view": 81,
+        "view": 94,
         "like": 0,
         "comment": 1,
-        "age_days": 1.87
+        "age_days": 2.12
       },
       "1d": {
         "view": 56,
+        "like": 0,
+        "comment": 1
+      },
+      "2d": {
+        "view": 94,
         "like": 0,
         "comment": 1
       }
@@ -422,10 +427,10 @@
     },
     "stats": {
       "latest": {
-        "view": 167,
+        "view": 172,
         "like": 1,
         "comment": 1,
-        "age_days": 1.62
+        "age_days": 1.87
       },
       "1d": {
         "view": 139,
@@ -498,10 +503,10 @@
     },
     "stats": {
       "latest": {
-        "view": 170,
+        "view": 199,
         "like": 2,
         "comment": 1,
-        "age_days": 1.37
+        "age_days": 1.62
       },
       "1d": {
         "view": 170,
@@ -574,10 +579,15 @@
     },
     "stats": {
       "latest": {
-        "view": 76,
+        "view": 97,
         "like": 1,
         "comment": 1,
-        "age_days": 0.87
+        "age_days": 1.12
+      },
+      "1d": {
+        "view": 97,
+        "like": 1,
+        "comment": 1
       }
     }
   },
@@ -649,10 +659,10 @@
     },
     "stats": {
       "latest": {
-        "view": 73,
+        "view": 109,
         "like": 0,
         "comment": 1,
-        "age_days": 0.62
+        "age_days": 0.87
       }
     }
   },
@@ -719,7 +729,7 @@
         "view": 27,
         "like": 0,
         "comment": 2,
-        "age_days": 0.37
+        "age_days": 0.62
       }
     }
   },
@@ -783,6 +793,78 @@
         [
           20.5,
           "China just flew its first foreign astronaut to the Tiangong space station."
+        ]
+      ]
+    },
+    "stats": {
+      "latest": {
+        "view": 73,
+        "like": 0,
+        "comment": 1,
+        "age_days": 0.12
+      }
+    }
+  },
+  {
+    "date": "2026-11-26T09:08",
+    "title": "NASA Left A Stadium-Sized Crater on Asteroid",
+    "links": [
+      "https://www.bbc.co.uk/news/articles/cw8dv112r5gmo?at_medium=RSS&at_campaign=rss",
+      "https://news.sky.com/story/stadium-sized-crater-left-in-asteroid-after-nasas-planetary-protection-test-13616510"
+    ],
+    "video_id": "eBf1nS4nXOs",
+    "publish_at": "2026-11-26T12:00:00Z",
+    "slot": "2026-11-26T12:00:00Z",
+    "category": "space",
+    "hook": "A stadium-sized crater now scars an asteroid after a deliberate crash test.",
+    "words": 53,
+    "seconds": 20.2,
+    "demand": {
+      "query": "nasa asteroid crater photos",
+      "videos": 10,
+      "views": 67284,
+      "top": 50112
+    },
+    "editor_rank": 2,
+    "contest": {
+      "titles": [
+        [
+          26.0,
+          "New NASA asteroid crater photos revealed"
+        ],
+        [
+          25.5,
+          "See the NASA asteroid crater photos"
+        ],
+        [
+          25.0,
+          "NASA Left A Stadium-Sized Crater on Asteroid"
+        ],
+        [
+          24.5,
+          "NASA asteroid crater photos show impact"
+        ],
+        [
+          24.5,
+          "Asteroid hit by NASA leaves massive crater"
+        ],
+        [
+          23.5,
+          "New photos show NASA asteroid crater"
+        ]
+      ],
+      "hooks": [
+        [
+          26.5,
+          "New photos reveal a stadium-sized crater left on an asteroid by NASA."
+        ],
+        [
+          23.5,
+          "Fourteen thousand miles per hour: how NASA slammed into an asteroid."
+        ],
+        [
+          23.5,
+          "A stadium-sized crater now scars an asteroid after a deliberate crash test."
         ]
       ]
     }
