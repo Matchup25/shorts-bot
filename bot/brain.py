@@ -78,15 +78,20 @@ class Brain:
             for attempt in range(2):
                 try:
                     r = requests.post("https://models.github.ai/inference/chat/completions", timeout=180,
-                                      headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+                                      allow_redirects=False,
+                                      headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json",
+                                               "Accept": "application/json"},
                                       json={"model": model, "temperature": temperature, "max_tokens": 4000,
                                             "messages": [{"role": "system", "content": "You answer with one valid JSON object only, no other text."},
                                                          {"role": "user", "content": prompt}]})
                     if r.status_code == 429:
                         raise RuntimeError(f"429 {r.text[:160]}")
-                    if not r.ok:
-                        raise RuntimeError(f"{r.status_code} {r.text[:200]}")
-                    data = _parse_json(r.json()["choices"][0]["message"].get("content") or "")
+                    if not r.ok or "json" not in r.headers.get("content-type", ""):
+                        raise RuntimeError(f"{r.status_code} {r.headers.get('content-type', '')} {r.text[:200]!r}")
+                    content = r.json()["choices"][0]["message"].get("content") or ""
+                    if not content.strip():
+                        raise RuntimeError(f"empty answer: {r.text[:200]!r}")
+                    data = _parse_json(content)
                     log(f"  (answered by GitHub Models {model.split('/')[-1]})")
                     return data
                 except Exception as exc:
