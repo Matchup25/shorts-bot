@@ -45,6 +45,7 @@ def _boom(dur: float = 1.2) -> np.ndarray:
     return (wave * np.exp(-t * 3.2)).astype(np.float32)
 
 
+WHOOSH_LEVEL = 0.0   # transition sound between pictures: off (it sounded like paper being torn); was 0.16
 LAST_MUSIC: dict = {}   # track used in the last mix, for the credit line in the description
 
 
@@ -96,11 +97,11 @@ def build_mix(voice: np.ndarray, timings: list, out_wav: str, whoosh_at: list | 
     boom = _boom()
     sfx[: len(boom)] += boom[: len(sfx)] * 0.35
     points = whoosh_at if whoosh_at is not None else [tm["start"] for tm in timings[1:]]
-    for i, at in enumerate(points, start=1):
+    for i, at in enumerate(points if WHOOSH_LEVEL else [], start=1):
         w = _whoosh(i)
         start = max(0, int((at - 0.28) * SR))
         end = min(len(sfx), start + len(w))
-        sfx[start:end] += w[: end - start] * 0.16
+        sfx[start:end] += w[: end - start] * WHOOSH_LEVEL
     mix = mix + sfx
     music = _music(len(mix))
     if music is not None:
