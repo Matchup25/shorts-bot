@@ -200,7 +200,8 @@ def prepare(count: int, test: bool) -> None:
         "Neutral, fact-checked against the original reporting, every Sunday.\n\n"
         "Chapters:\n" + "\n".join(chapters) + "\n\nSources:\n" + "\n".join(source_lines) + "\n\n"
         "Narration and illustrations are AI-generated; footage from Pixabay/Pexels/NASA. "
-        "Subscribe for a new Short every day.\n\n#news #worldnews #weeklynews #worldinashot"
+        + (assemble.music_credit() + " " if assemble.music_credit() else "")
+        + "Subscribe for a new Short every day.\n\n#news #worldnews #weeklynews #worldinashot"
     )
     title = f"The {n} Stories That Shaped the Week | {date_short} | World in a Shot Weekly"
     meta = {

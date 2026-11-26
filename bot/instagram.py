@@ -148,7 +148,8 @@ def get_token(renew: bool = True) -> tuple[str, dict]:
              "Generate a new one in Meta's App Dashboard and save it as IG_ACCESS_TOKEN.")
 
 
-def caption_for(title: str, summary: str, sources: list, tags: list, question: str = "", handle: str = "") -> str:
+def caption_for(title: str, summary: str, sources: list, tags: list, question: str = "", handle: str = "",
+                music: str = "") -> str:
     ig_tags = [t for t in tags if t.lower() != "#shorts"]
     for extra in ("#news", "#worldnews"):
         if extra not in [t.lower() for t in ig_tags]:
@@ -158,7 +159,8 @@ def caption_for(title: str, summary: str, sources: list, tags: list, question: s
         text += f"💬 {question}\n\n"
     if handle:
         text += f"📺 The whole week in 15 stories: every Sunday on YouTube ({handle})\n"
-    text += f"Sources: {', '.join(sources)}\nNarrated with an AI voice.\n\n" + " ".join(ig_tags[:5])  # max 5 hashtags
+    text += f"Sources: {', '.join(sources)}\nNarrated with an AI voice.\n" + (f"{music}\n" if music else "") \
+        + "\n" + " ".join(ig_tags[:5])  # max 5 hashtags
     return text[:2200]
 
 

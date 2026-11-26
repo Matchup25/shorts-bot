@@ -1,5 +1,6 @@
 """Builds the final sound mix and the instructions (props) for the Remotion animation."""
 import glob
+from pathlib import Path
 import json
 import random
 import subprocess
@@ -44,8 +45,13 @@ def _boom(dur: float = 1.2) -> np.ndarray:
     return (wave * np.exp(-t * 3.2)).astype(np.float32)
 
 
+LAST_MUSIC: dict = {}   # track used in the last mix, for the credit line in the description
+
+
 def _music(length: int) -> np.ndarray | None:
-    """Optional background music: put royalty-free .mp3 files in assets/music/."""
+    """Background music from assets/music/ (licence and credits: assets/music/CREDITS.md).
+    Each video starts the track at a random point, so the same piece sounds different every time."""
+    LAST_MUSIC.clear()
     files = sorted(glob.glob(str(ASSETS / "music" / "*.mp3")))
     if not files:
         return None
@@ -54,17 +60,33 @@ def _music(length: int) -> np.ndarray | None:
         raw = subprocess.run(["ffmpeg", "-v", "error", "-i", path, "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
                              capture_output=True, check=True).stdout
         m = np.frombuffer(raw, np.float32)
-        if len(m) < SR:
+        if len(m) < SR * 5:
             return None
+        latest = max(0, len(m) - length - SR * 5)   # leave room so a short video does not hit the track's ending
+        start = random.randint(int(SR * 5), latest) if latest > SR * 5 else 0
+        m = np.concatenate([m[start:], m[:start]])
         reps = int(np.ceil(length / len(m)))
-        m = np.tile(m, reps)[:length]
-        fade = int(SR * 1.5)
-        m[-fade:] *= np.linspace(1, 0, fade)
-        log(f"  music: {path.split('/')[-1]}")
+        m = np.tile(m, reps)[:length].copy()
+        fade_in, fade_out = int(SR * 0.8), int(SR * 1.5)
+        m[:fade_in] *= np.linspace(0, 1, fade_in)
+        m[-fade_out:] *= np.linspace(1, 0, fade_out)
+        name = Path(path).stem.split("__")[-1].replace("-", " ").title()
+        LAST_MUSIC.update({"title": name, "artist": "Tanner Helland"})
+        log(f"  music: {name} (from {start / SR:.0f}s)")
         return m / (np.max(np.abs(m)) + 1e-6)
     except Exception as exc:
         log(f"  music skipped: {exc}")
         return None
+
+
+def music_credit(short: bool = False) -> str:
+    """Credit line required by the music licence (CC BY 4.0); empty when the last video had no music."""
+    if not LAST_MUSIC:
+        return ""
+    if short:
+        return f"🎵 \"{LAST_MUSIC['title']}\" by {LAST_MUSIC['artist']} (CC BY 4.0)"
+    return (f"Music: \"{LAST_MUSIC['title']}\" by {LAST_MUSIC['artist']}, CC BY 4.0 "
+            "(creativecommons.org/licenses/by/4.0), excerpt at low volume. github.com/tannerhelland/free-music")
 
 
 def build_mix(voice: np.ndarray, timings: list, out_wav: str, whoosh_at: list | None = None) -> float:

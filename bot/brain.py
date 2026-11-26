@@ -3,6 +3,7 @@ import json
 import re
 import time
 
+from . import polish
 from .util import env, log
 
 CATEGORIES = ["science", "space", "tech", "world", "business", "health", "nature", "weird", "culture", "education"]
@@ -212,7 +213,7 @@ Return JSON:
             log(f"  title contest skipped: {exc}")
             return script
 
-        def best(items, current, max_len, max_words):
+        def best(items, current, max_len, max_words, spoken=False):
             scored = []
             for it in items or []:
                 text = str(it.get("text", "")).strip().strip('"')
@@ -223,12 +224,19 @@ Return JSON:
                     continue
                 if not text or truth < 9 or len(text) > max_len or len(text.split()) > max_words:
                     continue
-                scored.append((total, text))
+                if spoken:
+                    # second opinion on the opening line: rules for hooks that hold attention (length, a concrete
+                    # detail, tension, payoff up front); a "dealbreaker" (greeting, preamble...) is out
+                    hs = polish.hook_score(text)
+                    if hs["flags"]:
+                        continue
+                    total += hs["score"] / 100 * 4
+                scored.append((round(total, 2), text))
             scored.sort(reverse=True)
             return (scored[0][1] if scored else current), scored[:6]
 
         title, t_scores = best(result.get("titles"), script["title"], 60, 12)
-        hook, h_scores = best(result.get("hooks"), first, 120, 16)
+        hook, h_scores = best(result.get("hooks"), first, 120, 16, spoken=True)
         script = dict(script)
         script["scenes"] = [dict(sc) for sc in script["scenes"]]
         script["title"] = title

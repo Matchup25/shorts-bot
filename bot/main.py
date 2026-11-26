@@ -5,7 +5,7 @@ import math
 import os
 import sys
 
-from . import assemble, instagram, learn, media, news, render, slots, voice, youtube
+from . import assemble, instagram, learn, media, news, render, slots, voice, youtube, polish
 from .brain import Brain
 from .util import OUTPUT, load_config, load_history, log, save_history, DATA
 
@@ -125,6 +125,11 @@ def main() -> None:
                     + "; ".join(check.get("problems", [])))
                 script["contest"] = sharp.get("contest")
 
+        # Final polish: same facts, fewer "written by an AI" marks (em dashes, words like "delve"); hook score logged.
+        script = polish.clean_script(script)
+        hook_check = polish.hook_score(script["scenes"][0]["narration"])
+        log(f"  hook score: {hook_check['score']} ({hook_check['verdict']}, weakest: {hook_check['weakest']})")
+
         log("4/6 Finding trending hashtags…")
         candidates = youtube.popular_hashtags(yt, script["search_keywords"]) if yt else []
         tags = brain.choose_hashtags(script, candidates, trends)
@@ -152,12 +157,16 @@ def main() -> None:
             + f"📺 The whole week in 15 stories, every Sunday 19:00 CET: {weekly_link(cfg)}\n\n"
             "Sources:\n" + "\n".join(f"• {s['source']}: {s['link']}" for s in sources) + "\n\n"
             "Narration voice is AI-generated."
-            + (" Visuals: " + "; ".join(credits) + "." if credits else "") + "\n\n" + " ".join(tags)
+            + (" Visuals: " + "; ".join(credits) + "." if credits else "")
+            + (f"\n{assemble.music_credit()}" if assemble.music_credit() else "") + "\n\n" + " ".join(tags)
         )
 
         video_id = None
         publish_at = None
         if dry_run:
+            polish.check_caption(instagram.caption_for(script["title"], script["description"], source_names, tags,
+                                                       script.get("question", ""), cfg.get("youtube_handle", ""),
+                                                       assemble.music_credit(short=True)), script["search_keywords"])
             log("6/6 Test mode: not uploading (download the video from the GitHub run page)")
         else:
             publish_at = publish_slot if cfg["privacy"] == "public" else None
@@ -181,6 +190,8 @@ def main() -> None:
                 "demand": story.get("demand"),
                 "editor_rank": story.get("editor_rank"),
                 "contest": script.get("contest"),
+                "hook_score": hook_check["score"],
+                "music": (assemble.LAST_MUSIC or {}).get("title"),
             })
             save_history(history)
             # The same video goes to Instagram as a Reel (a separate step, only if Instagram is set up).
@@ -188,7 +199,8 @@ def main() -> None:
                 "title": script["title"], "slot": slot, "publish_at": publish_at, "video_id": video_id,
                 "video": os.path.basename(out),
                 "caption": instagram.caption_for(script["title"], script["description"], source_names, tags,
-                                                 script.get("question", ""), cfg.get("youtube_handle", "")),
+                                                 script.get("question", ""), cfg.get("youtube_handle", ""),
+                                                 assemble.music_credit(short=True)),
                 "question": script.get("question", ""),
             }, ensure_ascii=False, indent=1), encoding="utf-8")
 
