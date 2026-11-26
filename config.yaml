@@ -34,6 +34,9 @@ videos_per_run: 1
 # Narrator voice (free Kokoro voices). Good English options:
 #   af_heart (female, US)  am_michael (male, US)  bf_emma (female, UK)  bm_george (male, UK)
 voice: af_heart
+# Shorts rotate through these free Kokoro voices (best-rated English ones, alternating women/men and
+# American/British); the weekly show keeps "voice" above. Each Short's voice is saved in data/history.json.
+voices: [af_heart, am_michael, bf_emma, am_fenrir, af_bella, bm_george]
 voice_speed: 1.08
 
 # Tell YouTube that the video contains AI-generated sound/visuals (recommended: true)

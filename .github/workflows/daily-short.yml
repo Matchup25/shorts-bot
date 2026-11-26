@@ -19,6 +19,9 @@ on:
       llm:
         description: "Test runs only: 'cloudflare' to try the backup AI instead of Gemini"
         default: ""
+      voice:
+        description: "Test runs only: voice to use (e.g. bm_george)"
+        default: ""
       auto:
         description: "Behave like a scheduled run (for an outside timer)"
         type: boolean
@@ -130,6 +133,7 @@ jobs:
           BOT_TRIGGER: ${{ inputs.auto }}
           FORCE_STORY: ${{ inputs.story }}
           LLM_FORCE: ${{ inputs.llm }}
+          VOICE_OVERRIDE: ${{ inputs.voice }}
         run: python -m bot.main
 
       - name: Keep the video for download

@@ -18,6 +18,13 @@ def summary(md: str) -> None:
             fh.write(md + "\n")
 
 
+def pick_voice(cfg: dict, history: list) -> str:
+    """A different voice for each Short, in turn (VOICE_OVERRIDE forces one, for tests)."""
+    forced = os.environ.get("VOICE_OVERRIDE", "").strip()
+    voices = cfg.get("voices") or [cfg["voice"]]
+    return forced or voices[len(history) % len(voices)]
+
+
 def weekly_link(cfg: dict) -> str:
     """The latest Sunday show, or the channel's videos page until the first one is out."""
     try:
@@ -138,7 +145,9 @@ def main() -> None:
         log("5/6 Pictures, voice and animation…")
         run_dir = render.reset_run_dir()
         media_list = media.gather(script, run_dir, second=True)
-        audio, timings, words = voice.narrate(script["scenes"], cfg["voice"], cfg["voice_speed"])
+        voice_name = pick_voice(cfg, history)
+        log(f"  voice: {voice_name}")
+        audio, timings, words = voice.narrate(script["scenes"], voice_name, cfg["voice_speed"])
         duration = assemble.build_mix(audio, timings, f"{run_dir}/mix.wav")
         source_names = list(dict.fromkeys(s["source"] for s in sources))
         props = assemble.build_props(script, timings, words, media_list, cfg["channel_name"], "run/mix.wav", duration)
@@ -191,6 +200,7 @@ def main() -> None:
                 "editor_rank": story.get("editor_rank"),
                 "contest": script.get("contest"),
                 "hook_score": hook_check["score"],
+                "voice": voice_name,
                 "music": (assemble.LAST_MUSIC or {}).get("title"),
             })
             save_history(history)

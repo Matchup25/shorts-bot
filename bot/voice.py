@@ -51,7 +51,8 @@ def narrate(scenes: list, voice: str, speed: float) -> tuple:
     cursor = 0.08
     for i, scene in enumerate(scenes):
         text = scene["narration"].replace("—", ", ").replace("–", ", ")
-        samples, sr = kokoro.create(text, voice=voice, speed=speed, lang="en-us")
+        lang = "en-gb" if voice.startswith("b") else "en-us"   # British voices need British pronunciation
+        samples, sr = kokoro.create(text, voice=voice, speed=speed, lang=lang)
         assert sr == SR
         a, b = _speech_bounds(samples)
         clip = samples[a:b].astype(np.float32)
