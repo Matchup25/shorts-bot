@@ -104,3 +104,4 @@ curiosity:
   enabled: false   # turned on after the test video is approved
   publish_times: ["21:00"]
   instagram_tags: ["#geography", "#history"]
+  min_words: 155        # ~60 seconds (Luca: curiosity videos must last about 60 s)

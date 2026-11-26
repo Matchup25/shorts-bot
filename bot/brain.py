@@ -565,7 +565,8 @@ Use ONLY facts stated in the sources below; never invent numbers, dates or names
 Be strictly neutral: if a territory or name is disputed, say who claims what, without taking sides or judging.
 {fix}
 RULES
-- 6 or 7 scenes. Total narration 140-165 words (about 55-60 seconds). Simple words, short sentences.
+- 7 or 8 scenes. Total narration 165-185 words (the video must last about 60 seconds). Simple words, short
+  sentences.
 - Scene 1 is the hook (max 14 words): the surprising fact or a question viewers want answered. Never start
   with a date. No later scene may repeat the hook or another scene.
 - Then explain step by step WHY (cause -> consequence), with at least two concrete dates, numbers or names

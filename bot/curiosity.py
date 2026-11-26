@@ -124,8 +124,8 @@ def main() -> None:
                 log(f"  could not write it: {exc}")
                 break
             n_words = sum(len(sc["narration"].split()) for sc in draft["scenes"])
-            if n_words < int(cur.get("min_words", 130)):
-                feedback = (f"- The narration has only {n_words} words; it must have 140-165 (about one minute). "
+            if n_words < int(cur.get("min_words", 155)):
+                feedback = (f"- The narration has only {n_words} words; it must have 165-185 (about 60 seconds). "
                             "Explain the WHY in more depth with more facts from the sources; do not repeat sentences.")
                 log(f"  draft {attempt + 1} too short ({n_words} words), asking for a longer one")
                 continue
