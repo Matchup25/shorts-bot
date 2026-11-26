@@ -25,6 +25,12 @@ def _norm(t: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", t.lower()).strip()
 
 
+def _overlap(a: str, b: str) -> float:
+    """Share of words two sentences have in common (0-1)."""
+    wa, wb = set(_norm(a).split()), set(_norm(b).split())
+    return len(wa & wb) / max(1, min(len(wa), len(wb)))
+
+
 def load_history() -> list:
     return json.loads(HISTORY.read_text()) if HISTORY.exists() else []
 
@@ -43,7 +49,8 @@ def summary(md: str) -> None:
 def due_check() -> None:
     cfg = load_config()
     test = os.environ.get("DRY_RUN", "").lower() == "true"
-    enabled = (cfg.get("curiosity") or {}).get("enabled", True)
+    cur = cfg.get("curiosity") or {}
+    enabled = cur.get("enabled", True) and dt.date.today().isoformat() >= str(cur.get("start_date", "2000-01-01"))
     slot_cfg = _slot_cfg(cfg)
     due = test or (enabled and slots.uses_slots(slot_cfg)
                    and bool(slots.choose(slot_cfg, load_history(), slots.is_manual())[0]))
@@ -116,6 +123,12 @@ def main() -> None:
             except Exception as exc:
                 log(f"  could not write it: {exc}")
                 break
+            n_words = sum(len(sc["narration"].split()) for sc in draft["scenes"])
+            if n_words < int(cur.get("min_words", 130)):
+                feedback = (f"- The narration has only {n_words} words; it must have 140-165 (about one minute). "
+                            "Explain the WHY in more depth with more facts from the sources; do not repeat sentences.")
+                log(f"  draft {attempt + 1} too short ({n_words} words), asking for a longer one")
+                continue
             check = brain.verify(draft, sources, compare_headline=False)
             if str(check.get("approved")).lower() in {"true", "yes", "1"}:
                 script = draft
@@ -126,6 +139,9 @@ def main() -> None:
             log("  skipping this topic (could not pass the fact-check)")
             continue
         sharp = brain.sharpen(script, pick.get("query", topic), topic)
+        if _overlap(sharp["scenes"][0]["narration"], script["scenes"][1]["narration"]) > 0.4:
+            # the new opening line would just repeat scene 2: keep the original opening, take only the title
+            sharp["scenes"][0]["narration"] = script["scenes"][0]["narration"]
         if (sharp["title"], sharp["scenes"][0]["narration"]) != (script["title"], script["scenes"][0]["narration"]):
             if str(brain.verify(sharp, sources, compare_headline=False).get("approved")).lower() in {"true", "yes", "1"}:
                 script = sharp
@@ -136,7 +152,8 @@ def main() -> None:
         tags = brain.choose_hashtags(script, youtube.popular_hashtags(yt, script["search_keywords"]), [])
 
         run_dir = render.reset_run_dir()
-        media_list = media.gather(script, run_dir, second=True, place=pick.get("place"))
+        # illustrations first: stock sites rarely have the exact thing (e.g. a border line painted on a library floor)
+        media_list = media.gather(script, run_dir, second=True, place=pick.get("place"), editorial=True)
         voice_name = pick_voice(cfg, history + [{}] * 3)   # shifted, so it rarely matches the 19:00 news voice
         log(f"  voice: {voice_name}")
         audio, timings, words = voice.narrate(script["scenes"], voice_name, cfg["voice_speed"])
