@@ -20,6 +20,7 @@ class Brain:
         self._exhausted = set()   # Gemini models with no allowance left in this run
         self._gemini_down = False
         self._cloudflare_down = False
+        self._daily_out = set()   # Gemini models whose daily allowance is used up (busy ones get another chance)
 
     # ------------------------------------------------------------------ core
     def _fallback_models(self) -> list:
@@ -45,11 +46,9 @@ class Brain:
         for pictures), so a Short is never lost just because Gemini is full or overloaded."""
         import os
         forced = os.environ.get("LLM_FORCE", "").lower()
-        if forced == "github":
-            return self._ask_github(prompt, temperature)
         if forced == "cloudflare":
             return self._ask_cloudflare(prompt, temperature)
-        if not self._gemini_down:
+        if not self._gemini_down and not self._cloudflare_down:
             try:
                 return self._ask_gemini(prompt, temperature, prefer)
             except Exception as exc:
@@ -61,49 +60,14 @@ class Brain:
             except Exception as exc:
                 if "429" in str(exc) or "neurons" in str(exc):
                     self._cloudflare_down = True   # daily allowance used up: don't wait on it again this run
-                log(f"  Cloudflare AI not available ({str(exc)[:120]}); using GitHub Models instead")
-        return self._ask_github(prompt, temperature)
+                log(f"  Cloudflare AI not available ({str(exc)[:120]})")
+        # Last chance: Gemini again, with much more patience (busy spells usually pass within minutes).
+        log("  last chance: trying Gemini again with more patience")
+        self._exhausted = set(self._daily_out)
+        return self._ask_gemini(prompt, temperature, prefer, patience=900, slow=True)
 
-    def _ask_github(self, prompt: str, temperature: float) -> dict:
-        """Third free backup: GitHub Models, with the workflow's own GitHub token (permission models: read)."""
-        import os
-        import requests
-        token = os.environ.get("GH_MODELS_TOKEN", "").strip()
-        if not token:
-            raise RuntimeError("No AI model answered (Gemini and Cloudflare unavailable, GitHub Models not set up)")
-        if len(prompt) > 26000:   # free tier: about 8,000 tokens per request
-            prompt = prompt[:26000] + "\n\n[...shortened...]\nReturn the JSON described above."
-        last = None
-        for model in self.cfg.get("github_models") or ["openai/gpt-4.1", "openai/gpt-4.1-mini", "openai/gpt-4o-mini"]:
-            for attempt in range(2):
-                try:
-                    r = requests.post("https://models.github.ai/inference/chat/completions", timeout=180,
-                                      allow_redirects=False,
-                                      headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json",
-                                               "Accept": "application/vnd.github+json",
-                                               "X-GitHub-Api-Version": "2022-11-28"},
-                                      json={"model": model, "temperature": temperature, "max_tokens": 4000,
-                                            "messages": [{"role": "system", "content": "You answer with one valid JSON object only, no other text."},
-                                                         {"role": "user", "content": prompt}]})
-                    if r.status_code == 429:
-                        raise RuntimeError(f"429 {r.text[:160]}")
-                    if not r.ok or "json" not in r.headers.get("content-type", ""):
-                        raise RuntimeError(f"{r.status_code} {r.headers.get('content-type', '')} {r.text[:200]!r}")
-                    content = r.json()["choices"][0]["message"].get("content") or ""
-                    if not content.strip():
-                        raise RuntimeError(f"empty answer: {r.text[:200]!r}")
-                    data = _parse_json(content)
-                    log(f"  (answered by GitHub Models {model.split('/')[-1]})")
-                    return data
-                except Exception as exc:
-                    last = exc
-                    log(f"  GitHub Models {model.split('/')[-1]} failed: {str(exc)[:120]}")
-                    if "429" in str(exc):
-                        break   # this model's daily allowance is used up: next model
-                    time.sleep(5)
-        raise RuntimeError(f"No AI model answered (Gemini, Cloudflare and GitHub Models all failed: {last})")
-
-    def _ask_gemini(self, prompt: str, temperature: float, prefer: list | None = None) -> dict:
+    def _ask_gemini(self, prompt: str, temperature: float, prefer: list | None = None,
+                    patience: int = 300, slow: bool = False) -> dict:
         from google.genai import types
         cfg = types.GenerateContentConfig(temperature=temperature, response_mime_type="application/json")
         started = time.time()
@@ -121,7 +85,7 @@ class Brain:
                 if not model or model in self._exhausted:
                     continue
                 for attempt in range(3):
-                    if time.time() - started > 300:  # never block a run for long: fall back instead
+                    if time.time() - started > patience:  # never block a run for long: fall back instead
                         raise RuntimeError(f"Gemini too slow right now ({last_error})")
                     try:
                         resp = self.client.models.generate_content(model=model, contents=prompt, config=cfg)
@@ -133,12 +97,14 @@ class Brain:
                         msg = str(exc)
                         if "404" in msg or "NOT_FOUND" in msg or "not found" in msg.lower():
                             self._exhausted.add(model)
+                            self._daily_out.add(model)
                             break
                         if "PerDay" in msg or "per day" in msg.lower() or "limit: 0" in msg:
                             log(f"  {model}: daily free allowance used up, skipping it")
                             self._exhausted.add(model)
+                            self._daily_out.add(model)
                             break
-                        wait = 15 * (attempt + 1)
+                        wait = (40 if slow else 15) * (attempt + 1)
                         log(f"  {model} busy ({msg[:60]}), waiting {wait}s")
                         time.sleep(wait)
                 if model != self._working_model:
