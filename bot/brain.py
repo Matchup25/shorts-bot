@@ -19,6 +19,7 @@ class Brain:
         self._working_model = None
         self._exhausted = set()   # Gemini models with no allowance left in this run
         self._gemini_down = False
+        self._cloudflare_down = False
 
     # ------------------------------------------------------------------ core
     def _fallback_models(self) -> list:
@@ -43,7 +44,10 @@ class Brain:
         the same prompt goes to Cloudflare Workers AI (free daily allowance on the account we already use
         for pictures), so a Short is never lost just because Gemini is full or overloaded."""
         import os
-        if os.environ.get("LLM_FORCE", "").lower() == "cloudflare":
+        forced = os.environ.get("LLM_FORCE", "").lower()
+        if forced == "github":
+            return self._ask_github(prompt, temperature)
+        if forced == "cloudflare":
             return self._ask_cloudflare(prompt, temperature)
         if not self._gemini_down:
             try:
@@ -51,7 +55,47 @@ class Brain:
             except Exception as exc:
                 log(f"  Gemini not available ({str(exc)[:160]}); using Cloudflare AI instead")
                 self._gemini_down = True
-        return self._ask_cloudflare(prompt, temperature)
+        if not self._cloudflare_down:
+            try:
+                return self._ask_cloudflare(prompt, temperature)
+            except Exception as exc:
+                if "429" in str(exc) or "neurons" in str(exc):
+                    self._cloudflare_down = True   # daily allowance used up: don't wait on it again this run
+                log(f"  Cloudflare AI not available ({str(exc)[:120]}); using GitHub Models instead")
+        return self._ask_github(prompt, temperature)
+
+    def _ask_github(self, prompt: str, temperature: float) -> dict:
+        """Third free backup: GitHub Models, with the workflow's own GitHub token (permission models: read)."""
+        import os
+        import requests
+        token = os.environ.get("GH_MODELS_TOKEN", "").strip()
+        if not token:
+            raise RuntimeError("No AI model answered (Gemini and Cloudflare unavailable, GitHub Models not set up)")
+        if len(prompt) > 26000:   # free tier: about 8,000 tokens per request
+            prompt = prompt[:26000] + "\n\n[...shortened...]\nReturn the JSON described above."
+        last = None
+        for model in self.cfg.get("github_models") or ["openai/gpt-4.1", "openai/gpt-4.1-mini", "openai/gpt-4o-mini"]:
+            for attempt in range(2):
+                try:
+                    r = requests.post("https://models.github.ai/inference/chat/completions", timeout=180,
+                                      headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+                                      json={"model": model, "temperature": temperature, "max_tokens": 4000,
+                                            "messages": [{"role": "system", "content": "You answer with one valid JSON object only, no other text."},
+                                                         {"role": "user", "content": prompt}]})
+                    if r.status_code == 429:
+                        raise RuntimeError(f"429 {r.text[:160]}")
+                    if not r.ok:
+                        raise RuntimeError(f"{r.status_code} {r.text[:200]}")
+                    data = _parse_json(r.json()["choices"][0]["message"].get("content") or "")
+                    log(f"  (answered by GitHub Models {model.split('/')[-1]})")
+                    return data
+                except Exception as exc:
+                    last = exc
+                    log(f"  GitHub Models {model.split('/')[-1]} failed: {str(exc)[:120]}")
+                    if "429" in str(exc):
+                        break   # this model's daily allowance is used up: next model
+                    time.sleep(5)
+        raise RuntimeError(f"No AI model answered (Gemini, Cloudflare and GitHub Models all failed: {last})")
 
     def _ask_gemini(self, prompt: str, temperature: float, prefer: list | None = None) -> dict:
         from google.genai import types
