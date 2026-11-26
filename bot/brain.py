@@ -80,7 +80,8 @@ class Brain:
                     r = requests.post("https://models.github.ai/inference/chat/completions", timeout=180,
                                       allow_redirects=False,
                                       headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json",
-                                               "Accept": "application/json"},
+                                               "Accept": "application/vnd.github+json",
+                                               "X-GitHub-Api-Version": "2022-11-28"},
                                       json={"model": model, "temperature": temperature, "max_tokens": 4000,
                                             "messages": [{"role": "system", "content": "You answer with one valid JSON object only, no other text."},
                                                          {"role": "user", "content": prompt}]})
