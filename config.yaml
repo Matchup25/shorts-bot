@@ -101,7 +101,8 @@ explainer:
 # "World Explained": one extra Short a day that teaches an evergreen curiosity about the world (borders, enclaves,
 # flags, time zones...). Same channel, also posted as a Reel. Topics to do first: curiosity_topics.txt
 curiosity:
-  enabled: false   # turned on after the test video is approved
+  enabled: true
+  start_date: "2026-11-27"   # first video Nov 27 at 21:00 (today the free AI allowances were used up by tests)
   publish_times: ["21:00"]
   instagram_tags: ["#geography", "#history"]
   min_words: 155        # ~60 seconds (Luca: curiosity videos must last about 60 s)
