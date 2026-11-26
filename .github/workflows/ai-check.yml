@@ -20,6 +20,19 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -q requests pyyaml google-genai
+      - name: Raw call to GitHub Models (as in GitHub's documentation)
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          curl -sS -i "https://models.github.ai/inference/chat/completions" \
+            -H "Content-Type: application/json" -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -d '{"messages":[{"role":"user","content":"Say hi"}],"model":"openai/gpt-4o-mini"}' | head -c 1500
+          echo; echo ---
+          curl -sS -i -X POST "https://models.github.ai/inference/chat/completions" \
+            -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -d '{"messages":[{"role":"user","content":"Say hi"}],"model":"openai/gpt-4.1"}' | head -c 1500
       - name: Ask GitHub Models
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
