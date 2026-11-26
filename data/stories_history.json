@@ -160,5 +160,14 @@
   "link": "https://www.bbc.co.uk/news/articles/c893r9ke5p97o?at_medium=RSS&at_campaign=rss",
   "headline": "US Announces New Tariffs on Major Trading Partners",
   "media_id": "18028103258927642"
+ },
+ {
+  "slot": "2026-11-26T08:47Z",
+  "kind": "fact",
+  "date": "2026-11-26T08:47+00:00",
+  "title": "Elon Musk pledges to give two SpaceX shares to every child in the US",
+  "link": "https://www.theguardian.com/technology/2026/nov/26/elon-musk-pledges-to-give-two-spacex-shares-to-every-child-in-the-us",
+  "headline": "Every US child could receive two SpaceX shares",
+  "media_id": "18156577366534976"
  }
 ]
