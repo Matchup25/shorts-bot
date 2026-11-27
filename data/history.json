@@ -9,10 +9,10 @@
     "video_id": "QQN-clSJmGw",
     "stats": {
       "latest": {
-        "view": 45,
+        "view": 44,
         "like": 2,
         "comment": 0,
-        "age_days": 4.03
+        "age_days": 4.53
       },
       "1d": {
         "view": 79,
@@ -26,7 +26,7 @@
       }
     },
     "retention": {
-      "views": 43,
+      "views": 44,
       "avg_pct": 31.8,
       "avg_sec": 15
     }
@@ -44,7 +44,7 @@
         "view": 131,
         "like": 1,
         "comment": 0,
-        "age_days": 3.87
+        "age_days": 4.37
       },
       "1d": {
         "view": 104,
@@ -58,7 +58,7 @@
       }
     },
     "retention": {
-      "views": 130,
+      "views": 131,
       "avg_pct": 47.7,
       "avg_sec": 13
     }
@@ -74,10 +74,10 @@
     "slot": "2026-11-23T06:00:00Z",
     "stats": {
       "latest": {
-        "view": 37,
+        "view": 39,
         "like": 0,
         "comment": 0,
-        "age_days": 3.37
+        "age_days": 3.87
       },
       "1d": {
         "view": 23,
@@ -91,8 +91,8 @@
       }
     },
     "retention": {
-      "views": 26,
-      "avg_pct": 53.8,
+      "views": 37,
+      "avg_pct": 53.5,
       "avg_sec": 16
     }
   },
@@ -164,7 +164,7 @@
         "view": 37,
         "like": 0,
         "comment": 0,
-        "age_days": 3.12
+        "age_days": 3.62
       },
       "1d": {
         "view": 6,
@@ -178,9 +178,9 @@
       }
     },
     "retention": {
-      "views": 4,
-      "avg_pct": 73.3,
-      "avg_sec": 24
+      "views": 35,
+      "avg_pct": 69.8,
+      "avg_sec": 23
     }
   },
   {
@@ -251,10 +251,10 @@
     },
     "stats": {
       "latest": {
-        "view": 119,
+        "view": 115,
         "like": 1,
         "comment": 1,
-        "age_days": 2.87
+        "age_days": 3.37
       },
       "1d": {
         "view": 87,
@@ -268,9 +268,9 @@
       }
     },
     "retention": {
-      "views": 36,
-      "avg_pct": 58.9,
-      "avg_sec": 18
+      "views": 112,
+      "avg_pct": 62.3,
+      "avg_sec": 19
     }
   },
   {
@@ -337,10 +337,10 @@
     },
     "stats": {
       "latest": {
-        "view": 94,
+        "view": 93,
         "like": 0,
         "comment": 1,
-        "age_days": 2.37
+        "age_days": 2.87
       },
       "1d": {
         "view": 56,
@@ -354,9 +354,9 @@
       }
     },
     "retention": {
-      "views": 13,
-      "avg_pct": 70.2,
-      "avg_sec": 13
+      "views": 57,
+      "avg_pct": 43.9,
+      "avg_sec": 8
     }
   },
   {
@@ -430,7 +430,7 @@
         "view": 184,
         "like": 1,
         "comment": 1,
-        "age_days": 2.12
+        "age_days": 2.62
       },
       "1d": {
         "view": 139,
@@ -442,6 +442,11 @@
         "like": 1,
         "comment": 1
       }
+    },
+    "retention": {
+      "views": 132,
+      "avg_pct": 37.2,
+      "avg_sec": 10
     }
   },
   {
@@ -508,16 +513,26 @@
     },
     "stats": {
       "latest": {
-        "view": 265,
-        "like": 3,
+        "view": 404,
+        "like": 4,
         "comment": 1,
-        "age_days": 1.87
+        "age_days": 2.37
       },
       "1d": {
         "view": 170,
         "like": 2,
         "comment": 1
+      },
+      "2d": {
+        "view": 404,
+        "like": 4,
+        "comment": 1
       }
+    },
+    "retention": {
+      "views": 77,
+      "avg_pct": 35.3,
+      "avg_sec": 12
     }
   },
   {
@@ -584,16 +599,21 @@
     },
     "stats": {
       "latest": {
-        "view": 120,
+        "view": 133,
         "like": 1,
         "comment": 1,
-        "age_days": 1.37
+        "age_days": 1.87
       },
       "1d": {
         "view": 97,
         "like": 1,
         "comment": 1
       }
+    },
+    "retention": {
+      "views": 31,
+      "avg_pct": 80.2,
+      "avg_sec": 16
     }
   },
   {
@@ -664,10 +684,10 @@
     },
     "stats": {
       "latest": {
-        "view": 115,
+        "view": 125,
         "like": 0,
         "comment": 1,
-        "age_days": 1.12
+        "age_days": 1.62
       },
       "1d": {
         "view": 115,
@@ -736,10 +756,15 @@
     },
     "stats": {
       "latest": {
-        "view": 31,
+        "view": 39,
         "like": 0,
-        "comment": 2,
-        "age_days": 0.87
+        "comment": 1,
+        "age_days": 1.37
+      },
+      "1d": {
+        "view": 39,
+        "like": 0,
+        "comment": 1
       }
     }
   },
@@ -808,10 +833,10 @@
     },
     "stats": {
       "latest": {
-        "view": 183,
-        "like": 4,
+        "view": 726,
+        "like": 6,
         "comment": 2,
-        "age_days": 0.37
+        "age_days": 0.87
       }
     }
   },
@@ -880,10 +905,10 @@
     },
     "stats": {
       "latest": {
-        "view": 17,
-        "like": 1,
+        "view": 96,
+        "like": 2,
         "comment": 1,
-        "age_days": 0.12
+        "age_days": 0.62
       }
     }
   },
@@ -952,6 +977,68 @@
     },
     "hook_score": 30.0,
     "voice": "am_michael",
-    "music": "The Forest Awakes"
+    "music": "The Forest Awakes",
+    "stats": {
+      "latest": {
+        "view": 47,
+        "like": 2,
+        "comment": 1,
+        "age_days": 0.37
+      }
+    }
+  },
+  {
+    "date": "2026-11-27T02:52",
+    "title": "AI Helped Crack a 165-Year Math Mystery?",
+    "links": [
+      "https://www.bbc.co.uk/sounds/play/w3ct978n?at_medium=RSS&at_campaign=rss"
+    ],
+    "video_id": "hCE8egA8R0o",
+    "publish_at": "2026-11-27T06:00:00Z",
+    "slot": "2026-11-27T06:00:00Z",
+    "category": "science",
+    "hook": "A math mystery has baffled experts for one hundred sixty five years.",
+    "words": 46,
+    "seconds": 16.2,
+    "demand": {
+      "query": "AI solves math problem",
+      "videos": 10,
+      "views": 930734,
+      "top": 688045
+    },
+    "editor_rank": 3,
+    "contest": {
+      "titles": [
+        [
+          27.5,
+          "Did AI Help Solve Math Problem?"
+        ],
+        [
+          23.0,
+          "AI Helped Crack a 165-Year Math Mystery?"
+        ]
+      ],
+      "hooks": [
+        [
+          28.4,
+          "165 years later, an AI helped crack a massive math mystery."
+        ],
+        [
+          27.4,
+          "A 165-year math mystery was just tackled with AI assistance."
+        ],
+        [
+          26.62,
+          "This AI just helped work on a 165-year math mystery."
+        ],
+        [
+          24.18,
+          "A math mystery has baffled experts for one hundred sixty five years."
+        ]
+      ]
+    },
+    "hook_score": 42.0,
+    "voice": "bf_emma",
+    "music": "Destiny"
   }
 ]
