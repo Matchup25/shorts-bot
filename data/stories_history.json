@@ -187,5 +187,14 @@
   "link": "https://www.theguardian.com/news/audio/2026/nov/26/can-elon-musk-really-put-datacentres-in-space-the-latest",
   "headline": "US approves Elon Musk's space datacentres plan",
   "media_id": "18175637368464903"
+ },
+ {
+  "slot": "2026-11-27T05:47Z",
+  "kind": "last_minute",
+  "date": "2026-11-27T05:47+00:00",
+  "title": "Asian stock markets rise after earlier tech rout",
+  "link": "https://www.aljazeera.com/economy/2026/11/27/asian-stock-markets-rise-after-earlier-tech-rout?traffic_source=rss",
+  "headline": "Asian stock markets rebound following previous losses",
+  "media_id": "18083058332402180"
  }
 ]
