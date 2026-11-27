@@ -196,5 +196,14 @@
   "link": "https://www.aljazeera.com/economy/2026/11/27/asian-stock-markets-rise-after-earlier-tech-rout?traffic_source=rss",
   "headline": "Asian stock markets rebound following previous losses",
   "media_id": "18083058332402180"
+ },
+ {
+  "slot": "2026-11-27T08:47Z",
+  "kind": "fact",
+  "date": "2026-11-27T08:47+00:00",
+  "title": "Floating nature islands installed in parks as Glasgow Games legacy",
+  "link": "https://www.bbc.co.uk/news/articles/cwe9kxdm1k4lo?at_medium=RSS&at_campaign=rss",
+  "headline": "Floating islands are being installed in Glasgow's parks",
+  "media_id": "18133897882831738"
  }
 ]
