@@ -205,5 +205,14 @@
   "link": "https://www.bbc.co.uk/news/articles/cwe9kxdm1k4lo?at_medium=RSS&at_campaign=rss",
   "headline": "Floating islands are being installed in Glasgow's parks",
   "media_id": "18133897882831738"
+ },
+ {
+  "slot": "2026-11-27T11:47Z",
+  "kind": "last_minute",
+  "date": "2026-11-27T11:47+00:00",
+  "title": "DWP ‘cyber incident’ knocks almost all pensions and benefits systems offline",
+  "link": "https://www.theguardian.com/politics/2026/nov/27/dwp-cyber-incident-pensions-benefits-systems-offline",
+  "headline": "UK Welfare Systems Offline Following Cyber Incident",
+  "media_id": "18122555762050315"
  }
 ]
