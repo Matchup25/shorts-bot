@@ -9,10 +9,10 @@
     "video_id": "QQN-clSJmGw",
     "stats": {
       "latest": {
-        "view": 44,
+        "view": 52,
         "like": 2,
         "comment": 0,
-        "age_days": 4.78
+        "age_days": 5.03
       },
       "1d": {
         "view": 79,
@@ -44,7 +44,7 @@
         "view": 131,
         "like": 1,
         "comment": 0,
-        "age_days": 4.62
+        "age_days": 4.87
       },
       "1d": {
         "view": 104,
@@ -77,7 +77,7 @@
         "view": 39,
         "like": 0,
         "comment": 0,
-        "age_days": 4.12
+        "age_days": 4.37
       },
       "1d": {
         "view": 23,
@@ -164,7 +164,7 @@
         "view": 37,
         "like": 0,
         "comment": 0,
-        "age_days": 3.87
+        "age_days": 4.12
       },
       "1d": {
         "view": 6,
@@ -254,7 +254,7 @@
         "view": 115,
         "like": 1,
         "comment": 1,
-        "age_days": 3.62
+        "age_days": 3.87
       },
       "1d": {
         "view": 87,
@@ -340,7 +340,7 @@
         "view": 93,
         "like": 0,
         "comment": 1,
-        "age_days": 3.12
+        "age_days": 3.37
       },
       "1d": {
         "view": 56,
@@ -430,7 +430,7 @@
         "view": 184,
         "like": 1,
         "comment": 1,
-        "age_days": 2.87
+        "age_days": 3.12
       },
       "1d": {
         "view": 139,
@@ -516,7 +516,7 @@
         "view": 404,
         "like": 4,
         "comment": 1,
-        "age_days": 2.62
+        "age_days": 2.87
       },
       "1d": {
         "view": 170,
@@ -602,7 +602,7 @@
         "view": 136,
         "like": 1,
         "comment": 1,
-        "age_days": 2.12
+        "age_days": 2.37
       },
       "1d": {
         "view": 97,
@@ -689,13 +689,18 @@
     },
     "stats": {
       "latest": {
-        "view": 132,
+        "view": 133,
         "like": 0,
         "comment": 1,
-        "age_days": 1.87
+        "age_days": 2.12
       },
       "1d": {
         "view": 115,
+        "like": 0,
+        "comment": 1
+      },
+      "2d": {
+        "view": 133,
         "like": 0,
         "comment": 1
       }
@@ -761,10 +766,10 @@
     },
     "stats": {
       "latest": {
-        "view": 41,
+        "view": 43,
         "like": 0,
         "comment": 1,
-        "age_days": 1.62
+        "age_days": 1.87
       },
       "1d": {
         "view": 39,
@@ -838,10 +843,10 @@
     },
     "stats": {
       "latest": {
-        "view": 921,
+        "view": 943,
         "like": 7,
         "comment": 2,
-        "age_days": 1.12
+        "age_days": 1.37
       },
       "1d": {
         "view": 921,
@@ -915,10 +920,15 @@
     },
     "stats": {
       "latest": {
-        "view": 107,
+        "view": 113,
         "like": 2,
         "comment": 1,
-        "age_days": 0.87
+        "age_days": 1.12
+      },
+      "1d": {
+        "view": 113,
+        "like": 2,
+        "comment": 1
       }
     }
   },
@@ -990,10 +1000,10 @@
     "music": "The Forest Awakes",
     "stats": {
       "latest": {
-        "view": 57,
+        "view": 63,
         "like": 2,
         "comment": 1,
-        "age_days": 0.62
+        "age_days": 0.87
       }
     }
   },
@@ -1052,10 +1062,10 @@
     "music": "Destiny",
     "stats": {
       "latest": {
-        "view": 50,
+        "view": 70,
         "like": 0,
         "comment": 1,
-        "age_days": 0.12
+        "age_days": 0.37
       }
     }
   },
@@ -1127,6 +1137,80 @@
     },
     "hook_score": 44.2,
     "voice": "am_fenrir",
-    "music": "Syntheticity"
+    "music": "Syntheticity",
+    "stats": {
+      "latest": {
+        "view": 0,
+        "like": 0,
+        "comment": 1,
+        "age_days": 0.12
+      }
+    }
+  },
+  {
+    "date": "2026-11-27T14:56",
+    "title": "Indie Developers Are Making GTA Clones Again",
+    "links": [
+      "https://www.theguardian.com/games/2026/nov/27/gta-grand-theft-auto-clones"
+    ],
+    "video_id": "BgLwIVcceMA",
+    "publish_at": "2026-11-27T18:00:00Z",
+    "slot": "2026-11-27T18:00:00Z",
+    "category": "business",
+    "hook": "After a thirteen year wait for Grand Theft Auto Six, open world crime clone games are returning.",
+    "words": 61,
+    "seconds": 25.2,
+    "demand": {
+      "query": "gta in istanbul game",
+      "videos": 6,
+      "views": 5312,
+      "top": 3693
+    },
+    "editor_rank": 4,
+    "contest": {
+      "titles": [
+        [
+          27.5,
+          "Is this new GTA in Istanbul game real?"
+        ],
+        [
+          27.5,
+          "GTA in Istanbul? Indie devs are back"
+        ],
+        [
+          27.0,
+          "Indie devs make a GTA in Istanbul"
+        ],
+        [
+          26.0,
+          "Playing GTA in Istanbul with indie devs"
+        ],
+        [
+          25.5,
+          "New indie games bring GTA to Istanbul"
+        ],
+        [
+          19.0,
+          "Indie Developers Are Making GTA Clones Again"
+        ]
+      ],
+      "hooks": [
+        [
+          27.85,
+          "After a 13-year wait, open world crime clone games are finally returning."
+        ],
+        [
+          25.47,
+          "Thirteen years after Grand Theft Auto Six, crime clone games are returning."
+        ],
+        [
+          25.2,
+          "Solo developers are building their own open world crime clone games right now."
+        ]
+      ]
+    },
+    "hook_score": 39.0,
+    "voice": "af_bella",
+    "music": "Deeper"
   }
 ]
