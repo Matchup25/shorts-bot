@@ -12,7 +12,7 @@
         "view": 44,
         "like": 2,
         "comment": 0,
-        "age_days": 4.53
+        "age_days": 4.78
       },
       "1d": {
         "view": 79,
@@ -44,7 +44,7 @@
         "view": 131,
         "like": 1,
         "comment": 0,
-        "age_days": 4.37
+        "age_days": 4.62
       },
       "1d": {
         "view": 104,
@@ -59,7 +59,7 @@
     },
     "retention": {
       "views": 131,
-      "avg_pct": 47.7,
+      "avg_pct": 48,
       "avg_sec": 13
     }
   },
@@ -77,7 +77,7 @@
         "view": 39,
         "like": 0,
         "comment": 0,
-        "age_days": 3.87
+        "age_days": 4.12
       },
       "1d": {
         "view": 23,
@@ -164,7 +164,7 @@
         "view": 37,
         "like": 0,
         "comment": 0,
-        "age_days": 3.62
+        "age_days": 3.87
       },
       "1d": {
         "view": 6,
@@ -254,7 +254,7 @@
         "view": 115,
         "like": 1,
         "comment": 1,
-        "age_days": 3.37
+        "age_days": 3.62
       },
       "1d": {
         "view": 87,
@@ -340,7 +340,7 @@
         "view": 93,
         "like": 0,
         "comment": 1,
-        "age_days": 2.87
+        "age_days": 3.12
       },
       "1d": {
         "view": 56,
@@ -430,7 +430,7 @@
         "view": 184,
         "like": 1,
         "comment": 1,
-        "age_days": 2.62
+        "age_days": 2.87
       },
       "1d": {
         "view": 139,
@@ -516,7 +516,7 @@
         "view": 404,
         "like": 4,
         "comment": 1,
-        "age_days": 2.37
+        "age_days": 2.62
       },
       "1d": {
         "view": 170,
@@ -599,13 +599,18 @@
     },
     "stats": {
       "latest": {
-        "view": 133,
+        "view": 136,
         "like": 1,
         "comment": 1,
-        "age_days": 1.87
+        "age_days": 2.12
       },
       "1d": {
         "view": 97,
+        "like": 1,
+        "comment": 1
+      },
+      "2d": {
+        "view": 136,
         "like": 1,
         "comment": 1
       }
@@ -684,10 +689,10 @@
     },
     "stats": {
       "latest": {
-        "view": 125,
+        "view": 132,
         "like": 0,
         "comment": 1,
-        "age_days": 1.62
+        "age_days": 1.87
       },
       "1d": {
         "view": 115,
@@ -756,10 +761,10 @@
     },
     "stats": {
       "latest": {
-        "view": 39,
+        "view": 41,
         "like": 0,
         "comment": 1,
-        "age_days": 1.37
+        "age_days": 1.62
       },
       "1d": {
         "view": 39,
@@ -833,10 +838,15 @@
     },
     "stats": {
       "latest": {
-        "view": 726,
-        "like": 6,
+        "view": 921,
+        "like": 7,
         "comment": 2,
-        "age_days": 0.87
+        "age_days": 1.12
+      },
+      "1d": {
+        "view": 921,
+        "like": 7,
+        "comment": 2
       }
     }
   },
@@ -905,10 +915,10 @@
     },
     "stats": {
       "latest": {
-        "view": 96,
+        "view": 107,
         "like": 2,
         "comment": 1,
-        "age_days": 0.62
+        "age_days": 0.87
       }
     }
   },
@@ -980,10 +990,10 @@
     "music": "The Forest Awakes",
     "stats": {
       "latest": {
-        "view": 47,
+        "view": 57,
         "like": 2,
         "comment": 1,
-        "age_days": 0.37
+        "age_days": 0.62
       }
     }
   },
@@ -1039,6 +1049,84 @@
     },
     "hook_score": 42.0,
     "voice": "bf_emma",
-    "music": "Destiny"
+    "music": "Destiny",
+    "stats": {
+      "latest": {
+        "view": 50,
+        "like": 0,
+        "comment": 1,
+        "age_days": 0.12
+      }
+    }
+  },
+  {
+    "date": "2026-11-27T08:59",
+    "title": "Elon Musk Pledges SpaceX Shares to Every US Child",
+    "links": [
+      "https://www.theguardian.com/technology/2026/nov/26/elon-musk-pledges-to-give-two-spacex-shares-to-every-child-in-the-us"
+    ],
+    "video_id": "lbrCvHEVml0",
+    "publish_at": "2026-11-27T12:00:00Z",
+    "slot": "2026-11-27T12:00:00Z",
+    "category": "business",
+    "hook": "Elon Musk pledged nearly eighteen billion dollars in SpaceX shares to American children.",
+    "words": 93,
+    "seconds": 34.4,
+    "demand": {
+      "query": "elon musk spacex shares kids",
+      "videos": 10,
+      "views": 534496,
+      "top": 167389
+    },
+    "editor_rank": 2,
+    "contest": {
+      "titles": [
+        [
+          27.0,
+          "Elon Musk's $18B SpaceX Shares Gift to Kids"
+        ],
+        [
+          26.5,
+          "Musk Pledges $18B in SpaceX Shares to US Kids"
+        ],
+        [
+          26.5,
+          "Every US Child Gets 2 SpaceX Shares From Musk"
+        ],
+        [
+          26.0,
+          "Elon Musk Pledges Free SpaceX Shares to Kids 🚀"
+        ],
+        [
+          26.0,
+          "Elon Musk Giving SpaceX Shares to US Kids 🚀"
+        ],
+        [
+          25.5,
+          "Elon Musk Pledges SpaceX Shares to Every US Child"
+        ]
+      ],
+      "hooks": [
+        [
+          28.97,
+          "Nearly 18 billion dollars in SpaceX shares are going to American kids."
+        ],
+        [
+          27.47,
+          "Almost 70 million kid accounts will receive two SpaceX shares."
+        ],
+        [
+          26.97,
+          "Two SpaceX shares are being pledged to every child in America."
+        ],
+        [
+          25.27,
+          "Elon Musk pledged nearly eighteen billion dollars in SpaceX shares to American children."
+        ]
+      ]
+    },
+    "hook_score": 44.2,
+    "voice": "am_fenrir",
+    "music": "Syntheticity"
   }
 ]
