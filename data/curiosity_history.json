@@ -1,0 +1,20 @@
+[
+ {
+  "date": "2026-11-27T15:03",
+  "topic": "Why does all of China use only one single time zone?",
+  "title": "Why Does China Use Only One Time Zone? 🇨🇳",
+  "video_id": "jASEkdvICk0",
+  "publish_at": "2026-11-27T20:00:00Z",
+  "slot": "2026-11-27T20:00:00Z",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Time_in_China",
+   "https://en.wikipedia.org/wiki/Time_zone"
+  ],
+  "hook": "Why does massive China cover five geographical zones but observe only one time?",
+  "hook_score": 59.8,
+  "voice": "am_fenrir",
+  "seconds": 83.8,
+  "demand": 3267511,
+  "music": "The Forest Awakes"
+ }
+]
