@@ -12,7 +12,7 @@
         "view": 46,
         "like": 2,
         "comment": 0,
-        "age_days": 5.78
+        "age_days": 5.93
       },
       "1d": {
         "view": 79,
@@ -44,7 +44,7 @@
         "view": 131,
         "like": 1,
         "comment": 0,
-        "age_days": 5.62
+        "age_days": 5.77
       },
       "1d": {
         "view": 104,
@@ -77,7 +77,7 @@
         "view": 39,
         "like": 0,
         "comment": 0,
-        "age_days": 5.12
+        "age_days": 5.27
       },
       "1d": {
         "view": 23,
@@ -164,7 +164,7 @@
         "view": 38,
         "like": 0,
         "comment": 0,
-        "age_days": 4.87
+        "age_days": 5.02
       },
       "1d": {
         "view": 6,
@@ -251,10 +251,10 @@
     },
     "stats": {
       "latest": {
-        "view": 116,
+        "view": 120,
         "like": 1,
         "comment": 1,
-        "age_days": 4.62
+        "age_days": 4.77
       },
       "1d": {
         "view": 87,
@@ -340,7 +340,7 @@
         "view": 94,
         "like": 0,
         "comment": 1,
-        "age_days": 4.12
+        "age_days": 4.27
       },
       "1d": {
         "view": 56,
@@ -427,10 +427,10 @@
     },
     "stats": {
       "latest": {
-        "view": 184,
+        "view": 185,
         "like": 1,
         "comment": 1,
-        "age_days": 3.87
+        "age_days": 4.02
       },
       "1d": {
         "view": 139,
@@ -516,7 +516,7 @@
         "view": 404,
         "like": 4,
         "comment": 1,
-        "age_days": 3.62
+        "age_days": 3.77
       },
       "1d": {
         "view": 170,
@@ -602,7 +602,7 @@
         "view": 138,
         "like": 1,
         "comment": 1,
-        "age_days": 3.12
+        "age_days": 3.27
       },
       "1d": {
         "view": 97,
@@ -692,7 +692,7 @@
         "view": 133,
         "like": 0,
         "comment": 1,
-        "age_days": 2.87
+        "age_days": 3.02
       },
       "1d": {
         "view": 115,
@@ -774,7 +774,7 @@
         "view": 43,
         "like": 0,
         "comment": 1,
-        "age_days": 2.62
+        "age_days": 2.77
       },
       "1d": {
         "view": 39,
@@ -858,10 +858,10 @@
     },
     "stats": {
       "latest": {
-        "view": 944,
+        "view": 945,
         "like": 7,
         "comment": 2,
-        "age_days": 2.12
+        "age_days": 2.27
       },
       "1d": {
         "view": 921,
@@ -945,13 +945,18 @@
     },
     "stats": {
       "latest": {
-        "view": 172,
+        "view": 174,
         "like": 2,
         "comment": 1,
-        "age_days": 1.87
+        "age_days": 2.02
       },
       "1d": {
         "view": 113,
+        "like": 2,
+        "comment": 1
+      },
+      "2d": {
+        "view": 174,
         "like": 2,
         "comment": 1
       }
@@ -1025,10 +1030,10 @@
     "music": "The Forest Awakes",
     "stats": {
       "latest": {
-        "view": 99,
+        "view": 105,
         "like": 2,
         "comment": 1,
-        "age_days": 1.62
+        "age_days": 1.77
       },
       "1d": {
         "view": 83,
@@ -1092,10 +1097,10 @@
     "music": "Destiny",
     "stats": {
       "latest": {
-        "view": 228,
+        "view": 241,
         "like": 0,
         "comment": 2,
-        "age_days": 1.12
+        "age_days": 1.27
       },
       "1d": {
         "view": 228,
@@ -1178,7 +1183,12 @@
         "view": 1,
         "like": 0,
         "comment": 1,
-        "age_days": 0.87
+        "age_days": 1.02
+      },
+      "1d": {
+        "view": 1,
+        "like": 0,
+        "comment": 1
       }
     }
   },
@@ -1249,10 +1259,10 @@
     "music": "Deeper",
     "stats": {
       "latest": {
-        "view": 20,
+        "view": 21,
         "like": 0,
         "comment": 1,
-        "age_days": 0.62
+        "age_days": 0.77
       }
     }
   },
@@ -1320,10 +1330,10 @@
     "music": "The Forest Awakes",
     "stats": {
       "latest": {
-        "view": 52,
+        "view": 68,
         "like": 0,
         "comment": 1,
-        "age_days": 0.12
+        "age_days": 0.27
       }
     }
   },
@@ -1395,6 +1405,80 @@
     },
     "hook_score": 28.6,
     "voice": "af_heart",
-    "music": "Syntheticity"
+    "music": "Syntheticity",
+    "stats": {
+      "latest": {
+        "view": 3,
+        "like": 0,
+        "comment": 1,
+        "age_days": 0.02
+      }
+    }
+  },
+  {
+    "date": "2026-11-28T12:33",
+    "title": "When OpenAI sues Apple",
+    "links": [
+      "https://www.theguardian.com/technology/2026/nov/27/openai-countersues-apple-trade-secrets"
+    ],
+    "video_id": "Wqx4nEX6HTc",
+    "publish_at": "2026-11-28T18:00:00Z",
+    "slot": "2026-11-28T18:00:00Z",
+    "category": "tech",
+    "hook": "400 employees have left Apple for OpenAI, court filings reveal.",
+    "words": 76,
+    "seconds": 33.8,
+    "demand": {
+      "query": "openai sues apple",
+      "videos": 10,
+      "views": 5622,
+      "top": 4637
+    },
+    "editor_rank": 1,
+    "contest": {
+      "titles": [
+        [
+          26.0,
+          "When OpenAI sues Apple"
+        ],
+        [
+          26.0,
+          "OpenAI sues Apple back ⚖️"
+        ],
+        [
+          24.5,
+          "OpenAI sues Apple over staff"
+        ],
+        [
+          24.5,
+          "OpenAI sues Apple for secrets ⚖️"
+        ],
+        [
+          24.0,
+          "OpenAI countersues Apple"
+        ],
+        [
+          22.0,
+          "OpenAI Countersues Apple Over Trade Secrets ⚖️"
+        ]
+      ],
+      "hooks": [
+        [
+          28.97,
+          "400 employees have left Apple for OpenAI, court filings reveal."
+        ],
+        [
+          26.51,
+          "OpenAI is countersuing Apple in federal court for allegedly stealing trade secrets."
+        ],
+        [
+          26.43,
+          "Apple is being countersued by OpenAI over stolen trade secrets."
+        ]
+      ]
+    },
+    "hook_score": 49.2,
+    "voice": "am_michael",
+    "music": "Crossroads"
   }
 ]
