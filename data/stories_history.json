@@ -259,5 +259,14 @@
   "link": "https://www.bbc.co.uk/news/articles/cm15ekqvlezeo?at_medium=RSS&at_campaign=rss",
   "headline": "OpenAI Counter-Sues Apple Over Alleged Trade Secret Theft",
   "media_id": "18574196824073211"
+ },
+ {
+  "slot": "2026-11-28T14:47Z",
+  "kind": "fact",
+  "date": "2026-11-28T14:47+00:00",
+  "title": "High-security prisoner used soap to escape despite being handcuffed and chained to officer",
+  "link": "https://www.theguardian.com/society/2026/nov/28/high-security-prisoner-used-soap-to-escape-despite-being-handcuffed-and-chained-to-officer",
+  "headline": "High-security prisoner escapes using ordinary soap",
+  "media_id": "18044759924841592"
  }
 ]
