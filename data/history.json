@@ -9,10 +9,10 @@
     "video_id": "QQN-clSJmGw",
     "stats": {
       "latest": {
-        "view": 52,
+        "view": 46,
         "like": 2,
         "comment": 0,
-        "age_days": 5.03
+        "age_days": 5.49
       },
       "1d": {
         "view": 79,
@@ -44,7 +44,7 @@
         "view": 131,
         "like": 1,
         "comment": 0,
-        "age_days": 4.87
+        "age_days": 5.32
       },
       "1d": {
         "view": 104,
@@ -77,7 +77,7 @@
         "view": 39,
         "like": 0,
         "comment": 0,
-        "age_days": 4.37
+        "age_days": 4.82
       },
       "1d": {
         "view": 23,
@@ -161,10 +161,10 @@
     },
     "stats": {
       "latest": {
-        "view": 37,
+        "view": 38,
         "like": 0,
         "comment": 0,
-        "age_days": 4.12
+        "age_days": 4.57
       },
       "1d": {
         "view": 6,
@@ -178,9 +178,9 @@
       }
     },
     "retention": {
-      "views": 35,
-      "avg_pct": 69.8,
-      "avg_sec": 23
+      "views": 40,
+      "avg_pct": 60.7,
+      "avg_sec": 20
     }
   },
   {
@@ -254,7 +254,7 @@
         "view": 115,
         "like": 1,
         "comment": 1,
-        "age_days": 3.87
+        "age_days": 4.32
       },
       "1d": {
         "view": 87,
@@ -268,9 +268,9 @@
       }
     },
     "retention": {
-      "views": 112,
-      "avg_pct": 62.3,
-      "avg_sec": 19
+      "views": 120,
+      "avg_pct": 65.5,
+      "avg_sec": 20
     }
   },
   {
@@ -337,10 +337,10 @@
     },
     "stats": {
       "latest": {
-        "view": 93,
+        "view": 94,
         "like": 0,
         "comment": 1,
-        "age_days": 3.37
+        "age_days": 3.82
       },
       "1d": {
         "view": 56,
@@ -354,7 +354,7 @@
       }
     },
     "retention": {
-      "views": 57,
+      "views": 93,
       "avg_pct": 43.9,
       "avg_sec": 8
     }
@@ -430,7 +430,7 @@
         "view": 184,
         "like": 1,
         "comment": 1,
-        "age_days": 3.12
+        "age_days": 3.57
       },
       "1d": {
         "view": 139,
@@ -444,9 +444,9 @@
       }
     },
     "retention": {
-      "views": 132,
-      "avg_pct": 37.2,
-      "avg_sec": 10
+      "views": 184,
+      "avg_pct": 35.6,
+      "avg_sec": 9
     }
   },
   {
@@ -516,7 +516,7 @@
         "view": 404,
         "like": 4,
         "comment": 1,
-        "age_days": 2.87
+        "age_days": 3.32
       },
       "1d": {
         "view": 170,
@@ -530,8 +530,8 @@
       }
     },
     "retention": {
-      "views": 77,
-      "avg_pct": 35.3,
+      "views": 219,
+      "avg_pct": 34.9,
       "avg_sec": 12
     }
   },
@@ -599,10 +599,10 @@
     },
     "stats": {
       "latest": {
-        "view": 136,
+        "view": 138,
         "like": 1,
         "comment": 1,
-        "age_days": 2.37
+        "age_days": 2.82
       },
       "1d": {
         "view": 97,
@@ -616,9 +616,9 @@
       }
     },
     "retention": {
-      "views": 31,
-      "avg_pct": 80.2,
-      "avg_sec": 16
+      "views": 117,
+      "avg_pct": 58.0,
+      "avg_sec": 12
     }
   },
   {
@@ -692,7 +692,7 @@
         "view": 133,
         "like": 0,
         "comment": 1,
-        "age_days": 2.12
+        "age_days": 2.57
       },
       "1d": {
         "view": 115,
@@ -704,6 +704,11 @@
         "like": 0,
         "comment": 1
       }
+    },
+    "retention": {
+      "views": 113,
+      "avg_pct": 34.9,
+      "avg_sec": 8
     }
   },
   {
@@ -769,13 +774,23 @@
         "view": 43,
         "like": 0,
         "comment": 1,
-        "age_days": 1.87
+        "age_days": 2.32
       },
       "1d": {
         "view": 39,
         "like": 0,
         "comment": 1
+      },
+      "2d": {
+        "view": 43,
+        "like": 0,
+        "comment": 1
       }
+    },
+    "retention": {
+      "views": 30,
+      "avg_pct": 46.8,
+      "avg_sec": 11
     }
   },
   {
@@ -843,16 +858,21 @@
     },
     "stats": {
       "latest": {
-        "view": 943,
+        "view": 944,
         "like": 7,
         "comment": 2,
-        "age_days": 1.37
+        "age_days": 1.82
       },
       "1d": {
         "view": 921,
         "like": 7,
         "comment": 2
       }
+    },
+    "retention": {
+      "views": 86,
+      "avg_pct": 52.3,
+      "avg_sec": 12
     }
   },
   {
@@ -920,10 +940,10 @@
     },
     "stats": {
       "latest": {
-        "view": 113,
+        "view": 143,
         "like": 2,
         "comment": 1,
-        "age_days": 1.12
+        "age_days": 1.57
       },
       "1d": {
         "view": 113,
@@ -1000,10 +1020,15 @@
     "music": "The Forest Awakes",
     "stats": {
       "latest": {
-        "view": 63,
+        "view": 83,
         "like": 2,
         "comment": 1,
-        "age_days": 0.87
+        "age_days": 1.32
+      },
+      "1d": {
+        "view": 83,
+        "like": 2,
+        "comment": 1
       }
     }
   },
@@ -1062,10 +1087,10 @@
     "music": "Destiny",
     "stats": {
       "latest": {
-        "view": 70,
+        "view": 122,
         "like": 0,
         "comment": 1,
-        "age_days": 0.37
+        "age_days": 0.82
       }
     }
   },
@@ -1140,10 +1165,10 @@
     "music": "Syntheticity",
     "stats": {
       "latest": {
-        "view": 0,
+        "view": 1,
         "like": 0,
         "comment": 1,
-        "age_days": 0.12
+        "age_days": 0.57
       }
     }
   },
@@ -1211,6 +1236,77 @@
     },
     "hook_score": 39.0,
     "voice": "af_bella",
-    "music": "Deeper"
+    "music": "Deeper",
+    "stats": {
+      "latest": {
+        "view": 15,
+        "like": 0,
+        "comment": 1,
+        "age_days": 0.32
+      }
+    }
+  },
+  {
+    "date": "2026-11-28T01:48",
+    "title": "Why Norse Atlantic Airways Filed For Bankruptcy",
+    "links": [
+      "https://www.theguardian.com/business/2026/nov/27/norse-atlantic-airways-files-for-bankruptcy-cancels-all-future-flights",
+      "https://news.sky.com/story/norse-atlantic-airways-suspends-all-flights-as-carrier-faces-bankruptcy-13616901"
+    ],
+    "video_id": "Mzt69QjbPPw",
+    "publish_at": "2026-11-28T06:00:00Z",
+    "slot": "2026-11-28T06:00:00Z",
+    "category": "business",
+    "hook": "Passengers were told not to come to airports as Norse Atlantic Airways filed for bankruptcy.",
+    "words": 62,
+    "seconds": 26.3,
+    "demand": {
+      "query": "norse atlantic airways bankruptcy",
+      "videos": 10,
+      "views": 55706,
+      "top": 43215
+    },
+    "editor_rank": 3,
+    "contest": {
+      "titles": [
+        [
+          27.0,
+          "Why Norse Atlantic Airways Filed For Bankruptcy"
+        ],
+        [
+          24.0,
+          "Norse Atlantic Airways Files For Bankruptcy"
+        ],
+        [
+          24.0,
+          "Norse Atlantic Airways Bankruptcy Shocks Flyers"
+        ],
+        [
+          23.5,
+          "Norse Atlantic Bankruptcy & Flights Canceled"
+        ],
+        [
+          22.0,
+          "Norse Atlantic Files For Bankruptcy"
+        ]
+      ],
+      "hooks": [
+        [
+          28.79,
+          "Passengers were told not to come to airports as Norse Atlantic Airways filed for bankruptcy."
+        ],
+        [
+          27.86,
+          "12 planes grounded as Norse Atlantic Airways filed for bankruptcy and cancelled all flights."
+        ],
+        [
+          27.5,
+          "Norse Atlantic Airways filed for bankruptcy and cancelled all future flights after soaring fuel costs."
+        ]
+      ]
+    },
+    "hook_score": 57.2,
+    "voice": "bm_george",
+    "music": "The Forest Awakes"
   }
 ]
