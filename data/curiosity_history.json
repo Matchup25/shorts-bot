@@ -16,5 +16,23 @@
   "seconds": 83.8,
   "demand": 3267511,
   "music": "The Forest Awakes"
+ },
+ {
+  "date": "2026-11-28T15:21",
+  "topic": "Why does the border between Belgium and the Netherlands split houses in half?",
+  "title": "Why Do Some Houses Sit in Two Countries? 🇧🇪🇳🇱",
+  "video_id": "gBmRG8dICPg",
+  "publish_at": "2026-11-28T20:00:00Z",
+  "slot": "2026-11-28T20:00:00Z",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Baarle-Nassau",
+   "https://en.wikipedia.org/wiki/Line_house"
+  ],
+  "hook": "Did you know some homes sit in two countries at once?",
+  "hook_score": 40.6,
+  "voice": "af_bella",
+  "seconds": 71.5,
+  "demand": 23726837,
+  "music": "Syntheticity"
  }
 ]
