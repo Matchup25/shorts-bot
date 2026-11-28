@@ -250,5 +250,14 @@
   "link": "https://www.aljazeera.com/news/2026/11/28/parts-of-us-clean-up-after-thanksgiving-storm-lashes-east-coast?traffic_source=rss",
   "headline": "US East Coast cleans up after Thanksgiving storm",
   "media_id": "17998909791099836"
+ },
+ {
+  "slot": "2026-11-28T11:47Z",
+  "kind": "last_minute",
+  "date": "2026-11-28T11:47+00:00",
+  "title": "OpenAI counter-sues Apple over alleged theft of trade secrets",
+  "link": "https://www.bbc.co.uk/news/articles/cm15ekqvlezeo?at_medium=RSS&at_campaign=rss",
+  "headline": "OpenAI Counter-Sues Apple Over Alleged Trade Secret Theft",
+  "media_id": "18574196824073211"
  }
 ]
